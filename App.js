@@ -9,8 +9,8 @@ export default function App() {
   return (
     <NavigationContainer>
 
-      <BottomTab.Navigator initialRouteName='Home'>
-        <BottomTab.Screen name="Home" component={Home} />
+      <BottomTab.Navigator initialRouteName='Login'>
+        <BottomTab.Screen name="Login" component={Login} />
 
       </BottomTab.Navigator>
 
