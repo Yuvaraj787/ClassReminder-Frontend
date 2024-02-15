@@ -23,7 +23,22 @@ export default function App() {
     const handleSubmit = () => {
         if (validateForm()) {
             console.log("done uh");
-            navigate.navigate("Profile", { name: username })
+            axios({
+                url: "http://10.0.0.2/auth/login",
+                method: "POST",
+                params: { name: username, password }
+            })
+                .then((res) => {
+                    if (!res.data.wrongPassword) {
+                        navigate.navigate("dashboard")
+                    }
+                    else if (res.data.newUser) {
+                        navigate.navigate("signup")
+                    }
+                    else {
+                        console.log("oh no !")
+                    }
+                })
         }
         else {
             console.log("oh no ")

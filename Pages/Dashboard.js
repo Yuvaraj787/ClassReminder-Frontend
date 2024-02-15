@@ -1,7 +1,9 @@
-import { StyleSheet, View, Text, ScrollView, FlatList } from "react-native"
+import { StyleSheet, View, Text, ScrollView, FlatList, TouchableOpacity } from "react-native"
 import { useState, useEffect } from "react";
 import Schedule from "../Components/Schedule.json"
-export default function DashBoard() {
+import { Ionicons } from '@expo/vector-icons';
+
+export default function DashBoard({ navigation }) {
     const [currentTime, setCurrentTime] = useState(new Date());
 
     useEffect(() => {
@@ -14,6 +16,18 @@ export default function DashBoard() {
     }, []);
 
     const formattedTime = currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+    navigation.setOptions({
+        headerRight: () => (
+            <TouchableOpacity
+                style={{ marginRight: 30, marginTop: 10 }}
+                onPress={() => {
+                    console.log("Notification pressed");
+                }}
+            >
+                <Ionicons name="notifications" size={24} color="black" />
+            </TouchableOpacity>
+        )
+    });
 
     return (
         <View style={styles.main}>
@@ -46,7 +60,7 @@ export default function DashBoard() {
 
             {/* bottom container */}
             <View style={styles.bottom}>
-                <Text style={{ fontSize: 20, fontFamily: "monospace" }}>For upcoming classes</Text>
+                <Text style={{ fontSize: 20, fontFamily: "monospace", marginBottom: 5 }}>Upcoming classes</Text>
 
                 <View style={styles.periods}>
 
@@ -67,8 +81,8 @@ export default function DashBoard() {
 
                                             </View>
                                             <View style={styles.rowBottom}>
-                                                <View style={{ flex: 2, justifyContent: "flex-start" }}><Text>{item.staff}</Text></View>
-                                                <Text style={{ flex: 1 }}>📍{item.location}</Text>
+                                                <View style={{ flex: 2, justifyContent: "flex-start" }}><Text><Ionicons name="person" size={15} color="black" /> {item.staff}</Text></View>
+                                                <Text style={{ flex: 1 }}>    <Ionicons name="location" size={15} color="black" /> {item.location}</Text>
                                             </View>
                                         </View>
 
@@ -169,6 +183,8 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         borderRightWidth: 1,
+        marginRight: 5,
+        paddingRight: 6
     },
     rowRight: {
         flex: 9
