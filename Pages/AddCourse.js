@@ -11,12 +11,12 @@ export default function App() {
 
     const [staffs, setStaffs] = useState([
         { id:1, dept: "IT", name: "Selvi Ravindran" }, {id:2,  dept: "IT", name: "Swaminathan" }
-        // "Selvi Ravindran", "Swaminathan"
     ])
 
     const [courseName, setcourseName] = useState('')
     const [faculty, setfaculty] = useState('')
     const [error, setError] = useState({})
+
     const validateForm = () => {
         let error = {}
         console.log("length courseName : " + courseName.length + " faculty length : " + faculty.length)
@@ -25,7 +25,6 @@ export default function App() {
         setError(error)
         console.log(Object.keys(error).length)
         return Object.keys(error).length === 0;
-
     }
 
     const handleSubmit = () => {
@@ -62,21 +61,18 @@ export default function App() {
               
                     containerStyle={{ padding: 5 }}
                     
-                    // itemStyle={{
-                    //     padding: 10,
-                    //     marginTop: 2,
-                    //     backgroundColor: '#ddd',
-                    //     borderColor: '#bbb',
-                    //     borderWidth: 1,
-                    //     borderRadius: 5,
-                    // }}
+                    itemStyle={{
+                        padding: 10,
+                        marginTop: 2,
+                        backgroundColor: '#ddd',
+                        borderColor: '#bbb',
+                        borderWidth: 1,
+                        borderRadius: 5,
+                    }}
 
                     onItemSelect={(item) => {
-                       
                         setStaffs({ choosen: item });
-                      }}
-
-                    itemStyle={styles.input}
+                    }}
 
                     itemTextStyle={{ color: '#222' }}
                     itemsContainerStyle={{ maxHeight: 140 }}

@@ -31,7 +31,7 @@ export default function App({navigation, route}) {
     }
     return (
         <View style={[styles.container, { backgroundColor: on ? "#164863" : "#f5f5f5" }]}>
-            <Text style={{ fontSize: 25, fontWeight: "bold", fontFamily: "monospace", color: on ? "white" : "black", paddingBottom: 30 }}>Login Form</Text>
+            <Text style={{ fontSize: 25, fontWeight: "bold", fontFamily: "monospace", color: on ? "white" : "black", paddingBottom: 30 }}>Login</Text>
             {/* <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text style={{ color: on ? "white" : "black" }}>Dark mode</Text>
                 <Switch
