@@ -50,13 +50,11 @@ export default function App({navigation, route}) {
 
 
             <View style={styles.form}>
-                <Text style={styles.text}>Username:</Text>
-                <TextInput value={username} placeholder="Enter Your username " style={styles.input} onChangeText={setUsername} />
+                <TextInput value={username} placeholder="Roll Number " style={styles.input} onChangeText={setUsername} />
                 {
                     error.username ? <Text style={styles.err}>{error.username}</Text> : null
                 }
-                <Text style={styles.text}>Password:</Text>
-                <TextInput value={password} placeholder="Enter Your Password " style={styles.input} onChangeText={setPassword} secureTextEntry />
+                <TextInput value={password} placeholder="Password " style={styles.input} onChangeText={setPassword} secureTextEntry />
                 {
                     error.password ? <Text style={styles.err}>{error.password}</Text> : null
                 }

@@ -1,7 +1,9 @@
-import { StyleSheet, View, Text, ScrollView, FlatList, TouchableOpacity } from "react-native"
+import { StyleSheet, View, Text, ScrollView, FlatList, TouchableOpacity, Alert } from "react-native"
 import { useState, useEffect } from "react";
 import Schedule from "../Components/Schedule.json"
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from "@react-navigation/native";
+import * as Location from 'expo-location';
 
 export default function DashBoard({ navigation }) {
     const [currentTime, setCurrentTime] = useState(new Date());
@@ -15,6 +17,8 @@ export default function DashBoard({ navigation }) {
 
     }, []);
 
+    const navigate = useNavigation()
+
     const formattedTime = currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
     navigation.setOptions({
         headerRight: () => (
@@ -22,12 +26,65 @@ export default function DashBoard({ navigation }) {
                 style={{ marginRight: 30, marginTop: 10 }}
                 onPress={() => {
                     console.log("Notification pressed");
+                    navigate.navigate("Notification")
                 }}
             >
                 <Ionicons name="notifications" size={24} color="black" />
             </TouchableOpacity>
         )
     });
+
+    //for location
+
+    const [locationEnabled, setLocationEnabled] = useState(false);
+    const [displayLocation, setDisplayLocation] = useState(
+        'Fetching...'
+    );
+
+    useEffect(() => {
+        CheckIfLocationPermissionEnabled();
+        GetCurrentLocation();
+    }, []);
+
+    const CheckIfLocationPermissionEnabled = async () => {
+        let enabled = await Location.hasServicesEnabledAsync();
+
+        if (!enabled) {
+            Alert.alert(
+                'Location Service not enabled',
+                'Please enable your location services to continue',
+                [{ text: 'OK' }],
+                { cancelable: false }
+            );
+
+        } else {
+            setLocationEnabled(true);
+        }
+    };
+    const GetCurrentLocation = async () => {
+        let { status } = await Location.requestBackgroundPermissionsAsync();
+
+        if (status !== 'granted') {
+            Alert.alert(
+                'Permission not granted',
+                'Allow the app to use location service.',
+                [{ text: 'OK' }],
+                { cancelable: false }
+            );
+        }
+
+        let { coords } = await Location.getCurrentPositionAsync();
+
+        if (coords) {
+            const { latitude, longitude } = coords;
+            let response = await Location.reverseGeocodeAsync({
+                latitude,
+                longitude
+            });
+            console.log(response)
+            setDisplayLocation(`${response[0].district},${response[0].city}`)
+        }
+    };
 
     return (
         <View style={styles.main}>
@@ -53,6 +110,7 @@ export default function DashBoard({ navigation }) {
                     </View>
                     <View style={styles.box2}>
                         <Text style={styles.time}>{formattedTime}</Text>
+                        <Text><Ionicons name="location" size={15} color="black" />{displayLocation}</Text>
                     </View>
                 </View>
             </View>
@@ -156,7 +214,8 @@ const styles = StyleSheet.create({
     },
     time: {
         fontSize: 30,
-        fontFamily: "monospace"
+        fontFamily: "monospace",
+        marginBottom: 5
     },
     periods: {
         flex: 1,
