@@ -40,7 +40,7 @@ export default function App() {
             console.log("Form is valid. Submitting...");
 
             axios({
-                url: "http://10.0.0.2/auth/signup",
+                url: "http://10.0.0.2/auth/register",
                 method: "POST",
                 params: userDetails
             })

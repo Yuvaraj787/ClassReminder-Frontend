@@ -9,6 +9,7 @@ import AddCourse from "./Pages/AddCourse";
 import DashBoard from "./Pages/Dashboard";
 import SignUp from "./Pages/Signup";
 import Notification from './Pages/Notifications';
+import Profile from "./Pages/Profile"
 import Attendence from './Pages/AttendenceManager';
 const BottomTab = createBottomTabNavigator()
 const Stack = createStackNavigator();
@@ -38,6 +39,7 @@ function MainScreen() {
         }}
       />
       <BottomTab.Screen name="Login" component={Login} />
+      <BottomTab.Screen name="Profile" component={Profile} />
       <BottomTab.Screen name="AddCourse" component={AddCourse} />
 
     </BottomTab.Navigator>
