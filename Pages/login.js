@@ -23,7 +23,22 @@ export default function App({navigation, route}) {
     const handleSubmit = () => {
         if (validateForm()) {
             console.log("done uh");
-            navigate.navigate("Profile", { name: username })
+            axios({
+                url: "http://10.0.0.2/auth/login",
+                method: "POST",
+                params: { name: username, password }
+            })
+                .then((res) => {
+                    if (!res.data.wrongPassword) {
+                        navigate.navigate("dashboard")
+                    }
+                    else if (res.data.newUser) {
+                        navigate.navigate("signup")
+                    }
+                    else {
+                        console.log("oh no !")
+                    }
+                })
         }
         else {
             console.log("oh no ")
@@ -32,15 +47,6 @@ export default function App({navigation, route}) {
     return (
         <View style={[styles.container, { backgroundColor: on ? "#164863" : "#f5f5f5" }]}>
             <Text style={{ fontSize: 25, fontWeight: "bold", fontFamily: "monospace", color: on ? "white" : "black", paddingBottom: 30 }}>Login Form</Text>
-            {/* <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text style={{ color: on ? "white" : "black" }}>Dark mode</Text>
-                <Switch
-                    value={on}
-                    onValueChange={() => Seton((previouValue) => !previouValue)}
-                    trackColor={{ true: "blue", false: "red" }}
-                    thumbColor="white"
-                />
-            </View> */}
 
 
             <View style={styles.form}>

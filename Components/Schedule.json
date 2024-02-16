@@ -1,0 +1,10 @@
+[
+    {"Hour":"1","Subject":"SRP Lab","staff":"Jasmine","location":"KP"},
+    {"Hour":"2","Subject":"SRP Lab","staff":"Jasmine","location":"KP"},
+    {"Hour":"3","Subject":"Social Network Analysis","staff":"Mala","location":"KP"},
+    {"Hour":"4","Subject":"Social Network Analysis","staff":"Mala","location":"KP"},
+    {"Hour":"5","Subject":"IOT ","staff":"Selvi Ravindran","location":"KP"},
+    {"Hour":"6","Subject":"IOT ","staff":"Selvi Ravindran","location":"KP"},    
+    {"Hour":"7","Subject":"SRP Lab","staff":"Jasmine","location":"KP"},
+    {"Hour":"8","Subject":"SRP Lab","staff":"Jasmine","location":"KP"}
+]
