@@ -8,6 +8,7 @@ import { View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AddCourse from "./Pages/AddCourse";
 import Profile from "./Pages/profile";
+import Schedule from "./Pages/schedule";
 
 const BottomTab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator();
@@ -19,6 +20,7 @@ export default function App() {
         <BottomTab.Screen name="Login" component={Login} />
         <BottomTab.Screen name="Add Couse" component={AddCourse} />
         <BottomTab.Screen name="Profile" component={Profile} />
+        <BottomTab.Screen name="Schedule" component={Schedule} />
       </BottomTab.Navigator>
     </NavigationContainer>
   )
