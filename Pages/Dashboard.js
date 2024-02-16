@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, ScrollView, FlatList, TouchableOpacity, Alert } from "react-native"
+import { StyleSheet, View, Text, ScrollView, FlatList, TouchableOpacity, Alert, Pressable } from "react-native"
 import { useState, useEffect } from "react";
 import Schedule from "../Components/Schedule.json"
 import { Ionicons } from '@expo/vector-icons';
@@ -103,10 +103,11 @@ export default function DashBoard({ navigation }) {
                 {/* second view for 3 boxes */}
                 <View style={styles.boxContainer} >
                     <View>
-                        <View style={styles.box}>
+                        <Pressable style={styles.box}
+                            onPress={() => { navigate.navigate("Attendence") }}>
                             <Text style={{ fontSize: 23, fontFamily: "monospace" }}>11</Text>
                             <Text style={{ width: 100, textAlign: "center", padding: 1 }}>Classes Missed</Text>
-                        </View>
+                        </Pressable>
                     </View>
                     <View style={styles.box2}>
                         <Text style={styles.time}>{formattedTime}</Text>
