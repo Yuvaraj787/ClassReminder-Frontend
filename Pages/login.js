@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { StyleSheet, Text, View, Switch, TextInput, Button, Image, KeyboardAvoidingView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-export default function App() {
+export default function App({navigation, route}) {
     const navigate = useNavigation();
     const [on, Seton] = useState(true)
 
