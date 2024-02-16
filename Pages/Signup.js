@@ -64,8 +64,9 @@ export default function App() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Sign Up Form</Text>
+            <Text style={styles.title}>Sign Up form</Text>
             <View style={styles.form}>
+
                 <TextInput
                     value={userDetails.roll}
                     onChangeText={value => handleChange('roll', value)}
