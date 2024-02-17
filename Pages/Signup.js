@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 
@@ -37,25 +37,29 @@ export default function App() {
 
     const handleSubmit = () => {
         if (validateForm()) {
-            console.log("Form is valid. Submitting...");
-
+            console.log("Form is valid. Submitting... new8");
             axios({
-                url: "http://10.0.0.2/auth/register",
-                method: "POST",
+                url: "http://10.16.49.174:3000/auth/register",
+                method: "post",
                 params: userDetails
             })
                 .then((res) => {
+                    console.log(res.data)
                     if (res.data.success) {
-                        navigate.navigate("login")
+                        Alert.alert("Success", "Register Successfull. Login to continue")
+                        navigate.navigate("Login")
                     }
                     else if (!res.data.newUser) {
-                        console.log("User already registered")
+                        Alert.alert("Warning", "Account Already registered. Login to continue")
+                        navigate.navigate("Login");
                     }
                     else {
-                        console.log("oh no !")
+                        Alert.alert("Unknown Error")
                     }
+                }).catch(err => {
+                    Alert.alert("Server Error")
+                    console.log("ERROR: " + err.message)
                 })
-
 
         } else {
             console.log("Form validation failed. Please check the fields.");
@@ -66,13 +70,13 @@ export default function App() {
         <View style={styles.container}>
             <Text style={styles.title}>Sign Up form</Text>
             <View style={styles.form}>
-
                 <TextInput
                     value={userDetails.roll}
                     onChangeText={value => handleChange('roll', value)}
                     placeholder="Roll Number"
                     style={styles.input}
                 />
+
                 {error.roll && <Text style={styles.error}>{error.roll}</Text>}
 
                 <TextInput

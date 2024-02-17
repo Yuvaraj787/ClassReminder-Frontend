@@ -1,18 +1,20 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { StyleSheet, Text, View, Switch, TextInput, Button, Image, KeyboardAvoidingView } from 'react-native';
+import axios from 'axios';
+import { StyleSheet, Text, View, Switch, TextInput, Button, Image, KeyboardAvoidingView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 export default function App({navigation, route}) {
     const navigate = useNavigation();
     const [on, Seton] = useState(true)
 
-    const [username, setUsername] = useState('')
+    const [rollNo, setrollNo] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState({})
     const validateForm = () => {
         let error = {}
-        console.log("length username : " + username.length + " password length : " + password.length)
-        if (username == '') error.username = "! Please Enter username"
+        console.log("length rollNo : " + rollNo.length + " password length : " + password.length)
+        if (rollNo == '') error.rollNo = "! Please Enter rollNo"
         if (password == '') error.password = "! please enter password"
         setError(error)
         console.log(Object.keys(error).length)
@@ -22,26 +24,36 @@ export default function App({navigation, route}) {
 
     const handleSubmit = () => {
         if (validateForm()) {
-            console.log("done uh");
+            console.log("Form is Valid");
             axios({
-                url: "http://10.0.0.2/auth/login",
+                url: "http://10.16.49.174:3000/auth/login",
                 method: "POST",
-                params: { name: username, password }
+                params: { roll : rollNo, password }
             })
-                .then((res) => {
-                    if (!res.data.wrongPassword) {
-                        navigate.navigate("dashboard")
+                .then(async (res) => {
+                    console.log(res.data)
+                    if (res.data.newUser) {
+                        Alert("New User ? ", "Please Register before login")
+                        navigate.navigate("Signup")
                     }
-                    else if (res.data.newUser) {
-                        navigate.navigate("signup")
+                    else if (!res.data.wrongPassword) {
+                        const { name, roll, year, dept } = res.data.userData
+                        console.log(name, roll)
+                        await AsyncStorage.setItem("name", name)
+                        await AsyncStorage.setItem("roll", roll + "")
+                        await AsyncStorage.setItem("year", year + "")
+                        await AsyncStorage.setItem("dept", dept)
+                        await AsyncStorage.setItem("token", res.data.token)
+                        navigate.navigate("Dashboard")
+                    } else if (res.data.wrongPassword) {
+                        Alert.alert("Wrong Crediantials", "wrong password")
                     }
-                    else {
-                        console.log("oh no !")
-                    }
+                }).catch(err => {
+                    console.log("ERROR : ",err.message)
                 })
         }
         else {
-            console.log("oh no ")
+            Alert.alert("Invalid Form", "Missing or invalid creditianls")
         }
     }
     return (
@@ -50,16 +62,16 @@ export default function App({navigation, route}) {
 
 
             <View style={styles.form}>
-                <TextInput value={username} placeholder="Roll Number " style={styles.input} onChangeText={setUsername} />
+                <TextInput value={rollNo} placeholder="Roll Number " style={styles.input} onChangeText={setrollNo} />
                 {
-                    error.username ? <Text style={styles.err}>{error.username}</Text> : null
+                    error.rollNo ? <Text style={styles.err}>{error.rollNo}</Text> : null
                 }
                 <TextInput value={password} placeholder="Password " style={styles.input} onChangeText={setPassword} secureTextEntry />
                 {
                     error.password ? <Text style={styles.err}>{error.password}</Text> : null
                 }
                 <Button title='Login' onPress={() => {
-                    console.log("login button pressed by " + username)
+                    console.log("login button pressed by " + rollNo)
                     handleSubmit()
                 }} />
             </View>
