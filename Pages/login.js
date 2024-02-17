@@ -3,14 +3,15 @@ import { useState } from 'react';
 import axios from 'axios';
 import { StyleSheet, Text, View, Switch, TextInput, Button, Image, KeyboardAvoidingView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage'
-export default function App({navigation, route}) {
-    const navigate = useNavigation();
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+export default function App({navigator, route}) {
     const [on, Seton] = useState(true)
 
     const [rollNo, setrollNo] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState({})
+
     const validateForm = () => {
         let error = {}
         console.log("length rollNo : " + rollNo.length + " password length : " + password.length)
@@ -19,7 +20,6 @@ export default function App({navigation, route}) {
         setError(error)
         console.log(Object.keys(error).length)
         return Object.keys(error).length === 0;
-
     }
 
     const handleSubmit = () => {
@@ -34,7 +34,6 @@ export default function App({navigation, route}) {
                     console.log(res.data)
                     if (res.data.newUser) {
                         Alert("New User ? ", "Please Register before login")
-                        navigate.navigate("Signup")
                     }
                     else if (!res.data.wrongPassword) {
                         const { name, roll, year, dept } = res.data.userData
@@ -44,18 +43,20 @@ export default function App({navigation, route}) {
                         await AsyncStorage.setItem("year", year + "")
                         await AsyncStorage.setItem("dept", dept)
                         await AsyncStorage.setItem("token", res.data.token)
-                        navigate.navigate("Dashboard")
+                        console.log("correct password")
+                        route.params.setLoggedIn(true);
                     } else if (res.data.wrongPassword) {
                         Alert.alert("Wrong Crediantials", "wrong password")
                     }
                 }).catch(err => {
-                    console.log("ERROR : ",err.message)
+                    console.log("ERROR in login page: ",err.message)
                 })
         }
         else {
             Alert.alert("Invalid Form", "Missing or invalid creditianls")
         }
     }
+
     return (
         <View style={[styles.container, { backgroundColor: on ? "#164863" : "#f5f5f5" }]}>
             <Text style={{ fontSize: 25, fontWeight: "bold", fontFamily: "monospace", color: on ? "white" : "black", paddingBottom: 30 }}>Login Form</Text>

@@ -38,6 +38,7 @@ export default function DashBoard({ navigation }) {
         }
         fetch()
     }, [])
+    
     const navigate = useNavigation()
 
     const formattedTime = currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
