@@ -1,22 +1,42 @@
-import { StyleSheet, View, Text, ScrollView, FlatList, TouchableOpacity, Alert } from "react-native"
+import { StyleSheet, View, Text, ScrollView, FlatList, TouchableOpacity, Alert, PermissionsAndroid } from "react-native"
 import { useState, useEffect } from "react";
 import Schedule from "../Components/Schedule.json"
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import * as Location from 'expo-location';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { giveCollegeLocation } from "../functions/insideLocations";
 
 export default function DashBoard({ navigation }) {
     const [currentTime, setCurrentTime] = useState(new Date());
-
-    useEffect(() => {
+    var name, dept, year, roll;
+    const [userDetails, setUserDetails] = useState({name_n: "", dept_n: ""});
+    useEffect(() => {   
         const interval = setInterval(() => {
             setCurrentTime(new Date());
         }, 1000);
+
+      
         // console.log(currentTime.toLocaleTimeString())
         return () => clearInterval(interval);
 
     }, []);
 
+    useEffect(() => {
+        async function fetch() {
+        name = await AsyncStorage.getItem("name");
+        dept = await AsyncStorage.getItem("dept");
+        year = await AsyncStorage.getItem("year");
+        roll = await AsyncStorage.getItem("roll");
+        console.log(name, dept);
+        setUserDetails({
+            name_n:name,
+            dept_n:dept,
+            year_n:year,
+            roll_n:roll})
+        }
+        fetch()
+    }, [])
     const navigate = useNavigation()
 
     const formattedTime = currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
@@ -47,42 +67,53 @@ export default function DashBoard({ navigation }) {
     }, []);
 
     const CheckIfLocationPermissionEnabled = async () => {
-        let enabled = await Location.hasServicesEnabledAsync();
+        try {
+            let { status } = await Location.requestForegroundPermissionsAsync()
+            let enabled = await Location.hasServicesEnabledAsync();
+            console.log("Location status : " + enabled)
+            if (enabled == "denied") {
+                if (!granted) Alert.alert(
+                    'Location Service not enabled',
+                    'Please enable your location services to continue',
+                    [{ text: 'OK' }],
+                    { cancelable: false }
+                );
 
-        if (!enabled) {
-            Alert.alert(
-                'Location Service not enabled',
-                'Please enable your location services to continue',
-                [{ text: 'OK' }],
-                { cancelable: false }
-            );
-
-        } else {
-            setLocationEnabled(true);
+            } else {
+                setLocationEnabled(true);
+            }
+        } catch (err) {
+            console.log("Error in checking location access : ", err.message)
         }
     };
     const GetCurrentLocation = async () => {
-        let { status } = await Location.requestBackgroundPermissionsAsync();
+        try {
+            let { status } = await Location.requestBackgroundPermissionsAsync()
+            console.log("Background : " + status)
+            if (status !== 'granted') {
+                const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION);
+                if (!granted) Alert.alert(
+                    'Permission not granted',
+                    'Allow the app to use location service.',
+                    [{ text: 'OK' }],
+                    { cancelable: false }
+                );
+            }
 
-        if (status !== 'granted') {
-            Alert.alert(
-                'Permission not granted',
-                'Allow the app to use location service.',
-                [{ text: 'OK' }],
-                { cancelable: false }
-            );
-        }
-
-        let { coords } = await Location.getCurrentPositionAsync();
-
-        if (coords) {
-            const { latitude, longitude } = coords;
-            let response = await Location.reverseGeocodeAsync({
-                latitude,
-                longitude
-            });
-            console.log(response)
-            setDisplayLocation(`${response[0].district},${response[0].city}`)
+            let { coords } = await Location.getCurrentPositionAsync();
+            console.log("coordinates : ", coords);
+            if (coords) {
+                const { latitude, longitude } = coords;
+                // let response = await Location.reverseGeocodeAsync({
+                //     latitude,
+                //     longitude
+                // });
+                // console.log(response)
+                // setDisplayLocation(`${response[0].district},${response[0].city}`)
+                setDisplayLocation(giveCollegeLocation(latitude, longitude))
+            }
+        } catch (err) {
+            console.log("Error in assess location : ", err.message)
         }
     };
 
@@ -93,12 +124,12 @@ export default function DashBoard({ navigation }) {
                 {/*First view for welcome msg */}
                 <View>
                     <Text style={{
-                        fontSize: 25, fontFamily: "monospace",
+                        fontSize: 22, fontFamily: "monospace",
                         fontWeight: "bold"
-                    }}>Welcome</Text>
+                    }}>Welcome, </Text>
                     <Text style={styles.nametext}><Text style={{
                         fontSize: 30, fontFamily: "monospace",
-                    }}>Dhanushkumar </Text><Text>B.tech IT</Text></Text>
+                    }}>{userDetails.name_n} </Text><Text>{userDetails.dept_n == "IT" ? "B.Tech " : "B.E " } {userDetails.dept_n}</Text></Text>
                 </View>
                 {/* second view for 3 boxes */}
                 <View style={styles.boxContainer} >
@@ -110,7 +141,7 @@ export default function DashBoard({ navigation }) {
                     </View>
                     <View style={styles.box2}>
                         <Text style={styles.time}>{formattedTime}</Text>
-                        <Text><Ionicons name="location" size={15} color="black" />{displayLocation}</Text>
+                        <Text><Ionicons name="location" size={15} color="black" />{" " + displayLocation}</Text>
                     </View>
                 </View>
             </View>

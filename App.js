@@ -37,5 +37,4 @@ function MainScreen() {
       <BottomTab.Screen name="Profile" component={Profile} />
     </BottomTab.Navigator>
   );
-
 }
