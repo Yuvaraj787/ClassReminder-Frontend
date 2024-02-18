@@ -12,7 +12,7 @@ import SignUp from "./Pages/Signup";
 import Notification from './Pages/Notifications';
 import Profile from "./Pages/Profile";
 import Attendence from './Pages/AttendenceManager';
-
+import Schedule from './Pages/Schedule'
 const BottomTab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -38,6 +38,8 @@ export default function App() {
         <Stack.Screen name="Notification" component={Notification} />
         <Stack.Screen name="AddCourse" component={AddCourse} />
         <Stack.Screen name="Attendence" component={Attendence} />
+        <Stack.Screen name="Schedule" component={Schedule} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -46,6 +48,16 @@ export default function App() {
 function MainScreen() {
   return (
     <BottomTab.Navigator initialRouteName='Dashboard'>
+      <BottomTab.Screen
+        name="Dashboard"
+        component={DashBoard}
+        options={{
+          tabBarLabel: "Dashboard",
+          tabBarIcon: () => (<Ionicons name="ios-analytics" size={20} />),
+          headerShown: true,
+          headerTitle: "Dashboard"
+        }}
+      />
       <BottomTab.Screen
         name="SignUp"
         component={SignUp}
@@ -62,16 +74,7 @@ function MainScreen() {
           tabBarIcon: () => (<Ionicons name="ios-log-in" size={20} />)
         }}
       />
-      <BottomTab.Screen
-        name="Dashboard"
-        component={DashBoard}
-        options={{
-          tabBarLabel: "Dashboard",
-          tabBarIcon: () => (<Ionicons name="ios-analytics" size={20} />),
-          headerShown: true,
-          headerTitle: "Dashboard"
-        }}
-      />
+
       <BottomTab.Screen
         name="Profile"
         component={Profile}

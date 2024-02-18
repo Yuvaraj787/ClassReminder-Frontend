@@ -15,8 +15,6 @@ export default function DashBoard({ navigation }) {
         const interval = setInterval(() => {
             setCurrentTime(new Date());
         }, 1000);
-
-
         // console.log(currentTime.toLocaleTimeString())
         return () => clearInterval(interval);
 
@@ -29,11 +27,13 @@ export default function DashBoard({ navigation }) {
             year = await AsyncStorage.getItem("year");
             roll = await AsyncStorage.getItem("roll");
             console.log(name, dept);
-            setUserDetails({
-                name_n: name,
-                dept_n: dept,
-                year_n: year,
-                roll_n: roll
+            setUserDetails((prev) => {
+                return {
+                    name_n: name,
+                    dept_n: dept,
+                    year_n: year,
+                    roll_n: roll
+                }
             })
         }
         fetch()
@@ -148,11 +148,14 @@ export default function DashBoard({ navigation }) {
                 </View>
             </View>
 
-
+            {/* <ion-icon name="apps"></ion-icon> */}
             {/* bottom container */}
             <View style={styles.bottom}>
-                <Text style={{ fontSize: 20, fontFamily: "monospace", marginBottom: 5 }}>Upcoming classes</Text>
+                <View style={{ flexDirection: "row", justifyContent: "space-around", marginBottom: 5, alignItems: "center" }}>
+                    <Text style={{ fontSize: 20, fontFamily: "monospace" }}>Upcoming classes</Text>
+                    <Pressable onPress={() => { navigate.navigate("Schedule") }}><Ionicons name="calendar" size={22}></Ionicons></Pressable>
 
+                </View>
                 <View style={styles.periods}>
 
 
