@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
+import { registerIndieID, unregisterIndieDevice } from 'native-notify';
 import { Entypo } from '@expo/vector-icons';
 import React, { useState, useEffect, createContext, useContext } from 'react'
 import Login from "./Pages/login";
@@ -13,8 +14,13 @@ import SignUp from "./Pages/Signup";
 import Notification from './Pages/Notifications';
 import Profile from "./Pages/Profile";
 import Attendence from './Pages/AttendenceManager';
+import registerNNPushToken from 'native-notify';
 import axios from 'axios';
+import * as Device from 'expo-device';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Schedule from './Pages/Schedule';
+// import { registerForPushNotificationsAsync } from './functions/notify_sender';
+
 
 const BottomTab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -24,6 +30,8 @@ const LogContext = createContext(null);
 export default function App() {
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [expoPushToken, setExpoPushToken] = useState('');
+  registerNNPushToken(19717, '6cGVSWyXY5RoTiF9pUgfiS');
   useEffect(() => {
     var tok, roll;
     async function fetch() {
@@ -32,10 +40,10 @@ export default function App() {
       if (!tok) {
         setLoggedIn(false);
         setLoading(false);
-        console.log("No token", tok)
+        console.log("INFO : No Auth token", tok)
         return;
       }
-      console.log("Token is present")
+      console.log("INFO: Auth Token is present")
       console.log(tok, roll)
       axios({
         url: "http://10.16.49.174:3000/auth/verify",
@@ -44,11 +52,15 @@ export default function App() {
       }).then(res => {
         if (res.data.success) {
           console.log(res.data, roll)
-          if (res.data.roll === roll) setLoggedIn(true);
+          
+          if (res.data.roll === roll) {
+            registerIndieID(roll + "", 19717, '6cGVSWyXY5RoTiF9pUgfiS');
+            setLoggedIn(true);
+          }
         }
         setLoading(false);
       }).catch(err => {
-        console.log("Error in verifying token", err.message);
+        console.log("ERROR:  in verifying token", err.message);
       })
     }
     fetch();
@@ -104,6 +116,7 @@ function AfterLogin() {
               <Stack.Screen name="AddCourse" component={AddCourse} />
               <Stack.Screen name="Attendence" component={Attendence} />
               <Stack.Screen name="Dashboard" component={DashBoard} />
+              <Stack.Screen name="Schedule" component={Schedule} />
             </Stack.Navigator>
     </>
   )

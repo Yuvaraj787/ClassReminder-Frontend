@@ -7,9 +7,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Tooltip from 'rn-tooltip';
 import { LogContext } from '../App';
+import { useNavigation } from '@react-navigation/native';
 
 const Profile = () => {
     var name, dept, year, roll;
+    const navigator = useNavigation()
     const [userDetails, setUserDetails] = useState({ name_n: "", dept_n: "" });
     const setLog = useContext(LogContext);
     useEffect(() => {
@@ -73,7 +75,7 @@ const Profile = () => {
                     </Pressable>
                 </View>
                 <View style={styles.btnBoxes}>
-                    <Pressable style={styles.pressBox}>
+                    <Pressable style={styles.pressBox} onPress={() => navigator.navigate("Schedule")}>
                         <MaterialIcons name="schedule" size={34} color="black" />
                         <Text style={styles.boxText}>Schedule</Text>
                     </Pressable>
@@ -91,7 +93,7 @@ const Profile = () => {
                     </Pressable>
                 </View>
                 <View style={styles.btnBoxes}>
-                    <Pressable style={styles.pressBox}>
+                    <Pressable style={styles.pressBox} >
                         <FontAwesome name="lock" size={34} color="black" />
                         <Text style={styles.boxText}>Change Password</Text>
                     </Pressable>
