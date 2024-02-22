@@ -5,11 +5,11 @@ import { Ionicons } from '@expo/vector-icons';
 import Schedule from "../Components/Schedule.json"
 
 const FirstRoute = () => (
-  <View style={{ flex: 1, backgroundColor: '#ff4081' }} />
+    <View style={{ flex: 1, backgroundColor: '#ff4081' }} />
 );
 
 const SecondRoute = () => (
-  <View style={{ flex: 1, backgroundColor: '#673ab7' }} />
+    <View style={{ flex: 1, backgroundColor: '#673ab7' }} />
 );
 
 function PerDay() {
@@ -45,50 +45,50 @@ function PerDay() {
 
 const renderTabBar = props => (
     <TabBar
-      {...props}
-      scrollEnabled={true}
-      indicatorStyle={{ backgroundColor: 'black' }}
-      renderLabel={({route}) => (
-        <Text style={{ color: "#black", margin: 8, fontWeight:"bold", fontSize:17 }}>
-          {route.title}
-        </Text>
-      )}
-      gap={1}
-      style={{ backgroundColor: '#B5C0D0', overflowX:"scroll" }}
+        {...props}
+        scrollEnabled={true}
+        indicatorStyle={{ backgroundColor: 'black' }}
+        renderLabel={({ route }) => (
+            <Text style={{ color: "#black", margin: 8, fontWeight: "bold", fontSize: 17 }}>
+                {route.title}
+            </Text>
+        )}
+        gap={1}
+        style={{ backgroundColor: '#B5C0D0', overflowX: "scroll" }}
     />
-  );
-  
+);
+
 
 const renderScene = SceneMap({
-  first: PerDay,
-  second: PerDay,
-  third: PerDay,
-  fourth : PerDay,
-  fifth : PerDay
+    first: PerDay,
+    second: PerDay,
+    third: PerDay,
+    fourth: PerDay,
+    fifth: PerDay
 });
 
 export default function TabViewExample() {
-  const layout = useWindowDimensions();
+    const layout = useWindowDimensions();
 
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    { key: 'first', title: 'Monday' },
-    { key: 'second', title: 'Tuesday' },
-    { key: 'third', title: 'Wednesday' },
-    { key: 'fourth', title: 'Thrusday' },
-    { key: 'fifth', title: 'Friday' }
-  ]);
+    const [index, setIndex] = React.useState(0);
+    const [routes] = React.useState([
+        { key: 'first', title: 'Monday' },
+        { key: 'second', title: 'Tuesday' },
+        { key: 'third', title: 'Wednesday' },
+        { key: 'fourth', title: 'Thrusday' },
+        { key: 'fifth', title: 'Friday' }
+    ]);
 
-  return (
-    <TabView
-      navigationState={{ index, routes }}
-      renderTabBar={renderTabBar}
-      overScrollMode={"always"}
-      renderScene={renderScene}
-      onIndexChange={setIndex}
-      initialLayout={{ width: layout.width }}
-    />
-  );
+    return (
+        <TabView
+            navigationState={{ index, routes }}
+            renderTabBar={renderTabBar}
+            overScrollMode={"always"}
+            renderScene={renderScene}
+            onIndexChange={setIndex}
+            initialLayout={{ width: layout.width }}
+        />
+    );
 }
 
 

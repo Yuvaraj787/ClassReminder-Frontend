@@ -53,7 +53,7 @@ export default function App() {
       }).then(res => {
         if (res.data.success) {
           console.log(res.data, roll)
-          
+
           if (res.data.roll === roll) {
             registerIndieID(roll + "", 19717, '6cGVSWyXY5RoTiF9pUgfiS');
             setLoggedIn(true);
@@ -65,60 +65,60 @@ export default function App() {
       })
     }
     fetch();
-   
+
   }, [])
   return (
-          loading ? <Loading /> :
-          <>
-            {isLoggedIn ?
-            <LogContext.Provider value={setLoggedIn}>
-              <NavigationContainer>
-                    <AfterLogin setLoggedIn={setLoggedIn}/>
-              </NavigationContainer>
-              </LogContext.Provider> : 
-              <NavigationContainer>
-                   <BeforeLogin setLoggedIn={setLoggedIn} />
-              </NavigationContainer>
-            }
-          </>
-          )
+    loading ? <Loading /> :
+      <>
+        {isLoggedIn ?
+          <LogContext.Provider value={setLoggedIn}>
+            <NavigationContainer>
+              <AfterLogin setLoggedIn={setLoggedIn} />
+            </NavigationContainer>
+          </LogContext.Provider> :
+          <NavigationContainer>
+            <BeforeLogin setLoggedIn={setLoggedIn} />
+          </NavigationContainer>
+        }
+      </>
+  )
 }
 
 export { LogContext }
 
 function Loading() {
-return (
-<View style={styles.loadingContainer}>
-            <Text style={styles.loadingText}>Loading...</Text>
-            </View> 
+  return (
+    <View style={styles.loadingContainer}>
+      <Text style={styles.loadingText}>Loading...</Text>
+    </View>
   )
 }
 
 function AfterLogin() {
   return (
     <>
-     <Stack.Navigator
-            screenOptions={({ navigation }) => ({
-              headerRight: () => (
-                <TouchableOpacity
-                  style={{ marginRight: 30, marginTop: 10 }}
-                  onPress={() => {
-                    console.log("Notification pressed");
-                    navigation.navigate("Notification");
-                  }}
-                >
-                  <Ionicons name="notifications" size={24} color="black" />
-                </TouchableOpacity>
-              )
-            })}
-          >        
-              <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="Notification" component={Notification} />
-              <Stack.Screen name="AddCourse" component={AddCourse} />
-              <Stack.Screen name="Attendence" component={Attendence} />
-              <Stack.Screen name="Dashboard" component={DashBoard} />
-              <Stack.Screen name="Schedule" component={Schedule} />
-            </Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={({ navigation }) => ({
+          headerRight: () => (
+            <TouchableOpacity
+              style={{ marginRight: 30, marginTop: 10 }}
+              onPress={() => {
+                console.log("Notification pressed");
+                navigation.navigate("Notification");
+              }}
+            >
+              <Ionicons name="notifications" size={24} color="black" />
+            </TouchableOpacity>
+          )
+        })}
+      >
+        <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Notification" component={Notification} />
+        <Stack.Screen name="AddCourse" component={AddCourse} />
+        <Stack.Screen name="Attendence" component={Attendence} />
+        <Stack.Screen name="Dashboard" component={DashBoard} />
+        <Stack.Screen name="Schedule" component={Schedule} />
+      </Stack.Navigator>
     </>
   )
 }
@@ -161,7 +161,7 @@ function MainScreen() {
   );
 }
 
-function BeforeLogin({setLoggedIn}) {
+function BeforeLogin({ setLoggedIn }) {
   return (
     <BottomTab.Navigator initialRouteName='Login'>
 
@@ -174,7 +174,7 @@ function BeforeLogin({setLoggedIn}) {
           headerShown: true,
           headerTitle: "Login"
         }}
-        initialParams={{setLoggedIn: setLoggedIn}}
+        initialParams={{ setLoggedIn: setLoggedIn }}
       />
       <BottomTab.Screen
         name="Add Course"
