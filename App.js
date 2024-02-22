@@ -15,6 +15,7 @@ import Notification from './Pages/Notifications';
 import Profile from "./Pages/Profile";
 import Attendence from './Pages/AttendenceManager';
 import registerNNPushToken from 'native-notify';
+import ipAddr from "./functions/ip_addr";
 import axios from 'axios';
 import * as Device from 'expo-device';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -46,7 +47,7 @@ export default function App() {
       console.log("INFO: Auth Token is present")
       console.log(tok, roll)
       axios({
-        url: "http://10.16.49.174:3000/auth/verify",
+        url: "http://"+ipAddr+":3000/auth/verify",
         method: "POST",
         params: { token: tok }
       }).then(res => {
@@ -172,6 +173,17 @@ function BeforeLogin({setLoggedIn}) {
           tabBarIcon: () => (<Entypo name="login" size={20} color="black" />),
           headerShown: true,
           headerTitle: "Login"
+        }}
+        initialParams={{setLoggedIn: setLoggedIn}}
+      />
+      <BottomTab.Screen
+        name="Add Course"
+        component={AddCourse}
+        options={{
+          tabBarLabel: "Add Course",
+          tabBarIcon: () => (<Entypo name="login" size={20} color="black" />),
+          headerShown: true,
+          headerTitle: "Add Course"
         }}
         initialParams={{setLoggedIn: setLoggedIn}}
       />

@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import ipAddr from "../functions/ip_addr";
 import { giveCollegeLocation } from "../functions/insideLocations";
 
 export default function DashBoard({ navigation }) {
@@ -101,8 +102,9 @@ export default function DashBoard({ navigation }) {
                     { cancelable: false }
                 );
             }
-
+            console.log("Enter 1")
             let { coords } = await Location.getCurrentPositionAsync();
+            console.log("Enter 2")
             console.log("coordinates : ", coords);
             if (coords) {
                 const { latitude, longitude } = coords;

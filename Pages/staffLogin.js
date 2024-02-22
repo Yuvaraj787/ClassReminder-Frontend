@@ -5,18 +5,26 @@ import { StyleSheet, Text, View, Switch, TextInput, Button, Image, KeyboardAvoid
 import { useNavigation } from '@react-navigation/native';
 import ipAddr from "../functions/ip_addr";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DropDownPicker from 'react-native-dropdown-picker';
+
 
 export default function App({navigator, route}) {
     const [on, Seton] = useState(true)
 
-    const [rollNo, setrollNo] = useState('')
+    const [name, setname] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState({})
+    const [staffs, setStaffs] = useState([
+        {label: 'Selvi Ravindran', value: 'Selvi Ravindran'},
+        {label: 'Swaminathan', value: 'Swaminathan'},
+        {label: 'Jasmine', value: 'Jasmine'},
+        {label: 'Senthil Kumar', value: 'Senthil Kumar'},
+    ]);
 
     const validateForm = () => {
         let error = {}
-        console.log("length rollNo : " + rollNo.length + " password length : " + password.length)
-        if (rollNo == '') error.rollNo = "! Please Enter rollNo"
+        console.log("length name : " + name.length + " password length : " + password.length)
+        if (name == '') error.name = "! Please Enter name"
         if (password == '') error.password = "! please enter password"
         setError(error)
         console.log(Object.keys(error).length)
@@ -27,9 +35,9 @@ export default function App({navigator, route}) {
         if (validateForm()) {
             console.log("Form is Valid");
             axios({
-                url: "http://" + ipAddr + ":3000/auth/login",
+                url: "http://10.16.49.174:3000/auth/staff/login",
                 method: "POST",
-                params: { roll : rollNo, password }
+                params: { name : name, password }
             })
                 .then(async (res) => {
                     console.log(res.data)
@@ -60,20 +68,29 @@ export default function App({navigator, route}) {
 
     return (
         <View style={[styles.container, { backgroundColor: on ? "#164863" : "#f5f5f5" }]}>
-            <Text style={{ fontSize: 25, fontWeight: "bold", fontFamily: "monospace", color: on ? "white" : "black", paddingBottom: 30 }}>Login Form</Text>
+            <Text style={{ fontSize: 25, fontWeight: "bold", fontFamily: "monospace", color: on ? "white" : "black", paddingBottom: 30 }}>Staff Login</Text>
 
 
             <View style={styles.form}>
-                <TextInput value={rollNo} placeholder="Roll Number " style={styles.input} onChangeText={setrollNo} />
-                {
-                    error.rollNo ? <Text style={styles.err}>{error.rollNo}</Text> : null
+            <DropDownPicker
+                    searchable={true}
+                    open={open}
+                    value={value}
+                    items={staffs}
+                    setOpen={setOpen}
+                    setValue={setValue}
+                    style={styles.input} 
+                    setItems={setStaffs}
+                    placeholder={'Select Faculty'}
+                />                {
+                    error.name ? <Text style={styles.err}>{error.name}</Text> : null
                 }
                 <TextInput value={password} placeholder="Password " style={styles.input} onChangeText={setPassword} secureTextEntry />
                 {
                     error.password ? <Text style={styles.err}>{error.password}</Text> : null
                 }
                 <Button title='Login' onPress={() => {
-                    console.log("login button pressed by " + rollNo)
+                    console.log("login button pressed by " + name)
                     handleSubmit()
                 }} />
             </View>

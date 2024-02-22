@@ -1,7 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { StyleSheet, Text, View, Switch, TextInput, Button, Image, KeyboardAvoidingView } from 'react-native';
-import SearchableDropdown from 'react-native-searchable-dropdown';
+import DropDownPicker from 'react-native-dropdown-picker';
+
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -10,13 +11,16 @@ export default function App() {
     const [on, Seton] = useState(true)
 
     const [staffs, setStaffs] = useState([
-        { id:1, dept: "IT", name: "Selvi Ravindran" }, {id:2,  dept: "IT", name: "Swaminathan" }
-        // "Selvi Ravindran", "Swaminathan"
-    ])
+        {label: 'Selvi Ravindran', value: 'Selvi Ravindran'},
+        {label: 'Swaminathan', value: 'Swaminathan'},
+        {label: 'Jasmine', value: 'Jasmine'},
+        {label: 'Senthil Kumar', value: 'Senthil Kumar'},
+    ]);
 
     const [courseName, setcourseName] = useState('')
     const [faculty, setfaculty] = useState('')
     const [error, setError] = useState({})
+    const [index, setIndex] = useState(1);
     const validateForm = () => {
         let error = {}
         console.log("length courseName : " + courseName.length + " faculty length : " + faculty.length)
@@ -37,6 +41,8 @@ export default function App() {
             console.log("oh no ")
         }
     }
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState(null);
     return (
         <View style={[styles.container, { backgroundColor: on ? "#164863" : "#f5f5f5" }]}>
             <Text style={{ fontSize: 25, fontWeight: "bold", fontFamily: "monospace", color: on ? "white" : "black", paddingBottom: 30 }}>Add a Course</Text>
@@ -58,50 +64,16 @@ export default function App() {
                     error.courseName ? <Text style={styles.err}>{error.courseName}</Text> : null
                 }
                 <Text style={styles.text}>Faculty Details</Text>
-                <SearchableDropdown
-              
-                    containerStyle={{ padding: 5 }}
-                    
-                    // itemStyle={{
-                    //     padding: 10,
-                    //     marginTop: 2,
-                    //     backgroundColor: '#ddd',
-                    //     borderColor: '#bbb',
-                    //     borderWidth: 1,
-                    //     borderRadius: 5,
-                    // }}
-
-                    onItemSelect={(item) => {
-                       
-                        setStaffs({ choosen: item });
-                      }}
-
-                    itemStyle={styles.input}
-
-                    itemTextStyle={{ color: '#222' }}
-                    itemsContainerStyle={{ maxHeight: 140 }}
+                <DropDownPicker
+                    searchable={true}
+                    open={open}
+                    value={value}
                     items={staffs}
-                    defaultIndex={1}
-                    selectedItems={staffs}
-                    // items
-                    resetValue={false}
-                    textInputProps={
-                        {
-                            placeholder: "Select Faculty ",
-                            underlineColorAndroid: "transparent",
-                            style: {
-                                padding: 12,
-                                borderWidth: 1,
-                                borderColor: '#ccc',
-                                borderRadius: 5,
-                            },
-                        }
-                    }
-                    listProps={
-                        {
-                            nestedScrollEnabled: false,
-                        }
-                    }
+                    setOpen={setOpen}
+                    setValue={setValue}
+                    style={styles.input} 
+                    setItems={setStaffs}
+                    placeholder={'Select Faculty'}
                 />
                 {
                     error.courseName ? <Text style={styles.err}>{error.courseName}</Text> : null

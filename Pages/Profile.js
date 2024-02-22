@@ -6,6 +6,7 @@ import Iuri from "../assets/sample_profile.jpg";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Tooltip from 'rn-tooltip';
+import ipAddr from "../functions/ip_addr";
 import { LogContext } from '../App';
 import { useNavigation } from '@react-navigation/native';
 
@@ -81,9 +82,9 @@ const Profile = () => {
                     </Pressable>
                 </View>
                 <View style={styles.btnBoxes}>
-                    <Pressable style={styles.pressBox}>
+                    <Pressable style={styles.pressBox} onPress={() => navigator.navigate("Attendence")}>
                         <FontAwesome name="hand-stop-o" size={34} color="black" />
-                        <Text style={styles.boxText}>Attendence</Text>
+                        <Text style={styles.boxText}>Attendance</Text>
                     </Pressable>
                 </View>
                 <View style={styles.btnBoxes}>
