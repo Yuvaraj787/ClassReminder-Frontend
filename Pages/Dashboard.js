@@ -38,7 +38,7 @@ export default function DashBoard({ navigation }) {
         }
         fetch()
     }, [])
-    
+
     const navigate = useNavigation()
 
     const formattedTime = currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
@@ -218,20 +218,21 @@ const styles = StyleSheet.create({
         flex: 2,
         flexDirection: "row",
         justifyContent: "space-around",
-        alignItems: "center"
+        alignItems: "center",
     },
     box: {
         height: 100,
         width: 100,
         elevation: 5,
-        backgroundColor: "#fff",
+        backgroundColor: "#F2EFE5",
         // borderWidth: 1,
         //borderColor: "silver",
         borderRadius: 10,
         marginBottom: 5,
         padding: 10,
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+
 
     },
     box2: {
@@ -247,7 +248,9 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         padding: 10,
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        backgroundColor: "#F2EFE5"
+
     },
     time: {
         fontSize: 30,
@@ -262,7 +265,7 @@ const styles = StyleSheet.create({
 
     },
     periodsRow: {
-        backgroundColor: "white",
+        backgroundColor: "#F2EFE5",
         padding: 10,
         width: "100%",
         marginBottom: 5,
