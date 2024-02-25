@@ -22,7 +22,7 @@ Notifications.setNotificationHandler({
       body: 'And here is the body!',
       data: { someData: 'goes here' },
     };
-  
+    try {
     await fetch('https://exp.host/--/api/v2/push/send', {
       method: 'POST',
       headers: {
@@ -32,6 +32,9 @@ Notifications.setNotificationHandler({
       },
       body: JSON.stringify(message),
     });
+    } catch (err) {
+      console.log("Error in notify_sender.js Push Notify section : ", err.message)
+    } 
   }
   
   async function registerForPushNotificationsAsync() {

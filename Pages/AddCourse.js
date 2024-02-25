@@ -1,7 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { StyleSheet, Text, View, Switch, TextInput, Button, Image, KeyboardAvoidingView } from 'react-native';
-import SearchableDropdown from 'react-native-searchable-dropdown';
+import DropDownPicker from 'react-native-dropdown-picker';
+
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -10,13 +11,28 @@ export default function App() {
     const [on, Seton] = useState(true)
 
     const [staffs, setStaffs] = useState([
-        { id:1, dept: "IT", name: "Selvi Ravindran" }, {id:2,  dept: "IT", name: "Swaminathan" }
-        // "Selvi Ravindran", "Swaminathan"
-    ])
+        {label: 'Selvi Ravindran', value: 'Selvi Ravindran'},
+        {label: 'Swaminathan', value: 'Swaminathan'},
+        {label: 'Jasmine', value: 'Jasmine'},
+        {label: 'Senthil Kumar', value: 'Senthil Kumar'},
+    ]);
 
+    const [subject, setSubjects] = useState([
+        { value: "IT5601", label: "Embedded Systems and Internet of Things" },
+        { value: "IT5602", label: "Data Science and Analytics" },
+        { value: "IT5603", label: "Distributed and Cloud Computing" },
+        { value: "IT5611", label: "Embedded Systems and Internet of Things Laboratory" },
+        { value: "IT5612", label: "Data Analytics and Cloud Computing Laboratory" },
+        { value: "IT5613", label: "Socially Relevant Project Laboratory" },
+        { value: "OP1111", label: "Open Elective"},
+        { value: "IT5614", label: "Service Oritented Approach"},
+        { value: "IT5615", label: "Social Network Analysis"}
+    ])
+ 
     const [courseName, setcourseName] = useState('')
     const [faculty, setfaculty] = useState('')
     const [error, setError] = useState({})
+    const [index, setIndex] = useState(1);
     const validateForm = () => {
         let error = {}
         console.log("length courseName : " + courseName.length + " faculty length : " + faculty.length)
@@ -37,6 +53,10 @@ export default function App() {
             console.log("oh no ")
         }
     }
+    const [open, setOpen] = useState(false);
+    const [open1, setOpen1] = useState(false);
+    const [value, setValue] = useState(null);
+    const [svalue, setSvalue] = useState(null);
     return (
         <View style={[styles.container, { backgroundColor: on ? "#164863" : "#f5f5f5" }]}>
             <Text style={{ fontSize: 25, fontWeight: "bold", fontFamily: "monospace", color: on ? "white" : "black", paddingBottom: 30 }}>Add a Course</Text>
@@ -53,55 +73,31 @@ export default function App() {
 
             <View style={styles.form}>
                 <Text style={styles.text}>Course Details</Text>
-                <TextInput value={courseName} placeholder="course Id / courseName " style={styles.input} onChangeText={setcourseName} />
+                <DropDownPicker
+                    searchable={true}
+                    open={open1}
+                    value={value}
+                    items={subject}
+                    setOpen={setOpen1}
+                    setValue={setValue}
+                    style={styles.input} 
+                    setItems={setSubjects}
+                    placeholder={'Select Course'}
+                />                
                 {
                     error.courseName ? <Text style={styles.err}>{error.courseName}</Text> : null
                 }
                 <Text style={styles.text}>Faculty Details</Text>
-                <SearchableDropdown
-              
-                    containerStyle={{ padding: 5 }}
-                    
-                    // itemStyle={{
-                    //     padding: 10,
-                    //     marginTop: 2,
-                    //     backgroundColor: '#ddd',
-                    //     borderColor: '#bbb',
-                    //     borderWidth: 1,
-                    //     borderRadius: 5,
-                    // }}
-
-                    onItemSelect={(item) => {
-                       
-                        setStaffs({ choosen: item });
-                      }}
-
-                    itemStyle={styles.input}
-
-                    itemTextStyle={{ color: '#222' }}
-                    itemsContainerStyle={{ maxHeight: 140 }}
+                <DropDownPicker
+                    searchable={true}
+                    open={open}
+                    value={value}
                     items={staffs}
-                    defaultIndex={1}
-                    selectedItems={staffs}
-                    // items
-                    resetValue={false}
-                    textInputProps={
-                        {
-                            placeholder: "Select Faculty ",
-                            underlineColorAndroid: "transparent",
-                            style: {
-                                padding: 12,
-                                borderWidth: 1,
-                                borderColor: '#ccc',
-                                borderRadius: 5,
-                            },
-                        }
-                    }
-                    listProps={
-                        {
-                            nestedScrollEnabled: false,
-                        }
-                    }
+                    setOpen={setOpen}
+                    setValue={setValue}
+                    style={styles.input} 
+                    setItems={setStaffs}
+                    placeholder={'Select Faculty'}
                 />
                 {
                     error.courseName ? <Text style={styles.err}>{error.courseName}</Text> : null
@@ -137,7 +133,8 @@ const styles = StyleSheet.create({
         borderColor: "#ddd",
         padding: 10,
         marginBottom: 12,
-        borderRadius: 5
+        borderRadius: 5,
+        zIndex: 2
     },
     text: {
         marginBottom: 15,

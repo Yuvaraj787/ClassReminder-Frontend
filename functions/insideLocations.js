@@ -8,10 +8,10 @@ const hostelZone = {
 //     longRange : [80.236928, 80.239602]
 // }
 
-// const ITDepartmentZone = {
-//     latRange: [13.014649, 13.015258],
-//     longRange : [80.236928, 80.239602]
-// }
+const ITDepartmentZone = {
+    latRange: [ 13.012872, 13.013085],
+    longRange : [ 80.235838,  80.236227]
+}
 
 // const RedBuildingZone = {
 //     latRange: [13.014649, 13.015258],
@@ -26,7 +26,7 @@ const AnnaLibrary = {
 const locations = {
     "CEG Hostel Zone" : hostelZone,
     // "KP" : KpZone,
-    // "IT Department" : ITDepartmentZone,
+    "IT Department" : ITDepartmentZone,
     // "Red Building" : RedBuildingZone,
     "Anna Library" : AnnaLibrary
 }
@@ -42,7 +42,7 @@ const giveCollegeLocation = (lattitude, longitude) => {
 
     for (loc in locations) {
         zone = locations[loc]
-        if (isInrange(lattitude, hostelZone.latRange) && isInrange(longitude, hostelZone.longRange)) {
+        if (isInrange(lattitude, zone.latRange) && isInrange(longitude, zone.longRange)) {
             return loc;
         }
     }

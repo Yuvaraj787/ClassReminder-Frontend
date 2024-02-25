@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet, Pressable } from 'react-native'
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect, useContext } from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { MaterialIcons, Feather, FontAwesome, Entypo, } from '@expo/vector-icons';
@@ -6,6 +6,7 @@ import Iuri from "../assets/sample_profile.jpg";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Tooltip from 'rn-tooltip';
+import ipAddr from "../functions/ip_addr";
 import { LogContext } from '../App';
 import { useNavigation } from '@react-navigation/native';
 
@@ -15,6 +16,7 @@ const Profile = () => {
     const [userDetails, setUserDetails] = useState({ name_n: "", dept_n: "" });
     const setLog = useContext(LogContext);
     useEffect(() => {
+        try {
         async function fetch() {
             name = await AsyncStorage.getItem("name");
             dept = await AsyncStorage.getItem("dept");
@@ -31,6 +33,9 @@ const Profile = () => {
             })
         }
         fetch()
+    } catch (err) {
+        console.log("ERROR: In Profile.js", err.message)
+    }
     }, [])
 
     const colorCodes = ["", "grey", "purple", "orange", "brown"]
@@ -68,42 +73,42 @@ const Profile = () => {
                 </View>
             </View>
             <View style={styles.midContainer}>
-                <View style={styles.btnBoxes}>
-                    <Pressable style={styles.pressBox}>
+                <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("CourseDisplay")}>
+                    <View style={styles.pressBox} >
                         <MaterialCommunityIcons name="bookshelf" size={34} color="black" />
                         <Text style={styles.boxText}>My Courses</Text>
-                    </Pressable>
-                </View>
-                <View style={styles.btnBoxes}>
-                    <Pressable style={styles.pressBox} onPress={() => navigator.navigate("Schedule")}>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("Schedule")} >
+                    <View style={styles.pressBox}>
                         <MaterialIcons name="schedule" size={34} color="black" />
                         <Text style={styles.boxText}>Schedule</Text>
-                    </Pressable>
-                </View>
-                <View style={styles.btnBoxes}>
-                    <Pressable style={styles.pressBox}>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.btnBoxes}  onPress={() => navigator.navigate("Attendence")}>
+                    <View style={styles.pressBox}>
                         <FontAwesome name="hand-stop-o" size={34} color="black" />
-                        <Text style={styles.boxText}>Attendence</Text>
-                    </Pressable>
-                </View>
-                <View style={styles.btnBoxes}>
-                    <Pressable style={styles.pressBox}>
+                        <Text style={styles.boxText}>Attendance</Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.btnBoxes}>
+                    <View style={styles.pressBox}>
                         <Ionicons name='timer-sharp' size={34} color="black" />
                         <Text style={styles.boxText}>Today's Routine</Text>
-                    </Pressable>
-                </View>
-                <View style={styles.btnBoxes}>
-                    <Pressable style={styles.pressBox} >
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.btnBoxes}>
+                    <View style={styles.pressBox} >
                         <FontAwesome name="lock" size={34} color="black" />
                         <Text style={styles.boxText}>Change Password</Text>
-                    </Pressable>
-                </View>
-                <View style={styles.btnBoxes}>
-                    <Pressable style={styles.pressBox} onPress={logout}>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.btnBoxes}  onPress={logout}>
+                    <View style={styles.pressBox}>
                         <MaterialIcons name="logout" size={34} color="red" />
                         <Text style={styles.boxText}>Logout</Text>
-                    </Pressable>
-                </View>
+                    </View>
+                </TouchableOpacity>
             </View>
         </View>
     )

@@ -49,7 +49,7 @@ const renderTabBar = props => (
         scrollEnabled={true}
         indicatorStyle={{ backgroundColor: 'black' }}
         renderLabel={({ route }) => (
-            <Text style={{ color: "#black", margin: 8, fontWeight: "bold", fontSize: 17 }}>
+            <Text style={{ color: "black", margin: 8, fontWeight: "bold", fontSize: 17 }}>
                 {route.title}
             </Text>
         )}
