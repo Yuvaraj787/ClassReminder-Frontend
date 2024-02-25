@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import axios from 'axios';
-import { StyleSheet, Text, View, Switch, TextInput, Button, Image, KeyboardAvoidingView, Alert } from 'react-native';
+import { StyleSheet, Text, View, Switch, TextInput, Button, Image, KeyboardAvoidingView, Alert, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ipAddr from "../functions/ip_addr";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -9,8 +9,10 @@ import DropDownPicker from 'react-native-dropdown-picker';
 
 
 export default function App({navigator, route}) {
+    const navigation = useNavigation();
     const [on, Seton] = useState(true)
-
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState(null);
     const [name, setname] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState({})
@@ -82,7 +84,8 @@ export default function App({navigator, route}) {
                     style={styles.input} 
                     setItems={setStaffs}
                     placeholder={'Select Faculty'}
-                />                {
+                />              
+                  {
                     error.name ? <Text style={styles.err}>{error.name}</Text> : null
                 }
                 <TextInput value={password} placeholder="Password " style={styles.input} onChangeText={setPassword} secureTextEntry />
@@ -93,6 +96,10 @@ export default function App({navigator, route}) {
                     console.log("login button pressed by " + name)
                     handleSubmit()
                 }} />
+                <View style={styles.infoBox}>
+                    <Pressable style={styles.infoView} onPress={() => navigation.navigate("Login")}><Text style={styles.infoText}>Student Login</Text></Pressable>
+                    <Pressable style={styles.infoView}><Text style={styles.infoText}>Forget Password</Text></Pressable>
+                </View>
             </View>
 
             <StatusBar style="auto" />
@@ -101,6 +108,24 @@ export default function App({navigator, route}) {
 }
 
 const styles = StyleSheet.create({
+    infoBox: {
+        flexDirection: "row",
+        alignItems: "center",
+        columnGap: 12,
+        marginTop: 10
+    },
+    infoView: {
+        flex:  1,
+        alignItems: "center",
+        // backgroundColor: "#F7DED0",
+        backgroundColor:"#9195F6",
+        borderRadius: 6,
+        padding:7
+    },
+    infoText: {
+        fontSize: 14,
+        fontWeight:"900"
+    },
     container: {
         flex: 1,
         backgroundColor: '#fff',

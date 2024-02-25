@@ -17,6 +17,18 @@ export default function App() {
         {label: 'Senthil Kumar', value: 'Senthil Kumar'},
     ]);
 
+    const [subject, setSubjects] = useState([
+        { value: "IT5601", label: "Embedded Systems and Internet of Things" },
+        { value: "IT5602", label: "Data Science and Analytics" },
+        { value: "IT5603", label: "Distributed and Cloud Computing" },
+        { value: "IT5611", label: "Embedded Systems and Internet of Things Laboratory" },
+        { value: "IT5612", label: "Data Analytics and Cloud Computing Laboratory" },
+        { value: "IT5613", label: "Socially Relevant Project Laboratory" },
+        { value: "OP1111", label: "Open Elective"},
+        { value: "IT5614", label: "Service Oritented Approach"},
+        { value: "IT5615", label: "Social Network Analysis"}
+    ])
+ 
     const [courseName, setcourseName] = useState('')
     const [faculty, setfaculty] = useState('')
     const [error, setError] = useState({})
@@ -42,7 +54,9 @@ export default function App() {
         }
     }
     const [open, setOpen] = useState(false);
+    const [open1, setOpen1] = useState(false);
     const [value, setValue] = useState(null);
+    const [svalue, setSvalue] = useState(null);
     return (
         <View style={[styles.container, { backgroundColor: on ? "#164863" : "#f5f5f5" }]}>
             <Text style={{ fontSize: 25, fontWeight: "bold", fontFamily: "monospace", color: on ? "white" : "black", paddingBottom: 30 }}>Add a Course</Text>
@@ -59,7 +73,17 @@ export default function App() {
 
             <View style={styles.form}>
                 <Text style={styles.text}>Course Details</Text>
-                <TextInput value={courseName} placeholder="course Id / courseName " style={styles.input} onChangeText={setcourseName} />
+                <DropDownPicker
+                    searchable={true}
+                    open={open1}
+                    value={value}
+                    items={subject}
+                    setOpen={setOpen1}
+                    setValue={setValue}
+                    style={styles.input} 
+                    setItems={setSubjects}
+                    placeholder={'Select Course'}
+                />                
                 {
                     error.courseName ? <Text style={styles.err}>{error.courseName}</Text> : null
                 }
@@ -109,7 +133,8 @@ const styles = StyleSheet.create({
         borderColor: "#ddd",
         padding: 10,
         marginBottom: 12,
-        borderRadius: 5
+        borderRadius: 5,
+        zIndex: 2
     },
     text: {
         marginBottom: 15,

@@ -5,57 +5,70 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage'
+// import SkeletonContent from 'react-native-skeleton-content';
 import ipAddr from "../functions/ip_addr";
+import registerNNPushToken from 'native-notify';
+import { registerIndieID, unregisterIndieDevice } from 'native-notify';
 import { giveCollegeLocation } from "../functions/insideLocations";
+// import SkeletonContent from 'react-native-skeleton-content';
+
+
 
 export default function DashBoard({ navigation }) {
     const [currentTime, setCurrentTime] = useState(new Date());
     var name, dept, year, roll;
     const [userDetails, setUserDetails] = useState({ name_n: "", dept_n: "" });
+    const [userLoading, setUserLoading] = useState(true);
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentTime(new Date());
         }, 1000);
         // console.log(currentTime.toLocaleTimeString())
         return () => clearInterval(interval);
-
     }, []);
 
+    console.log(roll)
     useEffect(() => {
         async function fetch() {
-            name = await AsyncStorage.getItem("name");
-            dept = await AsyncStorage.getItem("dept");
-            year = await AsyncStorage.getItem("year");
-            roll = await AsyncStorage.getItem("roll");
-            console.log(name, dept);
-            setUserDetails((prev) => {
-                return {
-                    name_n: name,
-                    dept_n: dept,
-                    year_n: year,
-                    roll_n: roll
-                }
-            })
+            try {
+                name = await AsyncStorage.getItem("name");
+                dept = await AsyncStorage.getItem("dept");
+                year = await AsyncStorage.getItem("year");
+                roll = await AsyncStorage.getItem("roll");
+                console.log(name, dept);
+                setUserDetails((prev) => {
+                    return {
+                        name_n: name,
+                        dept_n: dept,
+                        year_n: year,
+                        roll_n: roll
+                    }
+                })
+                setUserLoading(false);
+            } catch (err) {
+                console.log("Error in Dashboard.js Fetching User details from async storage : ", err.message)
+            }
         }
         fetch()
+        navigation.setOptions({
+            headerRight: () => (
+                <TouchableOpacity
+                    style={{ marginRight: 30, marginTop: 10 }}
+                    onPress={() => {
+                        console.log("Notification pressed");
+                        navigate.navigate("Notification");
+                    }}
+                >
+                    <Ionicons name="notifications" size={24} color="black" />
+                </TouchableOpacity>
+            )
+        });
     }, [])
-    
+
     const navigate = useNavigation()
 
     const formattedTime = currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-    navigation.setOptions({
-        headerRight: () => (
-            <TouchableOpacity
-                style={{ marginRight: 30, marginTop: 10 }}
-                onPress={() => {
-                    console.log("Notification pressed");
-                    navigate.navigate("Notification")
-                }}
-            >
-                <Ionicons name="notifications" size={24} color="black" />
-            </TouchableOpacity>
-        )
-    });
+
 
     //for location
 
@@ -127,13 +140,15 @@ export default function DashBoard({ navigation }) {
             <View style={styles.top}>
                 {/*First view for welcome msg */}
                 <View>
-                    <Text style={{
-                        fontSize: 22, fontFamily: "monospace",
-                        fontWeight: "bold"
-                    }}>Welcome, </Text>
-                    <Text style={styles.nametext}><Text style={{
-                        fontSize: 30, fontFamily: "monospace",
-                    }}>{userDetails.name_n} </Text><Text>{userDetails.dept_n == "IT" ? "B.Tech " : "B.E "} {userDetails.dept_n}</Text></Text>
+                    
+                        <Text style={{
+                            fontSize: 22, fontFamily: "monospace",
+                            fontWeight: "bold"
+                        }}>Welcome, </Text>
+                        <Text style={styles.nametext}><Text style={{
+                            fontSize: 30, fontFamily: "monospace",
+                        }}>{userDetails.name_n} </Text><Text>{userDetails.dept_n == "IT" ? "B.Tech " : "B.E "} {userDetails.dept_n}</Text></Text>
+
                 </View>
                 {/* second view for 3 boxes */}
                 <View style={styles.boxContainer} >
