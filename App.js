@@ -52,7 +52,6 @@ export default function App() {
         return;
       }
       console.log("INFO: Auth Token is present")
-      console.log(tok, roll)
       axios({
         url: "http://"+ipAddr+":3000/auth/verify",
         method: "POST",
@@ -60,9 +59,7 @@ export default function App() {
       }).then(res => {
         if (res.data.success) {
           console.log(res.data, roll)
-
           if (res.data.roll === roll) {
-                   
             setLoggedIn(true);
           }
         }

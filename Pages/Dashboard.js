@@ -27,7 +27,6 @@ export default function DashBoard({ navigation }) {
         return () => clearInterval(interval);
     }, []);
 
-    console.log(roll)
     useEffect(() => {
         async function fetch() {
             try {
