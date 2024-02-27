@@ -27,7 +27,7 @@ export default function DashBoard({ navigation }) {
         return () => clearInterval(interval);
     }, []);
 
-    console.log(roll)
+    //console.log(roll)
     useEffect(() => {
         async function fetch() {
             try {
@@ -140,14 +140,14 @@ export default function DashBoard({ navigation }) {
             <View style={styles.top}>
                 {/*First view for welcome msg */}
                 <View>
-                    
-                        <Text style={{
-                            fontSize: 22, fontFamily: "monospace",
-                            fontWeight: "bold"
-                        }}>Welcome, </Text>
-                        <Text style={styles.nametext}><Text style={{
-                            fontSize: 30, fontFamily: "monospace",
-                        }}>{userDetails.name_n} </Text><Text>{userDetails.dept_n == "IT" ? "B.Tech " : "B.E "} {userDetails.dept_n}</Text></Text>
+
+                    <Text style={{
+                        fontSize: 22, fontFamily: "monospace",
+                        fontWeight: "bold"
+                    }}>Welcome, </Text>
+                    <Text style={styles.nametext}><Text style={{
+                        fontSize: 30, fontFamily: "monospace",
+                    }}>{userDetails.name_n} </Text><Text>{userDetails.dept_n == "IT" ? "B.Tech " : "B.E "} {userDetails.dept_n}</Text></Text>
 
                 </View>
                 {/* second view for 3 boxes */}

@@ -1,18 +1,36 @@
 import { View, Text, Image, StyleSheet, ScrollView, Pressable } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Feather } from '@expo/vector-icons';
 import Iuri from "../assets/sample_profile.jpg"
 import Attendence from "../Components/att.json"
 
-const Profile = () => {
+const BunkManager = () => {
     const [pressedIndex, setPressedIndex] = useState(-1);
     const [Att, setAtt] = useState(Attendence)
+    const [averagePercentage, setAveragePercentage] = useState(100)
+
+    useEffect(() => {
+        calculateAveragePercentage()
+    }, [Att])
+
+    const calculateAveragePercentage = () => {
+        let totalPercentage = 0;
+        Att.forEach((row) => {
+            const total = parseInt(row.totalHours);
+            const missed = parseInt(row.classMissed);
+            const percentage = ((total - missed) / total) * 100;
+            totalPercentage += percentage;
+        });
+        const averagePercentage = totalPercentage / Att.length;
+        setAveragePercentage(averagePercentage);
+    }
 
     const handleBoxPress = (index) => {
         setPressedIndex(index);
     }
+
     const handleClose = (index) => {
         setPressedIndex(index === pressedIndex ? -1 : index);
     }
@@ -32,7 +50,7 @@ const Profile = () => {
             <View>
                 <View style={styles.topContainer}>
                     <View style={{ backgroundColor: "#fff", height: 100, width: 100, borderRadius: 40, justifyContent: "center", alignItems: "center" }}>
-                        <Text style={{ fontSize: 30, fontFamily: "monospace" }}>95%</Text>
+                        <Text style={{ fontSize: 30, fontFamily: "monospace" }}>{averagePercentage.toFixed(0)}%</Text>
                     </View>
                     <View style={styles.textContainer}>
                         <Text style={{ fontSize: 30 }}>Average Percentage</Text>
@@ -40,7 +58,6 @@ const Profile = () => {
                 </View>
             </View>
             <View style={styles.midContainer}>
-
                 {
                     Att.map((row, index) => {
                         const total = parseInt(row.totalHours)
@@ -77,18 +94,21 @@ const Profile = () => {
                                     <View style={styles.right}>
                                         {pressedIndex === index ? <View style={styles.rightPressed}>
                                             {/* for plus and minuS */}
-                                            <View style={styles.iconBox}>
 
-                                                <Pressable onPress={() => handleMissed(index, skip, "add")} >
+                                            <Pressable onPress={() => handleMissed(index, skip, "add")} >
+                                                <View style={styles.iconBox}>
                                                     <Ionicons name="add" size={30}></Ionicons>
-                                                </Pressable>
+                                                </View>
 
-                                            </View>
-                                            <View style={styles.iconBox}>
-                                                <Pressable onPress={() => handleMissed(index, skip, "remove")}>
+                                            </Pressable>
+
+                                            <Pressable onPress={() => handleMissed(index, skip, "remove")}>
+                                                <View style={styles.iconBox}>
+
                                                     <Ionicons name="remove" size={30}></Ionicons>
-                                                </Pressable>
-                                            </View>
+                                                </View>
+
+                                            </Pressable>
 
                                         </View>
                                             : <Text style={{ fontSize: 18 }}>{Percentage.toFixed(0)} %</Text>
@@ -188,4 +208,4 @@ const styles = StyleSheet.create(
     }
 )
 
-export default Profile
+export default BunkManager

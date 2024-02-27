@@ -11,7 +11,7 @@ import registerNNPushToken from 'native-notify';
 import { registerIndieID, unregisterIndieDevice } from 'native-notify';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-const Login = ({navigator, route}) => {
+const Login = ({ navigator, route }) => {
     registerNNPushToken(19717, '6cGVSWyXY5RoTiF9pUgfiS');
     const navigation = useNavigation();
     const [on, Seton] = useState(true);
@@ -20,7 +20,7 @@ const Login = ({navigator, route}) => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState({});
     const setLog = useContext(LogContext);
-   
+
     const validateForm = () => {
         let errors = {};
         if (!rollNo.trim()) errors.rollNo = "! Please enter Roll Number";
@@ -31,13 +31,17 @@ const Login = ({navigator, route}) => {
         return Object.keys(errors).length === 0;
     }
 
-    
-    
+
+
 
     const handleSubmit = async () => {
         if (validateForm()) {
             try {
-                const res = await axios({url:`http://${ipAddr}:3000/auth/login`, method:"post", params:{ roll: rollNo, password }});
+                const res = await axios({
+                    url: `http://${ipAddr}:3000/auth/login`,
+                    method: "post",
+                    params: { roll: rollNo, password }
+                });
                 if (res.data.newUser) {
                     Alert.alert("New User", "Please register before logging in");
                 } else if (!res.data.wrongPassword) {
@@ -47,7 +51,7 @@ const Login = ({navigator, route}) => {
                     await AsyncStorage.setItem("year", year + "");
                     await AsyncStorage.setItem("dept", dept);
                     await AsyncStorage.setItem("token", res.data.token);
-                    registerIndieID(roll + "", 19717, '6cGVSWyXY5RoTiF9pUgfiS'); 
+                    registerIndieID(roll + "", 19717, '6cGVSWyXY5RoTiF9pUgfiS');
                     setLog(true)
                 } else {
                     Alert.alert("Wrong Credentials", "Incorrect password");
@@ -95,16 +99,16 @@ const styles = StyleSheet.create({
         marginTop: 10
     },
     infoView: {
-        flex:  1,
+        flex: 1,
         alignItems: "center",
         // backgroundColor: "#F7DED0",
-        backgroundColor:"#9195F6",
+        backgroundColor: "#9195F6",
         borderRadius: 6,
-        padding:7
+        padding: 7
     },
     infoText: {
         fontSize: 14,
-        fontWeight:"900"
+        fontWeight: "900"
     },
     container: {
         flex: 1,
