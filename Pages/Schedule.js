@@ -2,17 +2,12 @@ import * as React from 'react';
 import { View, useWindowDimensions, StyleSheet, FlatList, Text } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { Ionicons } from '@expo/vector-icons';
-import Schedule from "../Components/Schedule.json"
+import ipaddr from "../functions/ip_addr"
+import Axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const FirstRoute = () => (
-    <View style={{ flex: 1, backgroundColor: '#ff4081' }} />
-);
 
-const SecondRoute = () => (
-    <View style={{ flex: 1, backgroundColor: '#673ab7' }} />
-);
-
-function PerDay() {
+function PerDay({Schedule}) {
     return (
         <View>
             <FlatList
@@ -22,16 +17,16 @@ function PerDay() {
                     return (
                         <View style={styles.periodsRow}>
                             <View style={styles.rowLeft}>
-                                <Text style={{ fontSize: 20 }}>{item.Hour}</Text>
+                                <Text style={{ fontSize: 20 }}>{item.hour}</Text>
                             </View>
                             <View style={styles.rowRight}>
                                 <View style={styles.rowTop}>
-                                    <Text style={{ fontSize: 20 }}>{item.Subject}</Text>
+                                    <Text style={{ fontSize: 20 }}>{item.courseName}</Text>
 
                                 </View>
                                 <View style={styles.rowBottom}>
-                                    <View style={{ flex: 2, justifyContent: "flex-start" }}><Text><Ionicons name="person" size={15} color="black" /> {item.staff}</Text></View>
-                                    <Text style={{ flex: 1 }}>    <Ionicons name="location" size={15} color="black" /> {item.location}</Text>
+                                    <View style={{justifyContent: "flex-start" }}><Text>{item.staff}</Text></View>
+                                    <Text ><Ionicons name="location" size={15} color="black" /> {item.location ? item.location : "No Location given"}</Text>
                                 </View>
                             </View>
 
@@ -39,7 +34,6 @@ function PerDay() {
                     )
                 }}
             />
-            <Text>Hello</Text>
         </View>)
 }
 
@@ -59,13 +53,6 @@ const renderTabBar = props => (
 );
 
 
-const renderScene = SceneMap({
-    first: PerDay,
-    second: PerDay,
-    third: PerDay,
-    fourth: PerDay,
-    fifth: PerDay
-});
 
 export default function TabViewExample() {
     const layout = useWindowDimensions();
@@ -78,7 +65,46 @@ export default function TabViewExample() {
         { key: 'fourth', title: 'Thrusday' },
         { key: 'fifth', title: 'Friday' }
     ]);
-
+    const [sch, setSch] = React.useState({
+        monday : [],
+        tuesday: [],
+        wednesday: [],
+        thursday: [],
+        friday: []
+    })
+    const renderScene = SceneMap({
+        first: () => <PerDay Schedule={sch.monday} />,
+        second: () => <PerDay Schedule={sch.tuesday} />,
+        third: () => <PerDay Schedule={sch.wednesday} />,
+        fourth: () => <PerDay Schedule={sch.thursday} />,
+        fifth: () => <PerDay Schedule={sch.friday} />
+    });
+    React.useEffect(() => {
+        async function fetchSchedule() {
+            try {
+                var token_n = await AsyncStorage.getItem("token")
+                var data = await Axios({
+                    url: "http://" + ipaddr + ":3000/user/weeklySchedule",
+                    method: "get",
+                    params: {
+                        token: token_n
+                    }
+                })
+                console.log("weekly schedule : ", data.data.schedule.thursday)
+                var sorted_schedule = data.data.schedule;
+                console.log(sorted_schedule);
+                Object.keys(sorted_schedule).forEach(day => {
+                    sorted_schedule[day].sort((a,b) => a.hour - b.hour)
+                })
+                setSch(sorted_schedule);
+               
+                // setLoading(false);
+            } catch (err) {
+                console.log("Error in getting weekly schedule : ", err.message)
+            }
+        }
+        fetchSchedule();
+    }, [])
     return (
         <TabView
             navigationState={{ index, routes }}
@@ -192,7 +218,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         padding: 10,
-
+        flexGrow :1,
     }
 
 })
