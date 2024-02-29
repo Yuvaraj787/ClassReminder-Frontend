@@ -10,6 +10,7 @@ import React, { useState, useEffect, createContext, useContext } from 'react'
 import Login from "./Pages/login";
 import AddCourse from "./Pages/AddCourse";
 import DashBoard from "./Pages/Dashboard";
+import StaffDashBoard from "./Pages/StaffDashBoard"
 import SignUp from "./Pages/Signup";
 import Notification from './Pages/Notifications';
 import Profile from "./Pages/Profile";
@@ -52,7 +53,6 @@ export default function App() {
         return;
       }
       console.log("INFO: Auth Token is present")
-      console.log(tok, roll)
       axios({
         url: "http://"+ipAddr+":3000/auth/verify",
         method: "POST",
@@ -60,15 +60,14 @@ export default function App() {
       }).then(res => {
         if (res.data.success) {
           console.log(res.data, roll)
-
           if (res.data.roll === roll) {
-                   
             setLoggedIn(true);
           }
         }
         setLoading(false);
       }).catch(err => {
         console.log("ERROR:  In verifying token", err.message);
+        setLoading(false);
       })
     }
     fetch();
@@ -133,7 +132,18 @@ function AfterLogin({setLoggedIn}) {
 
 function MainScreen({setLoggedIn}) {
   return (
-    <BottomTab.Navigator initialRouteName='Dashboard'>
+    <BottomTab.Navigator initialRouteName='StaffDashboard'>
+      <BottomTab.Screen
+        name="StaffDashboard"
+        component={StaffDashBoard}
+        // children={()=><DashBoard />}
+        options={{
+          tabBarLabel: "Staff Dashboard",
+          tabBarIcon: () => (<Ionicons name="ios-analytics" size={20} />),
+          headerShown: true,
+          headerTitle: "Staff Dashboard"
+        }}
+      />
       <BottomTab.Screen
         name="Dashboard"
         component={DashBoard}

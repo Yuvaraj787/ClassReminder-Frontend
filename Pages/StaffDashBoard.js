@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, ScrollView, FlatList, TouchableOpacity, Alert, PermissionsAndroid, Pressable } from "react-native"
+import { StyleSheet, View, Text, ScrollView, FlatList, TouchableOpacity, Animated, Modal, Alert, PermissionsAndroid, Pressable, Button } from "react-native"
 import { useState, useEffect } from "react";
 import Schedule from "../Components/Schedule.json"
 import { Ionicons } from '@expo/vector-icons';
@@ -10,7 +10,6 @@ import ipAddr from "../functions/ip_addr";
 import registerNNPushToken from 'native-notify';
 import { registerIndieID, unregisterIndieDevice } from 'native-notify';
 import { giveCollegeLocation } from "../functions/insideLocations";
-import Axios from "axios"
 // import SkeletonContent from 'react-native-skeleton-content';
 
 
@@ -20,14 +19,7 @@ export default function DashBoard({ navigation }) {
     var name, dept, year, roll;
     const [userDetails, setUserDetails] = useState({ name_n: "", dept_n: "" });
     const [userLoading, setUserLoading] = useState(true);
-    const [sch, setSch] = useState({
-        monday: [],
-        tuesday: [],
-        wednesday: [],
-        thursday: [],
-        friday: []
-    })
-    const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
+
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentTime(new Date());
@@ -35,7 +27,7 @@ export default function DashBoard({ navigation }) {
         // console.log(currentTime.toLocaleTimeString())
         return () => clearInterval(interval);
     }, []);
-    const currentDay = new Date().getDay()
+
     useEffect(() => {
         async function fetch() {
             try {
@@ -58,29 +50,6 @@ export default function DashBoard({ navigation }) {
             }
         }
         fetch()
-        async function fetchSchedule() {
-            console.log("Started")
-            try {
-                var token_n = await AsyncStorage.getItem("token")
-                var data = await Axios({
-                    url: "http://" + ipAddr + ":3000/user/weeklySchedule",
-                    method: "get",
-                    params: {
-                        token: token_n
-                    }
-                })
-                console.log("weekly schedule : ", data.data.schedule.thursday)
-                var sorted_schedule = data.data.schedule;
-                Object.keys(sorted_schedule).forEach(day => {
-                    sorted_schedule[day].sort((a, b) => a.hour - b.hour)
-                })
-                setSch(sorted_schedule);
-                // setLoading(false);
-            } catch (err) {
-                console.log("Error in getting weekly schedule : ", err.message)
-            }
-        }
-        fetchSchedule();
         navigation.setOptions({
             headerRight: () => (
                 <TouchableOpacity
@@ -146,7 +115,9 @@ export default function DashBoard({ navigation }) {
                     { cancelable: false }
                 );
             }
+            console.log("Enter 1")
             let { coords } = await Location.getCurrentPositionAsync();
+            console.log("Enter 2")
             console.log("coordinates : ", coords);
             if (coords) {
                 const { latitude, longitude } = coords;
@@ -176,18 +147,11 @@ export default function DashBoard({ navigation }) {
                     }}>Welcome, </Text>
                     <Text style={styles.nametext}><Text style={{
                         fontSize: 30, fontFamily: "monospace",
-                    }}>{userDetails.name_n} </Text><Text>{userDetails.dept_n == "IT" ? "B.Tech " : "B.E "} {userDetails.dept_n}</Text></Text>
+                    }}>{"Faculty Y"} </Text><Text>{userDetails.dept_n == "IT" ? "B.Tech " : "B.E "} {userDetails.dept_n}</Text></Text>
 
                 </View>
                 {/* second view for 3 boxes */}
                 <View style={styles.boxContainer} >
-                    <View>
-                        <Pressable style={styles.box}
-                            onPress={() => { navigate.navigate("Attendence") }}>
-                            <Text style={{ fontSize: 23, fontFamily: "monospace" }}>11</Text>
-                            <Text style={{ width: 100, textAlign: "center", padding: 1 }}>Classes Missed</Text>
-                        </Pressable>
-                    </View>
                     <View style={styles.box2}>
                         <Text style={styles.time}>{formattedTime}</Text>
                         <Text><Ionicons name="location" size={15} color="black" />{" " + displayLocation}</Text>
@@ -208,25 +172,11 @@ export default function DashBoard({ navigation }) {
 
                     <View>
                         <FlatList
-                            data={sch[days[currentDay]]}
+                            data={Schedule}
                             renderItem={({ item }) => {
                                 //console.log(item.Subject)
                                 return (
-                                    <View style={styles.periodsRow}>
-                                        <View style={styles.rowLeft}>
-                                            <Text style={{ fontSize: 20 }}>{item.hour}</Text>
-                                        </View>
-                                        <View style={styles.rowRight}>
-                                            <View style={styles.rowTop}>
-                                                <Text style={{ fontSize: 20 }}>{item.courseName}</Text>
-
-                                            </View>
-                                            <View style={styles.rowBottom}>
-                                                <View style={{ justifyContent: "flex-start" }}><Text><Ionicons name="person" size={15} color="black" /> {item.staff}</Text></View>
-                                                <Text>    <Ionicons name="location" size={15} color="black" /> {item.location ? item.location : "Location not given"}</Text>
-                                            </View>
-                                        </View>
-                                    </View>
+                                    <ClassBox hour={item.Hour} sem={6} subject={item.Subject} location={item.location} />
                                 )
                             }}
                         />
@@ -240,7 +190,196 @@ export default function DashBoard({ navigation }) {
     );
 }
 
+function ClassBox({ hour, sem, subject, location }) {
+    const [open, setOpen] = useState(false);
+    const [zoomAnim] = useState(new Animated.Value(0))
+
+    const [size, setSize] = useState(60);
+    const trans = () => {
+        Animated.timing(
+            zoomAnim,
+            {
+                toValue: size,
+                duration: 300,
+                useNativeDriver: false,
+            }
+        ).start();
+
+        if (size == 0) {
+            setSize(60);
+        } else {
+            setSize(0);
+        }
+    }
+
+    const freeHours = {
+        "monday" : [4,6,7],
+        "tuesday" : [1,2],
+        "wednesday" : [2,3],
+        "thursday" : [6,7],
+        "friday" : [5]
+    }
+
+    const [selected, setSelected] = useState({
+        "monday" : Array(8).fill(false),
+        "tuesday" : Array(8).fill(false),
+        "wednesday" : Array(8).fill(false),
+        "thursday" : Array(8).fill(false),
+        "friday" : Array(8).fill(false)
+    })
+
+    const markSelected = (day, hour) => {
+        const days = {
+        "monday" : Array(8).fill(false),
+        "tuesday" : Array(8).fill(false),
+        "wednesday" : Array(8).fill(false),
+        "thursday" : Array(8).fill(false),
+        "friday" : Array(8).fill(false)
+        }
+        days[day][hour] = true;
+        setSelected(days);
+    }
+
+    return <TouchableOpacity style={styles.periodsRow} onPress={trans} activeOpacity={0.6}>
+        <View style={styles.rowLeft}>
+            <Text style={{ fontSize: 20 }}>{hour}</Text>
+        </View>
+        <View style={styles.rowRight}>
+            <View style={styles.rowTop}>
+                <Text style={{ fontSize: 20 }}>{subject}</Text>
+            </View>
+            <View style={styles.rowBottom}>
+                <View style={{ flex: 2, justifyContent: "flex-start" }}><Text>{sem + "th sem"}</Text></View>
+                <Text style={{ flex: 1 }}><Ionicons name="location" size={15} color="black" /> {location}</Text>
+            </View>
+            <Modal
+                visible={open}
+                transparent={true}
+                onRequestClose={() => {
+                    setOpen(false);
+                }}
+                animationType="fade"
+            >
+                <View style={styles.floatView}>
+                    <View style={styles.floatForm}>
+                        <View style={styles.formChild}>
+                            <Text style={styles.formHead}>Next Free Slots Available</Text>
+                        </View>
+                        <View style={styles.formBody}>
+                            {
+                                Object.keys(freeHours).map(day => {
+                                    return <View style={styles.entireFreeRow}>
+                                        <View style={styles.dayBox}>
+                                            <Text style={styles.dayText}>{day}</Text>
+                                        </View>
+                                        <View style={styles.freeRow}>
+                                            {
+                                                freeHours[day].map(hour => {
+                                                    return <TouchableOpacity onPress={() => markSelected(day, hour)} style={{...styles.smallBox, backgroundColor: selected[day][hour] ? "green" : "white"}}>
+                                                        <Text>{hour}</Text>
+                                                    </TouchableOpacity>
+                                                })
+                                            }
+                                        </View>
+                                    </View>
+                                })
+                            }
+                        </View>
+                        <View style={styles.formChild}>
+                            <Button title="Apply" onPress={() => setOpen(false)}/>
+                        </View>
+                        <View style={styles.formChild}>
+                            <Button title="close" onPress={() => setOpen(false)}/>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+            <Animated.View
+                style={{
+                    height: zoomAnim,
+                }}
+            >
+                <View style={styles.rowBottomest}>
+                    <View style={styles.actionBox}><Pressable onPress={() => setOpen(true)}>
+                        <Text style={styles.actionText}>Postponse Class</Text></Pressable></View>
+                    <View style={styles.actionBox}><Pressable><Text style={styles.actionText}>Change Venue</Text></Pressable></View>
+                    <View style={styles.actionBox}><Pressable><Text style={styles.actionText}>Cancel class</Text></Pressable></View>
+                </View>
+            </Animated.View>
+        </View>
+
+    </TouchableOpacity>
+}
+
 const styles = StyleSheet.create({
+    entireFreeRow: {
+        display: "flex",
+        flexDirection:"row",
+        alignItems:"center",
+        justifyContent:"flex-start",
+    },
+    dayText : {
+        fontSize: 16,
+        textTransform: "capitalize"
+    },
+    freeRow: {
+        display: "flex",
+        flexDirection: "row",
+        columnGap: 10
+    },
+    dayBox: {
+        width: 100
+    },
+    smallBox: {
+        padding : 5,
+        backgroundColor :"white",
+        borderRadius: 4,
+        borderWidth: 1
+    },
+    formBody: {
+        display: "flex",
+        flexDirection: "column",
+        rowGap: 10
+    },  
+    formChild : {
+    },
+    floatView : {
+        display:"flex",
+        alignItems:"center",
+        justifyContent:"center",
+        height:"100%",
+        backgroundColor:"rgba(0,0,0,0.1)"
+    },
+    floatForm: {
+        padding : 20,
+        backgroundColor: "#FFF7F1",
+        borderRadius: 25,
+        borderWidth : 2,
+        borderColor: "black",
+        display: "flex",
+        flexDirection:"column",
+        alignItems:"center",
+        justifyContent:"center",
+        rowGap:20
+    },
+    formHead: {
+        fontSize: 20
+    },  
+    actionText: {
+        fontSize: 15,
+        color: "blue"
+    },
+    rowBottomest: {
+        padding: 10,
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        columnGap: 10
+    },
+    actionBox: {
+        flexGrow: 1,
+        flexBasis: "33%",
+    },
     main: {
         flex: 1,
         padding: 20,
@@ -263,21 +402,20 @@ const styles = StyleSheet.create({
         flex: 2,
         flexDirection: "row",
         justifyContent: "space-around",
-        alignItems: "center",
+        alignItems: "center"
     },
     box: {
         height: 100,
         width: 100,
         elevation: 5,
-        backgroundColor: "#F2EFE5",
+        backgroundColor: "#fff",
         // borderWidth: 1,
         //borderColor: "silver",
         borderRadius: 10,
         marginBottom: 5,
         padding: 10,
         justifyContent: "center",
-        alignItems: "center",
-
+        alignItems: "center"
 
     },
     box2: {
@@ -290,12 +428,9 @@ const styles = StyleSheet.create({
         //borderColor: "silver",
         borderRadius: 10,
         marginBottom: 5,
-        marginLeft: 20,
         padding: 10,
         justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#F2EFE5"
-
+        alignItems: "center"
     },
     time: {
         fontSize: 30,
@@ -310,7 +445,7 @@ const styles = StyleSheet.create({
 
     },
     periodsRow: {
-        backgroundColor: "#F2EFE5",
+        backgroundColor: "white",
         padding: 10,
         width: "100%",
         marginBottom: 5,
@@ -343,7 +478,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         padding: 10,
-
     }
 
 })
