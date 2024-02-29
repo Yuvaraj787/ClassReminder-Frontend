@@ -168,7 +168,7 @@ const styles = {
         display: "flex",
         flexDirection: "row",
         flexWrap: "wrap",
-    }
+    },
 }
 
 export default Profile

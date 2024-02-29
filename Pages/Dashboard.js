@@ -4,12 +4,14 @@ import Schedule from "../Components/Schedule.json"
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import * as Location from 'expo-location';
+import { FontAwesome } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 // import SkeletonContent from 'react-native-skeleton-content';
 import ipAddr from "../functions/ip_addr";
 import registerNNPushToken from 'native-notify';
 import { registerIndieID, unregisterIndieDevice } from 'native-notify';
 import { giveCollegeLocation } from "../functions/insideLocations";
+import timeToHour from "../functions/currentHour";
 import Axios from "axios"
 // import SkeletonContent from 'react-native-skeleton-content';
 
@@ -21,7 +23,7 @@ export default function DashBoard({ navigation }) {
     const [userDetails, setUserDetails] = useState({ name_n: "", dept_n: "" });
     const [userLoading, setUserLoading] = useState(true);
     const [sch, setSch] = useState({
-        monday : [],
+        monday: [],
         tuesday: [],
         wednesday: [],
         thursday: [],
@@ -35,7 +37,7 @@ export default function DashBoard({ navigation }) {
         // console.log(currentTime.toLocaleTimeString())
         return () => clearInterval(interval);
     }, []);
-    const currentDay = new Date().getDay()
+    const currentDay = currentTime.getDay()
     useEffect(() => {
         async function fetch() {
             try {
@@ -70,10 +72,16 @@ export default function DashBoard({ navigation }) {
                     }
                 })
                 console.log("weekly schedule : ", data.data.schedule.thursday)
+
                 var sorted_schedule = data.data.schedule;
+                var currentHour = timeToHour(currentTime.getHours(), currentTime.getMinutes());
+                console.log("Current hour : ", currentHour);
+                
                 Object.keys(sorted_schedule).forEach(day => {
-                    sorted_schedule[day].sort((a,b) => a.hour - b.hour)
+                    sorted_schedule[day].sort((a, b) => a.hour - b.hour)
+                    sorted_schedule[day] = sorted_schedule[day].filter((a) => a.hour >= 3)
                 })
+
                 setSch(sorted_schedule);
                 // setLoading(false);
             } catch (err) {
@@ -163,20 +171,21 @@ export default function DashBoard({ navigation }) {
         }
     };
 
+
     return (
         <View style={styles.main}>
             {/* top container */}
             <View style={styles.top}>
                 {/*First view for welcome msg */}
                 <View>
-                    
-                        <Text style={{
-                            fontSize: 22, fontFamily: "monospace",
-                            fontWeight: "bold"
-                        }}>Welcome, </Text>
-                        <Text style={styles.nametext}><Text style={{
-                            fontSize: 30, fontFamily: "monospace",
-                        }}>{userDetails.name_n} </Text><Text>{userDetails.dept_n == "IT" ? "B.Tech " : "B.E "} {userDetails.dept_n}</Text></Text>
+
+                    <Text style={{
+                        fontSize: 22, fontFamily: "monospace",
+                        fontWeight: "bold"
+                    }}>, </Text>
+                    <Text style={styles.nametext}><Text style={{
+                        fontSize: 30, fontFamily: "monospace",
+                    }}>{userDetails.name_n} </Text><Text>{userDetails.dept_n == "IT" ? "B.Tech " : "B.E "} {userDetails.dept_n}</Text></Text>
 
                 </View>
                 {/* second view for 3 boxes */}
@@ -206,7 +215,28 @@ export default function DashBoard({ navigation }) {
                 <View style={styles.periods}>
 
 
-                    <View>
+                    <View>{sch[days[currentDay]].length == 0 ?
+                        <View style={styles.overBox}>
+                            <View><Text style={styles.classOverText}>Hurrah !  Classes are over for today</Text></View>
+                            <View>
+                                <View 
+                                style={{display:"flex", justifyContent:"center", alignItems:"center", margin: 9}}><Text style={{fontWeight: 900, fontSize : 17}}>Suggested Activities</Text></View>
+                                <View style={styles.actBox}>
+                                    <TouchableOpacity style={styles.btnBoxes} onPress={() => navigate.navigate("Attendence")}>
+                                        <View style={styles.pressBox}>
+                                            <FontAwesome name="hand-stop-o" size={34} color="black" />
+                                            <Text style={styles.boxText}>Entry Attendance</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.btnBoxes}>
+                                        <View style={styles.pressBox}>
+                                            <Ionicons name='timer-sharp' size={34} color="black" />
+                                            <Text style={styles.boxText}>Today's Routine</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View> :
                         <FlatList
                             data={sch[days[currentDay]]}
                             renderItem={({ item }) => {
@@ -229,7 +259,7 @@ export default function DashBoard({ navigation }) {
                                     </View>
                                 )
                             }}
-                        />
+                        />}
 
 
                     </View>
@@ -241,10 +271,43 @@ export default function DashBoard({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+    
+    btnBoxes: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        margin: 20,
+        padding: 20,
+        backgroundColor: "#F2EFE5",
+        borderRadius: 20,
+        elevation: 10,
+        flexBasis: "39%",
+    },
+    pressBox: {
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    overBox: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "white",
+        padding: 20,
+        borderRadius: 10,
+        elevation: 5,
+        alignSelf:"flex-start"
+    },
+    classOverText: {
+        fontSize: 17,
+        fontWeight: "bold"
+    },
+    actBox: {
+        display: "flex",
+        flexDirection: "row"
+    },
     main: {
         flex: 1,
         padding: 20,
-
     },
     top: {
         flex: 2,
@@ -302,9 +365,8 @@ const styles = StyleSheet.create({
     periods: {
         flex: 1,
         flexDirection: "column",
-        justifyContent: "space-around",
         width: "100%",
-
+        rowGap: 10
     },
     periodsRow: {
         backgroundColor: "white",
@@ -340,7 +402,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         padding: 10,
-
+    },
+    boxText : {
+        textAlign: "center"
     }
-
 })

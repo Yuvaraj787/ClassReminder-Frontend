@@ -50,6 +50,7 @@ const Profile = () => {
                         return (
                             <Pressable
                                 onPress={() => { handleBoxPress(index) }}
+                                id={index + 233 + ""}
                             >
                                 <View style={[styles.Box, { height: pressedIndex === index ? 130 : 80 }]}>
                                     {/* left container */}

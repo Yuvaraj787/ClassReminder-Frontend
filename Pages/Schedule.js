@@ -65,6 +65,7 @@ export default function TabViewExample() {
         { key: 'fourth', title: 'Thrusday' },
         { key: 'fifth', title: 'Friday' }
     ]);
+    
     const [sch, setSch] = React.useState({
         monday : [],
         tuesday: [],
