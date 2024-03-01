@@ -1,34 +1,52 @@
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Switch, TextInput, Button, Image, KeyboardAvoidingView } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
+import ipAddr from "../functions/ip_addr"
 
 
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 export default function App() {
     const navigate = useNavigation();
     const [on, Seton] = useState(true)
 
     const [staffs, setStaffs] = useState([
-        {label: 'Selvi Ravindran', value: 'Selvi Ravindran'},
-        {label: 'Swaminathan', value: 'Swaminathan'},
-        {label: 'Jasmine', value: 'Jasmine'},
-        {label: 'Senthil Kumar', value: 'Senthil Kumar'},
+        { label: 'Selvi Ravindran', value: 'Selvi Ravindran' },
+        { label: 'Swaminathan', value: 'Swaminathan' },
+        { label: 'Jasmine', value: 'Jasmine' },
+        { label: 'Senthil Kumar', value: 'Senthil Kumar' },
     ]);
+    const [allStaff, setAllStaff] = useState([])
+    const [subject, setSubjects] = useState([])
 
-    const [subject, setSubjects] = useState([
-        { value: "IT5601", label: "Embedded Systems and Internet of Things" },
-        { value: "IT5602", label: "Data Science and Analytics" },
-        { value: "IT5603", label: "Distributed and Cloud Computing" },
-        { value: "IT5611", label: "Embedded Systems and Internet of Things Laboratory" },
-        { value: "IT5612", label: "Data Analytics and Cloud Computing Laboratory" },
-        { value: "IT5613", label: "Socially Relevant Project Laboratory" },
-        { value: "OP1111", label: "Open Elective"},
-        { value: "IT5614", label: "Service Oritented Approach"},
-        { value: "IT5615", label: "Social Network Analysis"}
-    ])
- 
+    useEffect(() => {
+        getSub()
+    }, [])
+
+
+
+    const getSub = async () => {
+        const res = await axios({
+            url: `http://${ipAddr}:3000/user/getAllCourses`,
+            method: "get",
+            params: { sem: 6 }
+        })
+        console.log("all subjects")
+        //console.log(res.data)
+        var subs = []
+        var st = []
+        res.data.forEach(subject => {
+            subs.push({ value: subject._id.courseCode, label: subject._id.name })
+            st.push({ value: subject._id.courseCode, staffs: subject.staffs })
+            console.log(subject)
+        })
+        setAllStaff(st)
+        setSubjects(subs)
+    }
+
+
     const [courseName, setcourseName] = useState('')
     const [faculty, setfaculty] = useState('')
     const [error, setError] = useState({})
@@ -79,11 +97,26 @@ export default function App() {
                     value={value}
                     items={subject}
                     setOpen={setOpen1}
-                    setValue={setValue}
-                    style={styles.input} 
+                    setValue={(val) => {
+                        setValue(val)
+                        console.log(allStaff)
+                        //console.log(val)
+                        const course = allStaff.filter(staff => staff.value === val);
+                        //console.log(val)
+                        console.log("Filtered staff for selected value:", course);
+                        const staffsArray = []
+                        course[0].staffs.forEach(staff => {
+                            staffsArray.push({ label: staff, value: value })
+                        })
+                        console.log(staffsArray)
+                        setStaffs(staffsArray)
+
+                    }
+                    }
+                    style={styles.input}
                     setItems={setSubjects}
                     placeholder={'Select Course'}
-                />                
+                />
                 {
                     error.courseName ? <Text style={styles.err}>{error.courseName}</Text> : null
                 }
@@ -91,11 +124,11 @@ export default function App() {
                 <DropDownPicker
                     searchable={true}
                     open={open}
-                    value={value}
+                    value={svalue}
                     items={staffs}
                     setOpen={setOpen}
-                    setValue={setValue}
-                    style={styles.input} 
+                    setValue={setSvalue}
+                    style={styles.input}
                     setItems={setStaffs}
                     placeholder={'Select Faculty'}
                 />
