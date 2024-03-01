@@ -71,9 +71,9 @@ export default function DashBoard({ navigation }) {
                         token: token_n
                     }
                 })
-                console.log("weekly schedule : ", data.data.schedule.thursday)
+                // console.log("weekly schedule : ", data.data.schedule.thursday)
 
-                var sorted_schedule = data.data.schedule;
+                var sorted_schedule = data.data;
                 var currentHour = timeToHour(currentTime.getHours(), currentTime.getMinutes());
                 console.log("Current hour : ", currentHour);
                 

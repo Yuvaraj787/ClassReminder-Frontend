@@ -91,8 +91,8 @@ export default function TabViewExample() {
                         token: token_n
                     }
                 })
-                console.log("weekly schedule : ", data.data.schedule.thursday)
-                var sorted_schedule = data.data.schedule;
+                // console.log("weekly schedule : ", data.data.schedule.thursday)
+                var sorted_schedule = data.data;
                 console.log(sorted_schedule);
                 Object.keys(sorted_schedule).forEach(day => {
                     sorted_schedule[day].sort((a,b) => a.hour - b.hour)
