@@ -22,12 +22,15 @@ export default function DashBoard({ navigation }) {
     var name, dept, year, roll;
     const [userDetails, setUserDetails] = useState({ name_n: "", dept_n: "" });
     const [userLoading, setUserLoading] = useState(true);
+    const [currentDay, setCurrentDay] = useState(0);
     const [sch, setSch] = useState({
         monday: [],
         tuesday: [],
         wednesday: [],
         thursday: [],
-        friday: []
+        friday: [],
+        saturday : [],
+        sunday : []
     })
     const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
     useEffect(() => {
@@ -37,8 +40,8 @@ export default function DashBoard({ navigation }) {
         // console.log(currentTime.toLocaleTimeString())
         return () => clearInterval(interval);
     }, []);
-    const currentDay = currentTime.getDay()
     useEffect(() => {
+        setCurrentDay(2)
         async function fetch() {
             try {
                 name = await AsyncStorage.getItem("name");
@@ -207,25 +210,22 @@ export default function DashBoard({ navigation }) {
             {/* <ion-icon name="apps"></ion-icon> */}
             {/* bottom container */}
             <View style={styles.bottom}>
-                <View style={{ flexDirection: "row", justifyContent: "space-around", marginBottom: 5, alignItems: "center" }}>
+                <View style={{ flexDirection: "row", justifyContent: "space-around", marginBottom: 15, alignItems: "center" }}>
                     <Text style={{ fontSize: 20, fontFamily: "monospace" }}>Upcoming classes</Text>
                     <Pressable onPress={() => { navigate.navigate("Schedule") }}><Ionicons name="calendar" size={22}></Ionicons></Pressable>
-
                 </View>
                 <View style={styles.periods}>
-
-
                     <View>{sch[days[currentDay]].length == 0 ?
                         <View style={styles.overBox}>
-                            <View><Text style={styles.classOverText}>Hurrah !  Classes are over for today</Text></View>
+                            <View>{(currentDay == 0 || currentDay == 6) ? <Text style={styles.classOverText}>Yeah Dude, Today is not a working day. Chill...</Text> : <Text style={styles.classOverText}>Hurrah !  Classes are over for today</Text>}</View>
                             <View>
                                 <View 
-                                style={{display:"flex", justifyContent:"center", alignItems:"center", margin: 9}}><Text style={{fontWeight: 900, fontSize : 17}}>Suggested Activities</Text></View>
+                                style={{display:"flex", justifyContent:"center", alignItems:"center", margin: 0}}><Text style={{fontWeight: 900, fontSize : 17}}>Suggested Activities</Text></View>
                                 <View style={styles.actBox}>
                                     <TouchableOpacity style={styles.btnBoxes} onPress={() => navigate.navigate("Attendence")}>
                                         <View style={styles.pressBox}>
                                             <FontAwesome name="hand-stop-o" size={34} color="black" />
-                                            <Text style={styles.boxText}>Entry Attendance</Text>
+                                            <Text style={styles.boxText}>Check Attendance</Text>
                                         </View>
                                     </TouchableOpacity>
                                     <TouchableOpacity style={styles.btnBoxes}>
@@ -295,7 +295,8 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 10,
         elevation: 5,
-        alignSelf:"flex-start"
+        alignSelf:"flex-start",
+        rowGap: 10
     },
     classOverText: {
         fontSize: 17,
