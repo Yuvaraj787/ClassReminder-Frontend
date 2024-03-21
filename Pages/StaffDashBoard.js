@@ -11,6 +11,7 @@ import registerNNPushToken from 'native-notify';
 import { registerIndieID, unregisterIndieDevice } from 'native-notify';
 import { giveCollegeLocation } from "../functions/insideLocations";
 // import SkeletonContent from 'react-native-skeleton-content';
+import axios from 'axios';
 
 
 
@@ -134,6 +135,19 @@ export default function DashBoard({ navigation }) {
         }
     };
 
+    const Apply = async (courseNo) => {
+        try {
+            const res = await axios({
+                url: "http://" + ipAddr + ":3000/user/notifyEnrolledStudents",
+                params: { courseNo },
+                method : "get"
+            })
+            console.log(res)
+        } catch (err) {
+            console.log("Error in send notify interrupt to backend : ", err.message)
+        }
+    }
+
     return (
         <View style={styles.main}>
             {/* top container */}
@@ -176,7 +190,7 @@ export default function DashBoard({ navigation }) {
                             renderItem={({ item }) => {
                                 //console.log(item.Subject)
                                 return (
-                                    <ClassBox hour={item.Hour} sem={6} subject={item.Subject} location={item.location} />
+                                    <ClassBox hour={item.Hour} sem={6} subject={item.Subject} location={item.location} courseNo={item.courseNo} Apply={Apply} />
                                 )
                             }}
                         />
@@ -190,7 +204,7 @@ export default function DashBoard({ navigation }) {
     );
 }
 
-function ClassBox({ hour, sem, subject, location }) {
+function ClassBox({ hour, sem, subject, location, courseNo, Apply }) {
     const [open, setOpen] = useState(false);
     const [zoomAnim] = useState(new Animated.Value(0))
 
@@ -211,6 +225,7 @@ function ClassBox({ hour, sem, subject, location }) {
             setSize(0);
         }
     }
+
 
     const freeHours = {
         "monday" : [4,6,7],
@@ -286,7 +301,10 @@ function ClassBox({ hour, sem, subject, location }) {
                             }
                         </View>
                         <View style={styles.formChild}>
-                            <Button title="Apply" onPress={() => setOpen(false)}/>
+                            <Button title="Apply" onPress={() => {
+                                Apply(courseNo);
+                                setOpen(false)
+                            }}/>
                         </View>
                         <View style={styles.formChild}>
                             <Button title="close" onPress={() => setOpen(false)}/>

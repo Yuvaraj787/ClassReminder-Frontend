@@ -12,7 +12,6 @@ import { registerIndieID, unregisterIndieDevice } from 'native-notify';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const Login = ({ navigator, route }) => {
-    registerNNPushToken(19717, '6cGVSWyXY5RoTiF9pUgfiS');
     const navigation = useNavigation();
     const [on, Seton] = useState(true);
     const [log, setLogStatus] = useState(false);
