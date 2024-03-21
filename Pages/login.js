@@ -18,7 +18,7 @@ const Login = ({ navigator, route }) => {
     const [rollNo, setRollNo] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState({});
-    const setLog = useContext(LogContext);
+    const setLog = useContext(LogContext)[0];
 
     const validateForm = () => {
         let errors = {};

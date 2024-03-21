@@ -13,6 +13,7 @@ export default function App({ navigator, route }) {
     const [on, Seton] = useState(true)
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState('');
+    const [value, setValue] = useState('');
     const [name, setname] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState({})
@@ -47,20 +48,26 @@ export default function App({ navigator, route }) {
                         route.params.setLoggedIn(true)
                         await AsyncStorage.setItem("name", value)
                     } else if (!res.data.wrongPassword) {
-                        const { name, roll, year, dept } = res.data.userData
-                        console.log(name, roll)
-                        await AsyncStorage.setItem("roll", roll + "")
-                        await AsyncStorage.setItem("year", year + "")
-                        await AsyncStorage.setItem("dept", dept)
-                        await AsyncStorage.setItem("token", res.data.token)
-                        console.log("correct password")
-                        route.params.setLoggedIn(true)
-                    } else if (res.data.wrongPassword) {
-                        Alert.alert("Wrong Crediantials", "wrong password")
-                    }
-                }).catch(err => {
-                    console.log("ERROR in login page: ", err.message)
-                })
+                        console.log(res);
+                        if (!res.invvalid) {
+                            route.params.setLoggedIn(true)
+                            await AsyncStorage.setItem("name", value)
+                        } else if (!res.data.wrongPassword) {
+                            const { name, roll, year, dept } = res.data.userData
+                            console.log(name, roll)
+                            await AsyncStorage.setItem("roll", roll + "")
+                            await AsyncStorage.setItem("year", year + "")
+                            await AsyncStorage.setItem("dept", dept)
+                            await AsyncStorage.setItem("token", res.data.token)
+                            console.log("correct password")
+                            route.params.setLoggedIn(true)
+                            route.params.setLoggedIn(true)
+                        } else if (res.data.wrongPassword) {
+                            Alert.alert("Wrong Crediantials", "wrong password")
+                        }
+                    }).catch(err => {
+                        console.log("ERROR in login page: ", err.message)
+                    })
         }
         else {
             Alert.alert("Invalid Form", "Missing or invalid creditianls")
