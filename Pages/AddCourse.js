@@ -99,11 +99,6 @@ export default function App() {
                     setOpen={setOpen1}
                     setValue={(val) => {
                         setValue(val)
-                        console.log(allStaff)
-                        //console.log(val)
-                        const course = allStaff.filter(staff => staff.value === val);
-                        //console.log(val)
-                        console.log("Filtered staff for selected value:", course);
                         const staffsArray = []
                         course[0].staffs.forEach(staff => {
                             staffsArray.push({ label: staff, value: value })

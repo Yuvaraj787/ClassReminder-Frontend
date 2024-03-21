@@ -1,4 +1,4 @@
-[    {"subject":"IOT & Embeeded System","totalHours":"45","classMissed":"0","type":"T"},
+[    
     {"subject":"Cloud Computing","totalHours":"45","classMissed":"0","type":"T"},
     {"subject":"Data Analytics","totalHours":"45","classMissed":"3","type":"T"},
     {"subject":"Web Design","totalHours":"45","classMissed":"7","type":"T"},
@@ -7,5 +7,6 @@
     {"subject":"Viz","totalHours":"60","classMissed":"1","type":"L"},
     {"subject":"Cloud Computing","totalHours":"45","classMissed":"0","type":"T"},
     {"subject":"Data Analytics","totalHours":"45","classMissed":"3","type":"E"},
-    {"subject":"Data Analytics","totalHours":"45","classMissed":"3","type":"T"}
+    {"subject":"Data Analytics","totalHours":"45","classMissed":"3","type":"T"},
+    {"subject":"IOT & Embeeded System","totalHours":"45","classMissed":"0","type":"T"}
 ]

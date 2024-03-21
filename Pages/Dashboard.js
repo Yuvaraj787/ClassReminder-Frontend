@@ -18,6 +18,7 @@ import Axios from "axios"
 
 
 export default function DashBoard({ navigation }) {
+
     const [currentTime, setCurrentTime] = useState(new Date());
     var name, dept, year, roll;
     const [userDetails, setUserDetails] = useState({ name_n: "", dept_n: "" });
@@ -71,9 +72,9 @@ export default function DashBoard({ navigation }) {
                         token: token_n
                     }
                 })
-                console.log("weekly schedule : ", data.data.schedule.thursday)
+                //console.log("weekly schedule : ", data.data.schedule.thursday)
 
-                var sorted_schedule = data.data.schedule;
+                var sorted_schedule = data.data;
                 var currentHour = timeToHour(currentTime.getHours(), currentTime.getMinutes());
                 console.log("Current hour : ", currentHour);
 
@@ -163,7 +164,7 @@ export default function DashBoard({ navigation }) {
                 //     longitude
                 // });
                 // console.log(response)
-                // setDisplayLocation(`${response[0].district},${response[0].city}`)
+                // setDisplayLocation(${response[0].district},${response[0].city})
                 setDisplayLocation(giveCollegeLocation(latitude, longitude))
             }
         } catch (err) {
@@ -182,7 +183,7 @@ export default function DashBoard({ navigation }) {
                     <Text style={{
                         fontSize: 22, fontFamily: "monospace",
                         fontWeight: "bold"
-                    }}>, </Text>
+                    }}>Welcome , </Text>
                     <Text style={styles.nametext}><Text style={{
                         fontSize: 30, fontFamily: "monospace",
                     }}>{userDetails.name_n} </Text><Text>{userDetails.dept_n == "IT" ? "B.Tech " : "B.E "} {userDetails.dept_n}</Text></Text>
@@ -326,21 +327,20 @@ const styles = StyleSheet.create({
         flex: 2,
         flexDirection: "row",
         justifyContent: "space-around",
-        alignItems: "center",
+        alignItems: "center"
     },
     box: {
         height: 100,
         width: 100,
         elevation: 5,
-        backgroundColor: "#F2EFE5",
+        backgroundColor: "#fff",
         // borderWidth: 1,
         //borderColor: "silver",
         borderRadius: 10,
         marginBottom: 5,
         padding: 10,
         justifyContent: "center",
-        alignItems: "center",
-
+        alignItems: "center"
 
     },
     box2: {
@@ -356,9 +356,7 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         padding: 10,
         justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#F2EFE5"
-
+        alignItems: "center"
     },
     time: {
         fontSize: 30,
@@ -372,7 +370,7 @@ const styles = StyleSheet.create({
         rowGap: 10
     },
     periodsRow: {
-        backgroundColor: "#F2EFE5",
+        backgroundColor: "white",
         padding: 10,
         width: "100%",
         marginBottom: 5,

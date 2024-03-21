@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
+import { TouchableOpacity, View, Text, StyleSheet, LogBox } from "react-native";
 import { Entypo } from '@expo/vector-icons';
 import React, { useState, useEffect, createContext, useContext } from 'react'
 // import SkeletonContent from 'react-native-skeleton-content'
@@ -32,19 +32,22 @@ import { registerIndieID, unregisterIndieDevice } from 'native-notify';
 const BottomTab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const LogContext = createContext(null);
+LogBox.ignoreAllLogs = true
 
 export default function App() {
+
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
   const [expoPushToken, setExpoPushToken] = useState('');
   useEffect(() => {
+
     var tok, roll;
     async function fetch() {
       try {
         tok = await AsyncStorage.getItem("token");
         roll = await AsyncStorage.getItem("roll");
       } catch (err) {
-        console.log("Error in app.js token and roll fetching : ",err.message)
+        console.log("Error in app.js token and roll fetching : ", err.message)
       }
       if (!tok) {
         setLoggedIn(false);
@@ -54,7 +57,7 @@ export default function App() {
       }
       console.log("INFO: Auth Token is present")
       axios({
-        url: "http://"+ipAddr+":3000/auth/verify",
+        url: "http://" + ipAddr + ":3000/auth/verify",
         method: "POST",
         params: { token: tok }
       }).then(res => {
@@ -76,16 +79,16 @@ export default function App() {
   return (
     loading ? <Loading /> :
       <>
-          <LogContext.Provider value={setLoggedIn}>
-            {!isLoggedIn ?
+        <LogContext.Provider value={setLoggedIn}>
+          {!isLoggedIn ?
             <NavigationContainer>
-             <BeforeLogin />
+              <BeforeLogin />
             </NavigationContainer>
-           :
-          <NavigationContainer>
-             <AfterLogin />
-          </NavigationContainer>}
-          </LogContext.Provider>
+            :
+            <NavigationContainer>
+              <AfterLogin />
+            </NavigationContainer>}
+        </LogContext.Provider>
       </>
   )
 }
@@ -100,7 +103,7 @@ function Loading() {
   )
 }
 
-function AfterLogin({setLoggedIn}) {
+function AfterLogin({ setLoggedIn }) {
   return (
     <>
       <Stack.Navigator
@@ -120,8 +123,8 @@ function AfterLogin({setLoggedIn}) {
       >
         <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Notification" component={Notification} />
-        <Stack.Screen name="AddCourse" component={AddCourse} options={{headerTitle:"Add a Course"}} />
-        <Stack.Screen name="CourseDisplay" component={CoursesDisplay} options={{headerTitle:"My Courses"}} />
+        <Stack.Screen name="AddCourse" component={AddCourse} options={{ headerTitle: "Add a Course" }} />
+        <Stack.Screen name="CourseDisplay" component={CoursesDisplay} options={{ headerTitle: "My Courses" }} />
         <Stack.Screen name="Attendence" component={Attendence} />
         <Stack.Screen name="Dashboard" component={DashBoard} />
         <Stack.Screen name="Schedule" component={Schedule} />
@@ -130,9 +133,9 @@ function AfterLogin({setLoggedIn}) {
   )
 }
 
-function MainScreen({setLoggedIn}) {
+function MainScreen({ setLoggedIn }) {
   return (
-    <BottomTab.Navigator initialRouteName='StaffDashboard'>
+    <BottomTab.Navigator initialRouteName='Dashboard'>
       <BottomTab.Screen
         name="StaffDashboard"
         component={StaffDashBoard}
@@ -169,7 +172,7 @@ function MainScreen({setLoggedIn}) {
   );
 }
 
-function BeforeLogin({setLoggedIn}) {
+function BeforeLogin({ setLoggedIn }) {
   return (
     <BottomTab.Navigator initialRouteName='Login'>
 
@@ -183,7 +186,7 @@ function BeforeLogin({setLoggedIn}) {
           headerShown: true,
           headerTitle: "Student Login",
         }}
-        initialParams={{setLoggedIn: setLoggedIn}}
+        initialParams={{ setLoggedIn: setLoggedIn }}
       />
       <BottomTab.Screen
         name="Signup"
@@ -205,7 +208,7 @@ function BeforeLogin({setLoggedIn}) {
           headerShown: true,
           headerTitle: "Staff Login",
         }}
-        initialParams={{setLoggedIn: setLoggedIn}}
+        initialParams={{ setLoggedIn: setLoggedIn }}
       />
     </BottomTab.Navigator>
   )
