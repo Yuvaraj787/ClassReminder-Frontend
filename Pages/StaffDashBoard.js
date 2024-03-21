@@ -33,16 +33,10 @@ export default function DashBoard({ navigation }) {
         async function fetch() {
             try {
                 name = await AsyncStorage.getItem("name");
-                dept = await AsyncStorage.getItem("dept");
-                year = await AsyncStorage.getItem("year");
-                roll = await AsyncStorage.getItem("roll");
-                console.log(name, dept);
+                console.log(name);
                 setUserDetails((prev) => {
                     return {
-                        name_n: name,
-                        dept_n: dept,
-                        year_n: year,
-                        roll_n: roll
+                        name_n: name
                     }
                 })
                 setUserLoading(false);
@@ -135,11 +129,12 @@ export default function DashBoard({ navigation }) {
         }
     };
 
-    const Apply = async (courseNo) => {
+    const Apply = async (courseNo, finalDay, finalHour, originalHour, subject) => {
+        
         try {
             const res = await axios({
                 url: "http://" + ipAddr + ":3000/user/notifyEnrolledStudents",
-                params: { courseNo },
+                params: {courseNo, finalDay, finalHour, originalHour, subject, staffName: userDetails.name_n },
                 method : "get"
             })
             console.log(res)
@@ -161,7 +156,7 @@ export default function DashBoard({ navigation }) {
                     }}>Welcome, </Text>
                     <Text style={styles.nametext}><Text style={{
                         fontSize: 30, fontFamily: "monospace",
-                    }}>{"Faculty Y"} </Text><Text>{userDetails.dept_n == "IT" ? "B.Tech " : "B.E "} {userDetails.dept_n}</Text></Text>
+                    }}>{userDetails.name_n} </Text><Text>{userDetails.dept_n}</Text></Text>
 
                 </View>
                 {/* second view for 3 boxes */}
@@ -235,13 +230,7 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply }) {
         "friday" : [5]
     }
 
-    const [selected, setSelected] = useState({
-        "monday" : Array(8).fill(false),
-        "tuesday" : Array(8).fill(false),
-        "wednesday" : Array(8).fill(false),
-        "thursday" : Array(8).fill(false),
-        "friday" : Array(8).fill(false)
-    })
+    const [selected, setSelected] = useState(["monday",4])
 
     const markSelected = (day, hour) => {
         const days = {
@@ -252,7 +241,7 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply }) {
         "friday" : Array(8).fill(false)
         }
         days[day][hour] = true;
-        setSelected(days);
+        setSelected([day, hour])
     }
 
     return <TouchableOpacity style={styles.periodsRow} onPress={trans} activeOpacity={0.6}>
@@ -265,7 +254,7 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply }) {
             </View>
             <View style={styles.rowBottom}>
                 <View style={{ flex: 2, justifyContent: "flex-start" }}><Text>{sem + "th sem"}</Text></View>
-                <Text style={{ flex: 1 }}><Ionicons name="location" size={15} color="black" /> {location}</Text>
+                <Text style={{ flex: 3 }}><Ionicons name="location" size={15} color="black" /> {"No Location GIven"}</Text>
             </View>
             <Modal
                 visible={open}
@@ -290,7 +279,7 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply }) {
                                         <View style={styles.freeRow}>
                                             {
                                                 freeHours[day].map(hour => {
-                                                    return <TouchableOpacity onPress={() => markSelected(day, hour)} style={{...styles.smallBox, backgroundColor: selected[day][hour] ? "green" : "white"}}>
+                                                    return <TouchableOpacity onPress={() => markSelected(day, hour)} style={{...styles.smallBox, backgroundColor: (selected[0] == day && selected[1] == hour) ? "green" : "white"}}>
                                                         <Text>{hour}</Text>
                                                     </TouchableOpacity>
                                                 })
@@ -302,12 +291,12 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply }) {
                         </View>
                         <View style={styles.formChild}>
                             <Button title="Apply" onPress={() => {
-                                Apply(courseNo);
+                                Apply(courseNo, selected[0], selected[1], hour, subject);
                                 setOpen(false)
                             }}/>
                         </View>
                         <View style={styles.formChild}>
-                            <Button title="close" onPress={() => setOpen(false)}/>
+                            <Button title="close" onPress={() => setOpen(false)} />
                         </View>
                     </View>
                 </View>

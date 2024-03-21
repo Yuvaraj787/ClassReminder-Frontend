@@ -14,7 +14,7 @@ const Profile = () => {
     var name, dept, year, roll;
     const navigator = useNavigation()
     const [userDetails, setUserDetails] = useState({ name_n: "", dept_n: "" });
-    const setLog = useContext(LogContext);
+    const setLog = useContext(LogContext)[0];
     useEffect(() => {
         try {
         async function fetch() {

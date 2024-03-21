@@ -23,6 +23,7 @@ export default function DashBoard({ navigation }) {
     const [userDetails, setUserDetails] = useState({ name_n: "", dept_n: "" });
     const [userLoading, setUserLoading] = useState(true);
     const [currentDay, setCurrentDay] = useState(0);
+    const [currentHour, setCurrentHour] = useState(1);
     const [sch, setSch] = useState({
         monday: [],
         tuesday: [],
@@ -41,7 +42,7 @@ export default function DashBoard({ navigation }) {
         return () => clearInterval(interval);
     }, []);
     useEffect(() => {
-        setCurrentDay(2)
+        setCurrentDay(currentTime.getDay())
         async function fetch() {
             try {
                 name = await AsyncStorage.getItem("name");
@@ -79,10 +80,10 @@ export default function DashBoard({ navigation }) {
                 var sorted_schedule = data.data;
                 var currentHour = timeToHour(currentTime.getHours(), currentTime.getMinutes());
                 console.log("Current hour : ", currentHour);
-                
+                setCurrentHour(currentHour)
                 Object.keys(sorted_schedule).forEach(day => {
                     sorted_schedule[day].sort((a, b) => a.hour - b.hour)
-                    sorted_schedule[day] = sorted_schedule[day].filter((a) => a.hour >= 3)
+                    sorted_schedule[day] = sorted_schedule[day].filter((a) => a.hour >= currentHour)
                 })
 
                 setSch(sorted_schedule);
@@ -181,7 +182,6 @@ export default function DashBoard({ navigation }) {
             <View style={styles.top}>
                 {/*First view for welcome msg */}
                 <View>
-
                     <Text style={{
                         fontSize: 22, fontFamily: "monospace",
                         fontWeight: "bold"
@@ -189,7 +189,6 @@ export default function DashBoard({ navigation }) {
                     <Text style={styles.nametext}><Text style={{
                         fontSize: 30, fontFamily: "monospace",
                     }}>{userDetails.name_n} </Text><Text>{userDetails.dept_n == "IT" ? "B.Tech " : "B.E "} {userDetails.dept_n}</Text></Text>
-
                 </View>
                 {/* second view for 3 boxes */}
                 <View style={styles.boxContainer} >
@@ -242,14 +241,14 @@ export default function DashBoard({ navigation }) {
                             renderItem={({ item }) => {
                                 //console.log(item.Subject)
                                 return (
-                                    <View style={styles.periodsRow}>
+                                    <View style={{...styles.periodsRow, backgroundColor : currentHour == item.hour ? "#D4E7C5" : "#F2EFE5", borderColor : (currentHour == item.hour) ? "black" : "silver"}}>
                                         <View style={styles.rowLeft}>
                                             <Text style={{ fontSize: 20 }}>{item.hour}</Text>
                                         </View>
                                         <View style={styles.rowRight}>
                                             <View style={styles.rowTop}>
+                                                {currentHour == item.hour && <Text style={{fontWeight : "normal"}}>Currently Ongoing</Text>}
                                                 <Text style={{ fontSize: 20 }}>{item.courseName}</Text>
-
                                             </View>
                                             <View style={styles.rowBottom}>
                                                 <View style={{ justifyContent: "flex-start" }}><Text><Ionicons name="person" size={15} color="black" /> {item.staff}</Text></View>

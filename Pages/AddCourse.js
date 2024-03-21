@@ -7,6 +7,7 @@ import ipAddr from "../functions/ip_addr"
 
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import { Axios } from 'axios';
 
 export default function App() {
     const navigate = useNavigation();
@@ -33,10 +34,11 @@ export default function App() {
             method: "get",
             params: { sem: 6 }
         })
-        console.log("all subjects")
         //console.log(res.data)
+
         var subs = []
         var st = []
+
         res.data.forEach(subject => {
             subs.push({ value: subject._id.courseCode, label: subject._id.name })
             st.push({ value: subject._id.courseCode, staffs: subject.staffs })
@@ -51,21 +53,20 @@ export default function App() {
     const [faculty, setfaculty] = useState('')
     const [error, setError] = useState({})
     const [index, setIndex] = useState(1);
-    const validateForm = () => {
-        let error = {}
-        console.log("length courseName : " + courseName.length + " faculty length : " + faculty.length)
-        if (courseName == '') error.courseName = "! Please Enter courseName"
-        if (faculty == '') error.faculty = "! please enter faculty"
-        setError(error)
-        console.log(Object.keys(error).length)
-        return Object.keys(error).length === 0;
 
+    const validateForm = () => {
+       return true;
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (validateForm()) {
             console.log("done uh");
             navigate.navigate("Profile", { name: courseName })
+            const res = await axios({
+                url: `http://${ipAddr}:3000/user/`,
+                method: "get",
+                params: { sem: 6 }
+            })
         }
         else {
             console.log("oh no ")
@@ -100,9 +101,7 @@ export default function App() {
                     setValue={(val) => {
                         setValue(val)
                         console.log(allStaff)
-                        //console.log(val)
-                        const course = allStaff.filter(staff => staff.value === val);
-                        //console.log(val)
+                        const course = allStaff.filter(staff => staff.value === val());
                         console.log("Filtered staff for selected value:", course);
                         const staffsArray = []
                         course[0].staffs.forEach(staff => {
@@ -110,7 +109,6 @@ export default function App() {
                         })
                         console.log(staffsArray)
                         setStaffs(staffsArray)
-
                     }
                     }
                     style={styles.input}

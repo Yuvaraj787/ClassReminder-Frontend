@@ -12,7 +12,7 @@ export default function App({navigator, route}) {
     const navigation = useNavigation();
     const [on, Seton] = useState(true)
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(null);
+    const [value, setValue] = useState('');
     const [name, setname] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState({})
@@ -26,7 +26,7 @@ export default function App({navigator, route}) {
     const validateForm = () => {
         let error = {}
         console.log("length name : " + name.length + " password length : " + password.length)
-        if (name == '') error.name = "! Please Enter name"
+        if (value == '') error.name = "! Please Enter name"
         if (password == '') error.password = "! please enter password"
         setError(error)
         console.log(Object.keys(error).length)
@@ -37,25 +37,24 @@ export default function App({navigator, route}) {
         if (validateForm()) {
             console.log("Form is Valid");
             axios({
-                url: "http://10.16.49.174:3000/auth/staff/login",
+                url: "http://"+ipAddr+":3000/auth/staff/login",
                 method: "POST",
-                params: { name : name, password }
+                params: { name, password }
             })
                 .then(async (res) => {
-                    console.log(res.data)
-                    if (res.data.newUser) {
-                        Alert("New User ? ", "Please Register before login")
-                    }
-                    else if (!res.data.wrongPassword) {
+                    console.log(res);
+                    if (!res.invvalid) {
+                        route.params.setLoggedIn(true)
+                        await AsyncStorage.setItem("name", value)
+                    } else if (!res.data.wrongPassword) {
                         const { name, roll, year, dept } = res.data.userData
                         console.log(name, roll)
-                        await AsyncStorage.setItem("name", name)
                         await AsyncStorage.setItem("roll", roll + "")
                         await AsyncStorage.setItem("year", year + "")
                         await AsyncStorage.setItem("dept", dept)
                         await AsyncStorage.setItem("token", res.data.token)
                         console.log("correct password")
-                        route.params.setLoggedIn(true);
+                        route.params.setLoggedIn(true)
                     } else if (res.data.wrongPassword) {
                         Alert.alert("Wrong Crediantials", "wrong password")
                     }
