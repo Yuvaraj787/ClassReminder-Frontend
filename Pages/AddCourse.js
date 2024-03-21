@@ -26,7 +26,6 @@ export default function App() {
     }, [])
 
 
-
     const getSub = async () => {
         const res = await axios({
             url: `http://${ipAddr}:3000/user/getAllCourses`,

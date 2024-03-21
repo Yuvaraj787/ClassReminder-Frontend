@@ -29,7 +29,6 @@ function PerDay({ Schedule }) {
                                     <Text ><Ionicons name="location" size={15} color="black" /> {item.location ? item.location : "No Location given"}</Text>
                                 </View>
                             </View>
-
                         </View>
                     )
                 }}

@@ -8,25 +8,25 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 
-export default function App({navigator, route}) {
+export default function App({ navigator, route }) {
     const navigation = useNavigation();
     const [on, Seton] = useState(true)
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(null);
+    const [value, setValue] = useState('');
     const [name, setname] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState({})
     const [staffs, setStaffs] = useState([
-        {label: 'Selvi Ravindran', value: 'Selvi Ravindran'},
-        {label: 'Swaminathan', value: 'Swaminathan'},
-        {label: 'Jasmine', value: 'Jasmine'},
-        {label: 'Senthil Kumar', value: 'Senthil Kumar'},
+        { label: 'Selvi Ravindran', value: 'Selvi Ravindran' },
+        { label: 'Swaminathan', value: 'Swaminathan' },
+        { label: 'Jasmine', value: 'Jasmine' },
+        { label: 'Senthil Kumar', value: 'Senthil Kumar' },
     ]);
 
     const validateForm = () => {
         let error = {}
         console.log("length name : " + name.length + " password length : " + password.length)
-        if (name == '') error.name = "! Please Enter name"
+        if (value == '') error.name = "! Please Enter name"
         if (password == '') error.password = "! please enter password"
         setError(error)
         console.log(Object.keys(error).length)
@@ -37,30 +37,29 @@ export default function App({navigator, route}) {
         if (validateForm()) {
             console.log("Form is Valid");
             axios({
-                url: "http://10.16.49.174:3000/auth/staff/login",
+                url: "http://" + ipAddr + ":3000/auth/staff/login",
                 method: "POST",
-                params: { name : name, password }
+                params: { name, password }
             })
                 .then(async (res) => {
-                    console.log(res.data)
-                    if (res.data.newUser) {
-                        Alert("New User ? ", "Please Register before login")
-                    }
-                    else if (!res.data.wrongPassword) {
+                    console.log(res);
+                    if (!res.invvalid) {
+                        route.params.setLoggedIn(true)
+                        await AsyncStorage.setItem("name", value)
+                    } else if (!res.data.wrongPassword) {
                         const { name, roll, year, dept } = res.data.userData
                         console.log(name, roll)
-                        await AsyncStorage.setItem("name", name)
                         await AsyncStorage.setItem("roll", roll + "")
                         await AsyncStorage.setItem("year", year + "")
                         await AsyncStorage.setItem("dept", dept)
                         await AsyncStorage.setItem("token", res.data.token)
                         console.log("correct password")
-                        route.params.setLoggedIn(true);
+                        route.params.setLoggedIn(true)
                     } else if (res.data.wrongPassword) {
                         Alert.alert("Wrong Crediantials", "wrong password")
                     }
                 }).catch(err => {
-                    console.log("ERROR in login page: ",err.message)
+                    console.log("ERROR in login page: ", err.message)
                 })
         }
         else {
@@ -74,18 +73,18 @@ export default function App({navigator, route}) {
 
 
             <View style={styles.form}>
-            <DropDownPicker
+                <DropDownPicker
                     searchable={true}
                     open={open}
                     value={value}
                     items={staffs}
                     setOpen={setOpen}
                     setValue={setValue}
-                    style={styles.input} 
+                    style={styles.input}
                     setItems={setStaffs}
                     placeholder={'Select Faculty'}
-                />              
-                  {
+                />
+                {
                     error.name ? <Text style={styles.err}>{error.name}</Text> : null
                 }
                 <TextInput value={password} placeholder="Password " style={styles.input} onChangeText={setPassword} secureTextEntry />
@@ -115,16 +114,16 @@ const styles = StyleSheet.create({
         marginTop: 10
     },
     infoView: {
-        flex:  1,
+        flex: 1,
         alignItems: "center",
         // backgroundColor: "#F7DED0",
-        backgroundColor:"#9195F6",
+        backgroundColor: "#9195F6",
         borderRadius: 6,
-        padding:7
+        padding: 7
     },
     infoText: {
         fontSize: 14,
-        fontWeight:"900"
+        fontWeight: "900"
     },
     container: {
         flex: 1,

@@ -5,4 +5,4 @@ const localHost = "10.0.2.2";
 const etherNet = "10.11.152.127";
 const yuviPhone = "192.168.200.149";
 
-export default annaWifi
+export default annahypenWifi
