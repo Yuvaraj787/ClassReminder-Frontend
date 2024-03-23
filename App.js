@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { TouchableOpacity, View, Text, StyleSheet, LogBox } from "react-native";
+import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import { Entypo } from '@expo/vector-icons';
 import React, { useState, useEffect, createContext, useContext } from 'react'
 // import SkeletonContent from 'react-native-skeleton-content'
@@ -18,6 +18,8 @@ import Attendence from './Pages/AttendenceManager';
 import ipAddr from "./functions/ip_addr";
 import axios from 'axios';
 import StaffLogin from "./Pages/staffLogin"
+import StaffAttendence from "./Pages/StaffAtt"
+
 import * as Device from 'expo-device';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Schedule from './Pages/Schedule';
@@ -32,17 +34,15 @@ import { registerIndieID, unregisterIndieDevice } from 'native-notify';
 const BottomTab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const LogContext = createContext(null);
-LogBox.ignoreAllLogs = true
 
 export default function App() {
   registerNNPushToken(19717, '6cGVSWyXY5RoTiF9pUgfiS');
   const [isLoggedIn, setLoggedIn] = useState(false);
-  const [isStaffLoggedIn, setStaffLoggedIn] = useState(false);
+  const [isStaffLoggedIn, setStaffLoggedIn] = useState(true);
 
   const [loading, setLoading] = useState(true);
   const [expoPushToken, setExpoPushToken] = useState('');
   useEffect(() => {
-
     var tok, roll;
     async function fetch() {
       try {
@@ -81,15 +81,21 @@ export default function App() {
   return (
     loading ? <Loading /> :
       <>
-        <LogContext.Provider value={setLoggedIn}>
-          {!isLoggedIn ?
-            <NavigationContainer>
-              <AfterLoginStaff />
-            </NavigationContainer>
-            :
-            <NavigationContainer>
-              <AfterLogin />
-            </NavigationContainer>}
+        <LogContext.Provider value={[setLoggedIn, setStaffLoggedIn]}>
+          {
+            isStaffLoggedIn ?
+              <NavigationContainer>
+                <AfterLoginStaff />
+              </NavigationContainer>
+              : isLoggedIn ?
+                <NavigationContainer>
+                  <AfterLogin />
+                </NavigationContainer>
+                :
+                <NavigationContainer>
+                  <BeforeLogin setStaffLoggedIn={setStaffLoggedIn} setLoggedIn={setLoggedIn} />
+                </NavigationContainer>
+          }
         </LogContext.Provider>
       </>
   )
@@ -130,37 +136,8 @@ function AfterLoginStaff({ setLoggedIn }) {
         <Stack.Screen name="Attendence" component={Attendence} />
         <Stack.Screen name="Dashboard" component={DashBoard} />
         <Stack.Screen name="Schedule" component={Schedule} />
-      </Stack.Navigator>
-    </>
-  )
-}
+        <Stack.Screen name="StaffAttendance" component={StaffAttendence} />
 
-
-function AfterLoginStaff({ setLoggedIn }) {
-  return (
-    <>
-      <Stack.Navigator
-        screenOptions={({ navigation }) => ({
-          headerRight: () => (
-            <TouchableOpacity
-              style={{ marginRight: 30, marginTop: 10 }}
-              onPress={() => {
-                console.log("Notification Pressed");
-                navigation.navigate("Notification");
-              }}
-            >
-              <Ionicons name="notifications" size={24} color="black" />
-            </TouchableOpacity>
-          )
-        })}
-      >
-        <Stack.Screen name="Main" component={MainScreenStaffs} options={{ headerShown: false }} />
-        <Stack.Screen name="Notification" component={Notification} />
-        <Stack.Screen name="AddCourse" component={AddCourse} options={{ headerTitle: "Add a Course" }} />
-        <Stack.Screen name="CourseDisplay" component={CoursesDisplay} options={{ headerTitle: "My Courses" }} />
-        <Stack.Screen name="Attendence" component={Attendence} />
-        <Stack.Screen name="Dashboard" component={DashBoard} />
-        <Stack.Screen name="Schedule" component={Schedule} />
       </Stack.Navigator>
     </>
   )
@@ -199,7 +176,7 @@ function AfterLogin({ setLoggedIn }) {
 
 function MainScreenStaffs({ setLoggedIn }) {
   return (
-    <BottomTab.Navigator initialRouteName='Dashboard'>
+    <BottomTab.Navigator initialRouteName='StaffDashboard'>
       <BottomTab.Screen
         name="StaffDashboard"
         component={StaffDashBoard}
@@ -211,6 +188,7 @@ function MainScreenStaffs({ setLoggedIn }) {
           headerTitle: "Staff Dashboard"
         }}
       />
+
     </BottomTab.Navigator>
   );
 }
@@ -284,6 +262,7 @@ function BeforeLogin({ setLoggedIn, setStaffLoggedIn }) {
     </BottomTab.Navigator>
   )
 }
+
 
 
 const styles = StyleSheet.create({
