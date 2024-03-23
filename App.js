@@ -18,6 +18,8 @@ import Attendence from './Pages/AttendenceManager';
 import ipAddr from "./functions/ip_addr";
 import axios from 'axios';
 import StaffLogin from "./Pages/staffLogin"
+import StaffAttendence from "./Pages/StaffAtt"
+
 import * as Device from 'expo-device';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Schedule from './Pages/Schedule';
@@ -36,7 +38,7 @@ const LogContext = createContext(null);
 export default function App() {
   registerNNPushToken(19717, '6cGVSWyXY5RoTiF9pUgfiS');
   const [isLoggedIn, setLoggedIn] = useState(false);
-  const [isStaffLoggedIn, setStaffLoggedIn] = useState(false);
+  const [isStaffLoggedIn, setStaffLoggedIn] = useState(true);
 
   const [loading, setLoading] = useState(true);
   const [expoPushToken, setExpoPushToken] = useState('');
@@ -50,7 +52,7 @@ export default function App() {
         tok = await AsyncStorage.getItem("token");
         roll = await AsyncStorage.getItem("roll");
       } catch (err) {
-        console.log("Error in app.js token and roll fetching : ",err.message)
+        console.log("Error in app.js token and roll fetching : ", err.message)
       }
       if (!tok) {
         setLoggedIn(false);
@@ -60,7 +62,7 @@ export default function App() {
       }
       console.log("INFO: Auth Token is present")
       axios({
-        url: "http://"+ipAddr+":3000/auth/verify",
+        url: "http://" + ipAddr + ":3000/auth/verify",
         method: "POST",
         params: { token: tok }
       }).then(res => {
@@ -85,19 +87,19 @@ export default function App() {
           <LogContext.Provider value={[setLoggedIn, makeItTrue]}>
             {
             isStaffLoggedIn ?
-            <NavigationContainer>
-             <AfterLoginStaff />
-            </NavigationContainer>
-           : (isLoggedIn ? 
-          <NavigationContainer>
-             <AfterLogin />
-          </NavigationContainer>
-          :
-          <NavigationContainer>
-             <BeforeLogin   />
-          </NavigationContainer>)
+              <NavigationContainer>
+                <AfterLoginStaff />
+              </NavigationContainer>
+              : (isLoggedIn ?
+                <NavigationContainer>
+                  <AfterLogin />
+                </NavigationContainer>
+                :
+                <NavigationContainer>
+                  <BeforeLogin  />
+                </NavigationContainer>)
           }
-          </LogContext.Provider>
+        </LogContext.Provider>
       </>
   )
 }
@@ -132,11 +134,13 @@ function AfterLoginStaff() {
       >
         <Stack.Screen name="Main" component={MainScreenStaffs} options={{ headerShown: false }} />
         <Stack.Screen name="Notification" component={Notification} />
-        <Stack.Screen name="AddCourse" component={AddCourse} options={{headerTitle:"Add a Course"}} />
-        <Stack.Screen name="CourseDisplay" component={CoursesDisplay} options={{headerTitle:"My Courses"}} />
+        <Stack.Screen name="AddCourse" component={AddCourse} options={{ headerTitle: "Add a Course" }} />
+        <Stack.Screen name="CourseDisplay" component={CoursesDisplay} options={{ headerTitle: "My Courses" }} />
         <Stack.Screen name="Attendence" component={Attendence} />
         <Stack.Screen name="Dashboard" component={DashBoard} />
         <Stack.Screen name="Schedule" component={Schedule} />
+        <Stack.Screen name="StaffAttendance" component={StaffAttendence} />
+
       </Stack.Navigator>
     </>
   )
@@ -163,8 +167,8 @@ function AfterLogin() {
       >
         <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Notification" component={Notification} />
-        <Stack.Screen name="AddCourse" component={AddCourse} options={{headerTitle:"Add a Course"}} />
-        <Stack.Screen name="CourseDisplay" component={CoursesDisplay} options={{headerTitle:"My Courses"}} />
+        <Stack.Screen name="AddCourse" component={AddCourse} options={{ headerTitle: "Add a Course" }} />
+        <Stack.Screen name="CourseDisplay" component={CoursesDisplay} options={{ headerTitle: "My Courses" }} />
         <Stack.Screen name="Attendence" component={Attendence} />
         <Stack.Screen name="Dashboard" component={DashBoard} />
         <Stack.Screen name="Schedule" component={Schedule} />
@@ -187,6 +191,7 @@ function MainScreenStaffs() {
           headerTitle: "Staff Dashboard"
         }}
       />
+
     </BottomTab.Navigator>
   );
 }
@@ -258,6 +263,7 @@ function BeforeLogin() {
     </BottomTab.Navigator>
   )
 }
+
 
 
 const styles = StyleSheet.create({

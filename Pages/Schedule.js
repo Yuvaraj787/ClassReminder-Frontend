@@ -7,7 +7,7 @@ import Axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-function PerDay({Schedule}) {
+function PerDay({ Schedule }) {
     return (
         <View>
             <FlatList
@@ -25,11 +25,10 @@ function PerDay({Schedule}) {
 
                                 </View>
                                 <View style={styles.rowBottom}>
-                                    <View style={{justifyContent: "flex-start" }}><Text>{item.staff}</Text></View>
+                                    <View style={{ justifyContent: "flex-start" }}><Text>{item.staff}</Text></View>
                                     <Text ><Ionicons name="location" size={15} color="black" /> {item.location ? item.location : "No Location given"}</Text>
                                 </View>
                             </View>
-
                         </View>
                     )
                 }}
@@ -65,9 +64,9 @@ export default function TabViewExample() {
         { key: 'fourth', title: 'Thrusday' },
         { key: 'fifth', title: 'Friday' }
     ]);
-    
+
     const [sch, setSch] = React.useState({
-        monday : [],
+        monday: [],
         tuesday: [],
         wednesday: [],
         thursday: [],
@@ -95,13 +94,13 @@ export default function TabViewExample() {
                 var sorted_schedule = data.data;
                 console.log(sorted_schedule);
                 Object.keys(sorted_schedule).forEach(day => {
-                    sorted_schedule[day].sort((a,b) => a.hour - b.hour)
+                    sorted_schedule[day].sort((a, b) => a.hour - b.hour)
                 })
                 setSch(sorted_schedule);
-               
+
                 // setLoading(false);
             } catch (err) {
-                console.log("Error in getting weekly schedule : ", err.message)
+                console.log("Error in getting weekly schedule 1 : ", err.message)
             }
         }
         fetchSchedule();
@@ -219,7 +218,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         padding: 10,
-        flexGrow :1,
+        flexGrow: 1,
     }
 
 })

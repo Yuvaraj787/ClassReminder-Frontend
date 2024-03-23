@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 
-export default function App({ navigator, route }) {
+export default function App({  navigator, route  }) {
     const navigation = useNavigation();
     const [on, Seton] = useState(true)
     const [open, setOpen] = useState(false);
@@ -20,10 +20,10 @@ export default function App({ navigator, route }) {
     const setLog = useContext(LogContext)[1];
     
     const [staffs, setStaffs] = useState([
-        { label: 'Selvi Ravindran', value: 'Selvi Ravindran' },
-        { label: 'Swaminathan', value: 'Swaminathan' },
-        { label: 'Jasmine', value: 'Jasmine' },
-        { label: 'Senthil Kumar', value: 'Senthil Kumar' },
+        {  label: 'Selvi Ravindran', value: 'Selvi Ravindran'  },
+        {  label: 'Swaminathan', value: 'Swaminathan'  },
+        {  label: 'Jasmine', value: 'Jasmine'  },
+        {  label: 'Senthil Kumar', value: 'Senthil Kumar'  },
     ]);
 
 
@@ -56,7 +56,7 @@ export default function App({ navigator, route }) {
                         Alert.alert("Wrong Crediantials", "wrong password")
                     }
                 }).catch(err => {
-                    console.log("ERROR in staff login page: ", err.message)
+                    console.log("ERROR in staff login page: ",  err.message)
                 })
         }
         else {
@@ -70,7 +70,7 @@ export default function App({ navigator, route }) {
 
 
             <View style={styles.form}>
-                <DropDownPicker
+                    <DropDownPicker
                     searchable={true}
                     open={open}
                     value={value}

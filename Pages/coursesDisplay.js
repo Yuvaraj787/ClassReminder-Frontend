@@ -6,6 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import axios from 'axios';
 import ipAddr from "../functions/ip_addr"
+import { useFocusEffect } from '@react-navigation/native';
+
 const CoursesDisplay = () => {
     const navigate = useNavigation();
     const [theoryCourses, settheoryCourses] = useState([])
@@ -29,6 +31,13 @@ const CoursesDisplay = () => {
         GetCourses()
         console.log("course fetching")
     }, [])
+
+    useFocusEffect(
+        React.useCallback(() => {
+            GetCourses()
+            console.log("course fetching")
+        }, [])
+    );
 
     const GetCourses = async () => {
         var roll = await AsyncStorage.getItem("roll");

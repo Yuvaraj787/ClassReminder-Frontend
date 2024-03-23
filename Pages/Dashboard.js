@@ -18,6 +18,7 @@ import Axios from "axios"
 
 
 export default function DashBoard({ navigation }) {
+
     const [currentTime, setCurrentTime] = useState(new Date());
     var name, dept, year, roll;
     const [userDetails, setUserDetails] = useState({ name_n: "", dept_n: "" });
@@ -30,8 +31,8 @@ export default function DashBoard({ navigation }) {
         wednesday: [],
         thursday: [],
         friday: [],
-        saturday : [],
-        sunday : []
+        saturday: [],
+        sunday: []
     })
     const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
     useEffect(() => {
@@ -40,7 +41,8 @@ export default function DashBoard({ navigation }) {
         }, 1000);
         // console.log(currentTime.toLocaleTimeString())
         return () => clearInterval(interval);
-    }, []);
+    }, [])
+
     useEffect(() => {
         setCurrentDay(currentTime.getDay())
         async function fetch() {
@@ -75,7 +77,7 @@ export default function DashBoard({ navigation }) {
                         token: token_n
                     }
                 })
-                // console.log("weekly schedule : ", data.data.schedule.thursday)
+                console.log("weekly schedule : ", data.data.schedule.thursday)
 
                 var sorted_schedule = data.data;
                 var currentHour = timeToHour(currentTime.getHours(), currentTime.getMinutes());
@@ -167,7 +169,7 @@ export default function DashBoard({ navigation }) {
                 //     longitude
                 // });
                 // console.log(response)
-                // setDisplayLocation(`${response[0].district},${response[0].city}`)
+                // setDisplayLocation(${response[0].district},${response[0].city})
                 setDisplayLocation(giveCollegeLocation(latitude, longitude))
             }
         } catch (err) {
@@ -185,7 +187,7 @@ export default function DashBoard({ navigation }) {
                     <Text style={{
                         fontSize: 22, fontFamily: "monospace",
                         fontWeight: "bold"
-                    }}>Welcome, </Text>
+                    }}>Welcome , </Text>
                     <Text style={styles.nametext}><Text style={{
                         fontSize: 30, fontFamily: "monospace",
                     }}>{userDetails.name_n} </Text><Text>{userDetails.dept_n == "IT" ? "B.Tech " : "B.E "} {userDetails.dept_n}</Text></Text>
@@ -218,8 +220,8 @@ export default function DashBoard({ navigation }) {
                         <View style={styles.overBox}>
                             <View>{(currentDay == 0 || currentDay == 6) ? <Text style={styles.classOverText}>Yeah Dude, Today is not a working day. Chill...</Text> : <Text style={styles.classOverText}>Hurrah !  Classes are over for today</Text>}</View>
                             <View>
-                                <View 
-                                style={{display:"flex", justifyContent:"center", alignItems:"center", margin: 0}}><Text style={{fontWeight: 900, fontSize : 17}}>Suggested Activities</Text></View>
+                                <View
+                                    style={{ display: "flex", justifyContent: "center", alignItems: "center", margin: 0 }}><Text style={{ fontWeight: 900, fontSize: 17 }}>Suggested Activities</Text></View>
                                 <View style={styles.actBox}>
                                     <TouchableOpacity style={styles.btnBoxes} onPress={() => navigate.navigate("Attendence")}>
                                         <View style={styles.pressBox}>
@@ -241,13 +243,13 @@ export default function DashBoard({ navigation }) {
                             renderItem={({ item }) => {
                                 //console.log(item.Subject)
                                 return (
-                                    <View style={{...styles.periodsRow, backgroundColor : currentHour == item.hour ? "#D4E7C5" : "#F2EFE5", borderColor : (currentHour == item.hour) ? "black" : "silver"}}>
+                                    <View style={{ ...styles.periodsRow, backgroundColor: currentHour == item.hour ? "#D4E7C5" : "#F2EFE5", borderColor: (currentHour == item.hour) ? "black" : "silver" }}>
                                         <View style={styles.rowLeft}>
                                             <Text style={{ fontSize: 20 }}>{item.hour}</Text>
                                         </View>
                                         <View style={styles.rowRight}>
                                             <View style={styles.rowTop}>
-                                                {currentHour == item.hour && <Text style={{fontWeight : "normal"}}>Currently Ongoing</Text>}
+                                                {currentHour == item.hour && <Text style={{ fontWeight: "normal" }}>Currently Ongoing</Text>}
                                                 <Text style={{ fontSize: 20 }}>{item.courseName}</Text>
                                             </View>
                                             <View style={styles.rowBottom}>
@@ -270,7 +272,7 @@ export default function DashBoard({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-    
+
     btnBoxes: {
         display: "flex",
         justifyContent: "center",
@@ -294,7 +296,7 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 10,
         elevation: 5,
-        alignSelf:"flex-start",
+        alignSelf: "flex-start",
         rowGap: 10
     },
     classOverText: {
@@ -326,21 +328,20 @@ const styles = StyleSheet.create({
         flex: 2,
         flexDirection: "row",
         justifyContent: "space-around",
-        alignItems: "center",
+        alignItems: "center"
     },
     box: {
         height: 100,
         width: 100,
         elevation: 5,
-        backgroundColor: "#F2EFE5",
+        backgroundColor: "#fff",
         // borderWidth: 1,
         //borderColor: "silver",
         borderRadius: 10,
         marginBottom: 5,
         padding: 10,
         justifyContent: "center",
-        alignItems: "center",
-
+        alignItems: "center"
 
     },
     box2: {
@@ -356,9 +357,7 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         padding: 10,
         justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#F2EFE5"
-
+        alignItems: "center"
     },
     time: {
         fontSize: 30,
@@ -372,7 +371,7 @@ const styles = StyleSheet.create({
         rowGap: 10
     },
     periodsRow: {
-        backgroundColor: "#F2EFE5",
+        backgroundColor: "white",
         padding: 10,
         width: "100%",
         marginBottom: 5,
@@ -406,7 +405,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         padding: 10,
     },
-    boxText : {
+    boxText: {
         textAlign: "center"
     }
 })

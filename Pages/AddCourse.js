@@ -8,6 +8,7 @@ import ipAddr from "../functions/ip_addr"
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { Axios } from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
     const navigate = useNavigation();
@@ -25,7 +26,6 @@ export default function App() {
     useEffect(() => {
         getSub()
     }, [])
-
 
 
     const getSub = async () => {
@@ -55,18 +55,28 @@ export default function App() {
     const [index, setIndex] = useState(1);
 
     const validateForm = () => {
-       return true;
+        return true;
     }
 
     const handleSubmit = async () => {
+        console.log(value)
+        console.log(svalue)
         if (validateForm()) {
             console.log("done uh");
-            navigate.navigate("Profile", { name: courseName })
-            const res = await axios({
-                url: `http://${ipAddr}:3000/user/`,
-                method: "get",
-                params: { sem: 6 }
-            })
+            const token = await AsyncStorage.getItem("token")
+            try {
+                const res = await axios({
+                    url: `http://${ipAddr}:3000/user/enrollCourse`,
+                    method: "post",
+                    params: { token, courseCode: value, faculty: svalue }
+                })
+                console.log("sucess")
+                console.log(res.data)
+                navigate.navigate("CourseDisplay")
+            }
+            catch (err) {
+                console.log(err.message)
+            }
         }
         else {
             console.log("oh no ")
@@ -105,7 +115,7 @@ export default function App() {
                         console.log("Filtered staff for selected value:", course);
                         const staffsArray = []
                         course[0].staffs.forEach(staff => {
-                            staffsArray.push({ label: staff, value: value })
+                            staffsArray.push({ label: staff, value: staff })
                         })
                         console.log(staffsArray)
                         setStaffs(staffsArray)
