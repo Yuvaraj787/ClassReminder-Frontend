@@ -44,13 +44,13 @@ const Login = ({ navigator, route }) => {
                 if (res.data.newUser) {
                     Alert.alert("New User", "Please register before logging in");
                 } else if (!res.data.wrongPassword) {
-                    const { name, roll, year, dept } = res.data.userData;
-                    await AsyncStorage.setItem("name", name);
-                    await AsyncStorage.setItem("roll", roll + "");
-                    await AsyncStorage.setItem("year", year + "");
-                    await AsyncStorage.setItem("dept", dept);
-                    await AsyncStorage.setItem("token", res.data.token);
-                    registerIndieID(roll + "", 19717, '6cGVSWyXY5RoTiF9pUgfiS');
+                    const { name, roll, year, dept } = res.data.userData
+                    await AsyncStorage.setItem("name", name)
+                    await AsyncStorage.setItem("roll", roll + "")
+                    await AsyncStorage.setItem("year", year + "")
+                    await AsyncStorage.setItem("dept", dept)
+                    await AsyncStorage.setItem("token", res.data.token)
+                    registerIndieID(roll + "", 19717, '6cGVSWyXY5RoTiF9pUgfiS')
                     setLog(true)
                 } else {
                     Alert.alert("Wrong Credentials", "Incorrect password");
