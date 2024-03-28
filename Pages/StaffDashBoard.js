@@ -345,6 +345,7 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply, currentHour }
                 <View style={{ flex: 2, justifyContent: "flex-start" }}><Text>{sem + "th sem"}</Text></View>
                 <Text style={{ flex: 3 }}><Ionicons name="location" size={15} color="black" /> {"No Location GIven"}</Text>
             </View>
+
             <Modal
                 visible={open}
                 transparent={true}
@@ -390,6 +391,7 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply, currentHour }
                     </View>
                 </View>
             </Modal>
+
             <Animated.View
                 style={{
                     height: zoomAnim,
