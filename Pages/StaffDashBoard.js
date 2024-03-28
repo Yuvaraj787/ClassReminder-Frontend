@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 //import Schedule from "../Components/Schedule.json"
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
+import { FontAwesome } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 // import SkeletonContent from 'react-native-skeleton-content';
@@ -36,7 +37,7 @@ export default function DashBoard({ navigation }) {
     const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
 
     useEffect(() => {
-        //setCurrentDay(currentTime.getDay())
+        setCurrentDay(4 || currentTime.getDay())
         const interval = setInterval(() => {
             setCurrentTime(new Date());
         }, 1000);
@@ -175,7 +176,7 @@ export default function DashBoard({ navigation }) {
             })
             console.log(res.data)
             var sorted_schedule = res.data;
-            var currentHour = timeToHour(currentTime.getHours(), currentTime.getMinutes());
+            var currentHour = 1 || timeToHour(currentTime.getHours(), currentTime.getMinutes());
             console.log("Current hour : ", currentHour);
             setCurrentHour(currentHour)
             Object.keys(sorted_schedule).forEach(day => {
@@ -233,17 +234,37 @@ export default function DashBoard({ navigation }) {
                 </View>
                 <View style={styles.periods}>
 
-
-                    <View>
+                    <View>{Schedule[days[currentDay]].length == 0 ?
+                        <View style={styles.overBox}>
+                            <View>{(currentDay == 0 || currentDay == 6) ? <Text style={styles.classOverText}>Yeah Dude, Today is not a working day. Chill...</Text> : <Text style={styles.classOverText}>Hurrah !  Classes are over for today</Text>}</View>
+                            <View>
+                                <View
+                                    style={{ display: "flex", justifyContent: "center", alignItems: "center", margin: 0 }}><Text style={{ fontWeight: 900, fontSize: 17 }}>Suggested Activities</Text></View>
+                                <View style={styles.actBox}>
+                                    <TouchableOpacity style={styles.btnBoxes} onPress={() => navigate.navigate("Attendence")}>
+                                        <View style={styles.pressBox}>
+                                            <FontAwesome name="hand-stop-o" size={34} color="black" />
+                                            <Text style={styles.boxText}>Check Attendance</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.btnBoxes}>
+                                        <View style={styles.pressBox}>
+                                            <Ionicons name='timer-sharp' size={34} color="black" />
+                                            <Text style={styles.boxText}>Today's Routine</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View> :
                         <FlatList
                             data={Schedule[days[currentDay]]}
                             renderItem={({ item }) => {
                                 //console.log(item.Subject)
                                 return (
-                                    <ClassBox hour={item.hour} sem={6} subject={item.courseName} location={item.location} courseNo={item.courseCode} Apply={Apply} />
+                                    <ClassBox hour={item.hour} sem={6} subject={item.courseName} location={item.location} courseNo={item.courseCode} Apply={Apply} currentHour={currentHour} />
                                 )
                             }}
-                        />
+                        />}
 
 
                     </View>
@@ -254,7 +275,7 @@ export default function DashBoard({ navigation }) {
     );
 }
 
-function ClassBox({ hour, sem, subject, location, courseNo, Apply }) {
+function ClassBox({ hour, sem, subject, location, courseNo, Apply, currentHour }) {
     const [open, setOpen] = useState(false);
     const [zoomAnim] = useState(new Animated.Value(0))
 
@@ -311,12 +332,13 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply }) {
         setSelected([day, hour])
     }
 
-    return <TouchableOpacity style={styles.periodsRow} onPress={trans} activeOpacity={0.6}>
+    return <TouchableOpacity style={{...styles.periodsRow,  backgroundColor: currentHour == hour ? "#D4E7C5" : "#F2EFE5", borderColor: (currentHour == hour) ? "black" : "silver"}} onPress={trans} activeOpacity={0.6}>
         <View style={styles.rowLeft}>
             <Text style={{ fontSize: 20 }}>{hour}</Text>
         </View>
         <View style={styles.rowRight}>
             <View style={styles.rowTop}>
+            {currentHour == hour && <Text style={{ fontWeight: "normal" }}>Currently Ongoing</Text>}
                 <Text style={{ fontSize: 20 }}>{subject}</Text>
             </View>
             <View style={styles.rowBottom}>
