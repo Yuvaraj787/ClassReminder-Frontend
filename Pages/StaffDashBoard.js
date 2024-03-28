@@ -277,15 +277,27 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply }) {
     }
 
 
-    const freeHours = {
-        "monday": [4, 6, 7],
-        "tuesday": [1, 2],
-        "wednesday": [2, 3],
-        "thursday": [6, 7],
-        "friday": [5]
-    }
+    const [freeHours, setFreeHours] = useState({
+        "monday" : [],
+        "tuesday" : [],
+        "wednesday" : [],
+        "thursday" : [],
+        "friday" : []
+    })
 
-    const [selected, setSelected] = useState(["monday", 4])
+    const [selected, setSelected] = useState([])
+
+    useEffect(() => {
+        async function getHours() {
+            const res = await axios({
+                url: "http://" + ipAddr + ":3000/user/freehours",
+                method : "get"
+            })
+            console.log(res.data)
+            setFreeHours(res.data)
+        }
+        getHours();
+    }, [])
 
     const markSelected = (day, hour) => {
         const days = {

@@ -42,6 +42,9 @@ export default function App() {
 
   const [loading, setLoading] = useState(true);
   const [expoPushToken, setExpoPushToken] = useState('');
+  const makeItTrue = () => {
+    setStaffLoggedIn(true);
+  }
   useEffect(() => {
     var tok, roll;
     async function fetch() {
@@ -81,20 +84,20 @@ export default function App() {
   return (
     loading ? <Loading /> :
       <>
-        <LogContext.Provider value={[setLoggedIn, setStaffLoggedIn]}>
-          {
+          <LogContext.Provider value={[setLoggedIn, makeItTrue]}>
+            {
             isStaffLoggedIn ?
               <NavigationContainer>
                 <AfterLoginStaff />
               </NavigationContainer>
-              : isLoggedIn ?
+              : (isLoggedIn ?
                 <NavigationContainer>
                   <AfterLogin />
                 </NavigationContainer>
                 :
                 <NavigationContainer>
-                  <BeforeLogin setStaffLoggedIn={setStaffLoggedIn} setLoggedIn={setLoggedIn} />
-                </NavigationContainer>
+                  <BeforeLogin  />
+                </NavigationContainer>)
           }
         </LogContext.Provider>
       </>
@@ -111,7 +114,7 @@ function Loading() {
   )
 }
 
-function AfterLoginStaff({ setLoggedIn }) {
+function AfterLoginStaff() {
   return (
     <>
       <Stack.Navigator
@@ -144,7 +147,7 @@ function AfterLoginStaff({ setLoggedIn }) {
 }
 
 
-function AfterLogin({ setLoggedIn }) {
+function AfterLogin() {
   return (
     <>
       <Stack.Navigator
@@ -174,7 +177,7 @@ function AfterLogin({ setLoggedIn }) {
   )
 }
 
-function MainScreenStaffs({ setLoggedIn }) {
+function MainScreenStaffs() {
   return (
     <BottomTab.Navigator initialRouteName='StaffDashboard'>
       <BottomTab.Screen
@@ -193,7 +196,7 @@ function MainScreenStaffs({ setLoggedIn }) {
   );
 }
 
-function MainScreen({ setLoggedIn }) {
+function MainScreen() {
   return (
     <BottomTab.Navigator initialRouteName='Dashboard'>
       <BottomTab.Screen
@@ -221,7 +224,7 @@ function MainScreen({ setLoggedIn }) {
   );
 }
 
-function BeforeLogin({ setLoggedIn, setStaffLoggedIn }) {
+function BeforeLogin() {
   return (
     <BottomTab.Navigator initialRouteName='Login'>
 
@@ -235,7 +238,6 @@ function BeforeLogin({ setLoggedIn, setStaffLoggedIn }) {
           headerShown: true,
           headerTitle: "Student Login",
         }}
-        initialParams={{ setLoggedIn: setLoggedIn }}
       />
       <BottomTab.Screen
         name="Signup"
@@ -257,7 +259,6 @@ function BeforeLogin({ setLoggedIn, setStaffLoggedIn }) {
           headerShown: true,
           headerTitle: "Staff Login",
         }}
-        initialParams={{ setLoggedIn: setStaffLoggedIn }}
       />
     </BottomTab.Navigator>
   )
