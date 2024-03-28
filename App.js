@@ -38,7 +38,7 @@ const LogContext = createContext(null);
 export default function App() {
   registerNNPushToken(19717, '6cGVSWyXY5RoTiF9pUgfiS');
   const [isLoggedIn, setLoggedIn] = useState(false);
-  const [isStaffLoggedIn, setStaffLoggedIn] = useState(true);
+  const [isStaffLoggedIn, setStaffLoggedIn] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [expoPushToken, setExpoPushToken] = useState('');

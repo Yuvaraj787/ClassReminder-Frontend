@@ -254,7 +254,7 @@ export default function DashBoard({ navigation }) {
                                             </View>
                                             <View style={styles.rowBottom}>
                                                 <View style={{ justifyContent: "flex-start" }}><Text><Ionicons name="person" size={15} color="black" /> {item.staff}</Text></View>
-                                                <Text>    <Ionicons name="location" size={15} color="black" /> {item.location ? item.location : "Location not given"}</Text>
+                                                <Text>  <Ionicons name="location" size={15} color="black" /> {item.location ? item.location : "Location not given"}</Text>
                                             </View>
                                         </View>
                                     </View>

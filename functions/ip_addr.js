@@ -5,5 +5,7 @@ const localHost = "10.0.2.2";
 const etherNet = "10.11.152.127";
 const yuviPhone = "192.168.7.191";
 const labAnnaWifi = "10.11.157.144";
+const dhanushPhone = "192.168.136.191"
+const yogeshPhone = "192.168.126.191"
 
-export default yuviPhone;
+export default annahypenWifi;
