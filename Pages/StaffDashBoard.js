@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, ScrollView, FlatList, TouchableOpacity, Animated, Modal, Alert, PermissionsAndroid, Pressable, Button } from "react-native"
+import { StyleSheet, View, TextInput, Text, ScrollView, FlatList, TouchableOpacity, Animated, Modal, Alert, PermissionsAndroid, Pressable, Button } from "react-native"
 import React, { useState, useEffect } from "react";
 //import Schedule from "../Components/Schedule.json"
 import { Ionicons } from '@expo/vector-icons';
@@ -21,8 +21,9 @@ export default function DashBoard({ navigation }) {
     var name, dept, year, roll;
     const [userDetails, setUserDetails] = useState({ name_n: "", dept_n: "" });
     const [userLoading, setUserLoading] = useState(true);
-    const [currentDay, setCurrentDay] = useState(3);
+    const [currentDay, setCurrentDay] = useState(5);
     const [currentHour, setCurrentHour] = useState(1);
+
     const [Schedule, setSchedule] = useState({
         monday: [],
         tuesday: [],
@@ -240,7 +241,7 @@ export default function DashBoard({ navigation }) {
                             renderItem={({ item }) => {
                                 //console.log(item.Subject)
                                 return (
-                                    <ClassBox hour={item.hour} sem={6} subject={item.courseName} location={item.location} courseNo={item.courseCode} Apply={Apply} />
+                                    <ClassBox hour={item.hour} sem={6} subject={item.courseName} location={item.location} courseNo={item.courseCode} Apply={Apply} updateSchedule={getScheduleOfStaff} />
                                 )
                             }}
                         />
@@ -254,7 +255,7 @@ export default function DashBoard({ navigation }) {
     );
 }
 
-function ClassBox({ hour, sem, subject, location, courseNo, Apply }) {
+function ClassBox({ hour, sem, subject, location, courseNo, Apply, updateSchedule }) {
     const [open, setOpen] = useState(false);
     const [zoomAnim] = useState(new Animated.Value(0))
 
@@ -277,12 +278,13 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply }) {
     }
 
 
+
     const [freeHours, setFreeHours] = useState({
-        "monday" : [],
-        "tuesday" : [],
-        "wednesday" : [],
-        "thursday" : [],
-        "friday" : []
+        "monday": [],
+        "tuesday": [],
+        "wednesday": [],
+        "thursday": [],
+        "friday": []
     })
 
     const [selected, setSelected] = useState([])
@@ -291,7 +293,7 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply }) {
         async function getHours() {
             const res = await axios({
                 url: "http://" + ipAddr + ":3000/user/freehours",
-                method : "get"
+                method: "get"
             })
             console.log(res.data)
             setFreeHours(res.data)
@@ -310,6 +312,21 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply }) {
         days[day][hour] = true;
         setSelected([day, hour])
     }
+    const [LocOpen, setLocOpen] = useState(false)
+    const [venue, setVenue] = useState(location)
+    const [Loc, setLoc] = useState(location)
+
+    const changeLocation = async (newVenue) => {
+        const res = await axios({
+            url: "http://" + ipAddr + ":3000/user/freehours",
+            method: "get",
+            params: { courseNo, location: newVenue }
+        })
+        if (res.data.sucess) {
+            updateSchedule()
+            //setLoc(newVenue)
+        }
+    }
 
     return <TouchableOpacity style={styles.periodsRow} onPress={trans} activeOpacity={0.6}>
         <View style={styles.rowLeft}>
@@ -321,7 +338,7 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply }) {
             </View>
             <View style={styles.rowBottom}>
                 <View style={{ flex: 2, justifyContent: "flex-start" }}><Text>{sem + "th sem"}</Text></View>
-                <Text style={{ flex: 3 }}><Ionicons name="location" size={15} color="black" /> {"No Location GIven"}</Text>
+                <Text style={{ flex: 3 }}><Ionicons name="location" size={15} color="black" /> {Loc}</Text>
             </View>
 
             <Modal
@@ -370,6 +387,43 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply }) {
                 </View>
             </Modal>
 
+            <Modal
+                visible={LocOpen}
+                transparent={true}
+                onRequestClose={() => {
+                    setLocOpen(false);
+                    setLoc(location)
+                }}
+                animationType="fade"
+            >
+                <View style={styles.floatView}>
+                    <View style={styles.floatForm}>
+                        <View style={styles.formChild}>
+                            <Text style={styles.formHead}>Change Venue</Text>
+                        </View>
+
+                        <View style={styles.formBody}>
+
+                            <TextInput value={venue} style={styles.input} onChangeText={setVenue} />
+                            <View style={styles.formChild}>
+                                <Button title="Change" onPress={() => {
+                                    changeLocation(venue)
+                                    setLocOpen(false)
+                                    //setLoc(venue)
+
+                                }} />
+                            </View>
+                            <View style={styles.formChild}>
+                                <Button title="close" onPress={() => {
+                                    //setLoc(location)
+                                    setLocOpen(false)
+                                }} />
+                            </View>
+
+                        </View>
+                    </View>
+                </View>
+            </Modal>
             <Animated.View
                 style={{
                     height: zoomAnim,
@@ -378,7 +432,7 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply }) {
                 <View style={styles.rowBottomest}>
                     <View style={styles.actionBox}><Pressable onPress={() => setOpen(true)}>
                         <Text style={styles.actionText}>Postponse Class</Text></Pressable></View>
-                    <View style={styles.actionBox}><Pressable><Text style={styles.actionText}>Change Venue</Text></Pressable></View>
+                    <View style={styles.actionBox}><Pressable onPress={() => setLocOpen(true)}><Text style={styles.actionText}>Change Venue</Text></Pressable></View>
                     <View style={styles.actionBox}><Pressable><Text style={styles.actionText}>Cancel class</Text></Pressable></View>
                 </View>
             </Animated.View>
@@ -425,6 +479,14 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         height: "100%",
         backgroundColor: "rgba(0,0,0,0.1)"
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: "#ddd",
+        padding: 10,
+        marginBottom: 12,
+        borderRadius: 5,
+        width: 200
     },
     floatForm: {
         padding: 20,

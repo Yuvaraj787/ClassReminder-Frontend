@@ -38,7 +38,7 @@ const LogContext = createContext(null);
 export default function App() {
   registerNNPushToken(19717, '6cGVSWyXY5RoTiF9pUgfiS');
   const [isLoggedIn, setLoggedIn] = useState(false);
-  const [isStaffLoggedIn, setStaffLoggedIn] = useState(false);
+  const [isStaffLoggedIn, setStaffLoggedIn] = useState(true);
 
   const [loading, setLoading] = useState(true);
   const [expoPushToken, setExpoPushToken] = useState('');
@@ -84,8 +84,8 @@ export default function App() {
   return (
     loading ? <Loading /> :
       <>
-          <LogContext.Provider value={[setLoggedIn, makeItTrue]}>
-            {
+        <LogContext.Provider value={[setLoggedIn, makeItTrue]}>
+          {
             isStaffLoggedIn ?
               <NavigationContainer>
                 <AfterLoginStaff />
@@ -96,7 +96,7 @@ export default function App() {
                 </NavigationContainer>
                 :
                 <NavigationContainer>
-                  <BeforeLogin  />
+                  <BeforeLogin />
                 </NavigationContainer>)
           }
         </LogContext.Provider>
