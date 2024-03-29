@@ -191,7 +191,16 @@ function MainScreenStaffs() {
           headerTitle: "Staff Dashboard"
         }}
       />
-
+      <BottomTab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          tabBarLabel: "Profile",
+          tabBarIcon: () => (<Ionicons name="ios-person" size={20} />),
+          headerShown: true,
+          headerTitle: "Profile"
+        }}
+      />
     </BottomTab.Navigator>
   );
 }

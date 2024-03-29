@@ -261,12 +261,9 @@ export default function DashBoard({ navigation }) {
                                 )
                             }}
                         />}
-
-
                     </View>
                 </View>
             </View>
-
         </View>
     );
 }

@@ -31,6 +31,7 @@ export default function Att() {
         setStaffName(name)
         console.log(name)
         setCurrentDay(currentTime.getDay())
+        console.log(currentTime.getDay())
         try {
 
             const res = await axios({
