@@ -8,4 +8,4 @@ const labAnnaWifi = "10.11.157.144";
 const dhanushPhone = "192.168.136.191"
 const yogeshPhone = "192.168.126.191"
 
-export default labAnnaWifi;
+export default annahypenWifi;
