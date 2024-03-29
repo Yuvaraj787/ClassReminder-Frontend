@@ -14,7 +14,7 @@ const Profile = () => {
     var name, dept, year, roll;
     const navigator = useNavigation()
     const [userDetails, setUserDetails] = useState({ name_n: "", dept_n: "" });
-    const setLog = useContext(LogContext)[0];
+    const setLog = useContext(LogContext)[2];
     useEffect(() => {
         try {
         async function fetch() {
@@ -39,7 +39,9 @@ const Profile = () => {
     const logout = async () => {
         console.log("Logout process")
         try {
+            console.log("before")
             await AsyncStorage.clear();
+            console.log("called")
             setLog(false);
         } catch(err) {
             console.log("ERROR: error in logging out", err.message)
