@@ -317,8 +317,10 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply, updateSchedul
     const [Loc, setLoc] = useState(location)
 
     const changeLocation = async (newVenue) => {
+        //console.log(location + "change request sending")
+        console.log(courseNo)
         const res = await axios({
-            url: "http://" + ipAddr + ":3000/user/freehours",
+            url: "http://" + ipAddr + ":3000/user/changeLocation",
             method: "get",
             params: { courseNo, location: newVenue }
         })
