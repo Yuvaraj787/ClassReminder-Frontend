@@ -20,7 +20,7 @@ import axios from 'axios';
 import StaffLogin from "./Pages/staffLogin"
 import StaffProfile from "./Pages/StaffProfile"
 import StaffAttendence from "./Pages/StaffAtt"
-
+import AttendanceDisplay from './Pages/AttDisplay';
 import * as Device from 'expo-device';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Schedule from './Pages/Schedule';
@@ -97,7 +97,7 @@ export default function App() {
                 </NavigationContainer>
                 :
                 <NavigationContainer>
-                  <BeforeLogin  />
+                  <BeforeLogin />
                 </NavigationContainer>)
           }
         </LogContext.Provider>
@@ -167,10 +167,11 @@ function AfterLogin() {
         })}
       >
         <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Notification" component={Notification} />
+        <Stack.Screen name="Notification" component={Notification} options={{ headerTitle: "Notification" }} />
         <Stack.Screen name="AddCourse" component={AddCourse} options={{ headerTitle: "Add a Course" }} />
         <Stack.Screen name="CourseDisplay" component={CoursesDisplay} options={{ headerTitle: "My Courses" }} />
-        <Stack.Screen name="Attendence" component={Attendence} />
+        <Stack.Screen name="Attendence" component={Attendence} options={{ headerTitle: "Bunk Manager" }} />
+        <Stack.Screen name="AttendenceDisplay" component={AttendanceDisplay} options={{ headerTitle: "My Attendance" }} />
         <Stack.Screen name="Dashboard" component={DashBoard} />
         <Stack.Screen name="Schedule" component={Schedule} />
       </Stack.Navigator>

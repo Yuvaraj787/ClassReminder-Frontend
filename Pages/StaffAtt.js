@@ -30,7 +30,7 @@ export default function Att() {
         var name = await AsyncStorage.getItem("name");
         setStaffName(name)
         console.log(name)
-        setCurrentDay(currentTime.getDay()) 
+        setCurrentDay(currentTime.getDay())
         console.log(currentTime.getDay())
         try {
 
