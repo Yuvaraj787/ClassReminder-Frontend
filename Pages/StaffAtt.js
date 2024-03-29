@@ -14,7 +14,7 @@ import { faA } from '@fortawesome/free-solid-svg-icons';
 
 export default function Att() {
     const [date, setdate] = useState(0)
-    const [currentDay, setCurrentDay] = useState(3);
+    const [currentDay, setCurrentDay] = useState(4);
     const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
     const [currentTime, setCurrentTime] = useState(new Date());
     const [hours, setHours] = useState([])
@@ -30,7 +30,8 @@ export default function Att() {
         var name = await AsyncStorage.getItem("name");
         setStaffName(name)
         console.log(name)
-        //setCurrentDay(currentTime.getDay()) 
+        setCurrentDay(currentTime.getDay()) 
+        console.log(currentTime.getDay())
         try {
 
             const res = await axios({
@@ -90,7 +91,7 @@ export default function Att() {
             console.log(Atthour)
             const res = await axios({
                 url: "http://" + ipAddr + ":3000/att/submitAtt",
-                params: { Date: date, course_No, Att: studentStatus, Atthour, StaffName },
+                params: { Date: date, course_No, isPresentArray: studentStatus, Atthour, StaffName },
                 method: "post"
             })
 

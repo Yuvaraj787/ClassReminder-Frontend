@@ -176,7 +176,7 @@ export default function DashBoard({ navigation }) {
             })
             console.log(res.data)
             var sorted_schedule = res.data;
-            var currentHour = 1 || timeToHour(currentTime.getHours(), currentTime.getMinutes());
+            var currentHour = timeToHour(currentTime.getHours(), currentTime.getMinutes());
             console.log("Current hour : ", currentHour);
             setCurrentHour(currentHour)
             Object.keys(sorted_schedule).forEach(day => {
@@ -261,7 +261,7 @@ export default function DashBoard({ navigation }) {
                             renderItem={({ item }) => {
                                 //console.log(item.Subject)
                                 return (
-                                    <ClassBox hour={item.hour} sem={6} subject={item.courseName} location={item.location} courseNo={item.courseCode} Apply={Apply} currentHour={currentHour} />
+                                    <ClassBox hour={item.hour} sem={6} subject={item.courseName} location={item.location} courseNo={item.course_No} Apply={Apply} currentHour={currentHour} />
                                 )
                             }}
                         />}

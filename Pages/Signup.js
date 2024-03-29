@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-import { ipaddr } from "../functions/ip_addr"
+import  ipaddr  from "../functions/ip_addr"
 
 export default function App() {
     const navigate = useNavigation();
@@ -39,9 +39,10 @@ export default function App() {
     const handleSubmit = () => {
         if (validateForm()) {
             console.log("Form is valid. Submitting... new8");
+            console.log("http://"+ ipaddr +":3000/auth/register")
             axios({
                 url: "http://"+ ipaddr +":3000/auth/register",
-                method: "post",
+                method: "POST",
                 params: userDetails
             })
                 .then((res) => {
