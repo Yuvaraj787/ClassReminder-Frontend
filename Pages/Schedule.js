@@ -61,7 +61,7 @@ export default function TabViewExample() {
         { key: 'first', title: 'Monday' },
         { key: 'second', title: 'Tuesday' },
         { key: 'third', title: 'Wednesday' },
-        { key: 'fourth', title: 'Thrusday' },
+        { key: 'fourth', title: 'Thursday' },
         { key: 'fifth', title: 'Friday' }
     ]);
 
@@ -92,7 +92,6 @@ export default function TabViewExample() {
                 })
                 // console.log("weekly schedule : ", data.data.schedule.thursday)
                 var sorted_schedule = data.data;
-                console.log(sorted_schedule);
                 Object.keys(sorted_schedule).forEach(day => {
                     sorted_schedule[day].sort((a, b) => a.hour - b.hour)
                 })

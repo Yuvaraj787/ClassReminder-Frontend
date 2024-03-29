@@ -7,5 +7,6 @@ const yuviPhone = "192.168.7.149";
 const labAnnaWifi = "10.11.157.144";
 const dhanushPhone = "192.168.136.191"
 const yogeshPhone = "192.168.126.191"
+const libAnnaWifi = "10.11.53.92"
 
-export default annahypenWifi;
+export default yuviPhone;

@@ -18,6 +18,7 @@ import Attendence from './Pages/AttendenceManager';
 import ipAddr from "./functions/ip_addr";
 import axios from 'axios';
 import StaffLogin from "./Pages/staffLogin"
+import StaffProfile from "./Pages/StaffProfile"
 import StaffAttendence from "./Pages/StaffAtt"
 
 import * as Device from 'expo-device';
@@ -38,7 +39,7 @@ const LogContext = createContext(null);
 export default function App() {
   registerNNPushToken(19717, '6cGVSWyXY5RoTiF9pUgfiS');
   const [isLoggedIn, setLoggedIn] = useState(false);
-  const [isStaffLoggedIn, setStaffLoggedIn] = useState(false);
+  const [isStaffLoggedIn, setStaffLoggedIn] = useState(true);
 
   const [loading, setLoading] = useState(true);
   const [expoPushToken, setExpoPushToken] = useState('');
@@ -84,7 +85,7 @@ export default function App() {
   return (
     loading ? <Loading /> :
       <>
-          <LogContext.Provider value={[setLoggedIn, makeItTrue]}>
+          <LogContext.Provider value={[setLoggedIn, makeItTrue, setStaffLoggedIn]}>
             {
             isStaffLoggedIn ?
               <NavigationContainer>
@@ -193,7 +194,7 @@ function MainScreenStaffs() {
       />
       <BottomTab.Screen
         name="Profile"
-        component={Profile}
+        component={StaffProfile}
         options={{
           tabBarLabel: "Profile",
           tabBarIcon: () => (<Ionicons name="ios-person" size={20} />),

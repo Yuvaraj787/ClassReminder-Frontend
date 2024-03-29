@@ -4,7 +4,9 @@ import React, { useState, useEffect } from "react";
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome } from '@expo/vector-icons';
+import RNRestart from 'react-native-restart';
 import * as Location from 'expo-location';
+import { useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 // import SkeletonContent from 'react-native-skeleton-content';
 import ipAddr from "../functions/ip_addr";
@@ -37,7 +39,7 @@ export default function DashBoard({ navigation }) {
     const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
 
     useEffect(() => {
-        setCurrentDay(4 || currentTime.getDay())
+        setCurrentDay(currentTime.getDay())
         const interval = setInterval(() => {
             setCurrentTime(new Date());
         }, 1000);
@@ -120,7 +122,7 @@ export default function DashBoard({ navigation }) {
     const GetCurrentLocation = async () => {
         try {
             let { status } = await Location.requestBackgroundPermissionsAsync()
-            console.log("Background : " + status)
+            // console.log("Background : " + status)
             if (status !== 'granted') {
                 const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION);
                 if (!granted) Alert.alert(
@@ -130,10 +132,10 @@ export default function DashBoard({ navigation }) {
                     { cancelable: false }
                 );
             }
-            console.log("Enter 1")
+            // console.log("Enter 1")
             let { coords } = await Location.getCurrentPositionAsync();
-            console.log("Enter 2")
-            console.log("coordinates : ", coords);
+            // console.log("Enter 2")
+            // console.log("coordinates : ", coords);
             if (coords) {
                 const { latitude, longitude } = coords;
                 // let response = await Location.reverseGeocodeAsync({
@@ -149,15 +151,18 @@ export default function DashBoard({ navigation }) {
         }
     };
 
-    const Apply = async (courseNo, finalDay, finalHour, originalHour, subject) => {
+    const Apply = async (courseNo, finalDay, finalHour, originalHour, subject, location) => {
 
         try {
             const res = await axios({
-                url: "http://" + ipAddr + ":3000/user/notifyEnrolledStudents",
+                url: "http://" + ipAddr + ":3000/user/postponeClass",
                 params: { courseNo, finalDay, finalHour, originalHour, subject, staffName: userDetails.name_n },
                 method: "get"
             })
             console.log(res)
+            if (res.data.success) {
+                RNRestart.restart()
+            }
         } catch (err) {
             console.log("Error in  send notify interrupt t backend : ", err.message)
         }
@@ -169,14 +174,16 @@ export default function DashBoard({ navigation }) {
         var name = await AsyncStorage.getItem("name");
 
         try {
+            
             const res = await axios({
                 url: "http://" + ipAddr + ":3000/att/getSchedule",
                 params: { staffName: name },
                 method: "get"
             })
+
             console.log(res.data)
             var sorted_schedule = res.data;
-            var currentHour = timeToHour(currentTime.getHours(), currentTime.getMinutes());
+            var currentHour = 0 //|| timeToHour(currentTime.getHours(), currentTime.getMinutes());
             console.log("Current hour : ", currentHour);
             setCurrentHour(currentHour)
             Object.keys(sorted_schedule).forEach(day => {
@@ -187,9 +194,8 @@ export default function DashBoard({ navigation }) {
             setSchedule(sorted_schedule);
 
         } catch (err) {
-            console.log("Erro r  in sending faculty name : ", err.message)
+            console.log("Error  in sending faculty name : ", err.message)
         }
-
     }
 
     // useFocusEffect(
@@ -233,7 +239,6 @@ export default function DashBoard({ navigation }) {
                     <Pressable onPress={() => { navigate.navigate("StaffAttendance") }}><Ionicons name="calendar" size={22}></Ionicons></Pressable>
                 </View>
                 <View style={styles.periods}>
-
                     <View>{Schedule[days[currentDay]].length == 0 ?
                         <View style={styles.overBox}>
                             <View>{(currentDay == 0 || currentDay == 6) ? <Text style={styles.classOverText}>Yeah Dude, Today is not a working day. Chill...</Text> : <Text style={styles.classOverText}>Hurrah !  Classes are over for today</Text>}</View>
@@ -343,7 +348,7 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply, currentHour }
             </View>
             <View style={styles.rowBottom}>
                 <View style={{ flex: 2, justifyContent: "flex-start" }}><Text>{sem + "th sem"}</Text></View>
-                <Text style={{ flex: 3 }}><Ionicons name="location" size={15} color="black" /> {"No Location GIven"}</Text>
+                <Text style={{ flex: 3 }}><Ionicons name="location" size={15} color="black" /> {location}</Text>
             </View>
 
             <Modal
@@ -381,7 +386,7 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply, currentHour }
                         </View>
                         <View style={styles.formChild}>
                             <Button title="Apply" onPress={() => {
-                                Apply(courseNo, selected[0], selected[1], hour, subject);
+                                Apply(courseNo, selected[0], selected[1], hour, subject, location);
                                 setOpen(false)
                             }} />
                         </View>
