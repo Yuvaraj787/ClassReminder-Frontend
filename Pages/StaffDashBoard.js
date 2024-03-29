@@ -22,7 +22,7 @@ export default function DashBoard({ navigation }) {
     var name, dept, year, roll;
     const [userDetails, setUserDetails] = useState({ name_n: "", dept_n: "" });
     const [userLoading, setUserLoading] = useState(true);
-    const [currentDay, setCurrentDay] = useState(5);
+    const [currentDay, setCurrentDay] = useState(3);
     const [currentHour, setCurrentHour] = useState(1);
 
     const [Schedule, setSchedule] = useState({
@@ -38,7 +38,7 @@ export default function DashBoard({ navigation }) {
     const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
 
     useEffect(() => {
-        setCurrentDay(4 || currentTime.getDay())
+        //setCurrentDay(currentTime.getDay())
         const interval = setInterval(() => {
             setCurrentTime(new Date());
         }, 1000);
@@ -175,23 +175,24 @@ export default function DashBoard({ navigation }) {
                 params: { staffName: name },
                 method: "get"
             })
-            console.log(res.data)
+            //console.log(res.data)
             var sorted_schedule = res.data;
             var currentHour = timeToHour(currentTime.getHours(), currentTime.getMinutes());
             console.log("Current hour : ", currentHour);
-            setCurrentHour(currentHour)
+            //setCurrentHour(currentHour)
             Object.keys(sorted_schedule).forEach(day => {
                 sorted_schedule[day].sort((a, b) => a.hour - b.hour)
                 sorted_schedule[day] = sorted_schedule[day].filter((a) => a.hour >= currentHour)
             })
 
-            setSchedule(sorted_schedule);
+            setSchedule({ ...sorted_schedule });
 
         } catch (err) {
             console.log("Erro r  in sending faculty name : ", err.message)
         }
 
     }
+
 
     // useFocusEffect(
     //     React.useCallback(() => {
@@ -219,9 +220,17 @@ export default function DashBoard({ navigation }) {
                 </View>
                 {/* second view for 3 boxes */}
                 <View style={styles.boxContainer} >
+
                     <View style={styles.box2}>
                         <Text style={styles.time}>{formattedTime}</Text>
                         <Text><Ionicons name="location" size={15} color="black" />{" " + displayLocation}</Text>
+                    </View>
+                    <View>
+                        <Pressable style={styles.box}
+                            onPress={() => { navigate.navigate("StaffAttendance") }}>
+                            <FontAwesome name="hand-stop-o" size={34} color="black" />
+                            <Text style={{ width: 100, textAlign: "center", padding: 1 }}>Take Attendance</Text>
+                        </Pressable>
                     </View>
                 </View>
             </View>
@@ -262,9 +271,10 @@ export default function DashBoard({ navigation }) {
                             renderItem={({ item }) => {
                                 //console.log(item.Subject)
                                 return (
-                                    <ClassBox hour={item.hour} sem={6} subject={item.courseName} location={item.location} courseNo={item.course_No} Apply={Apply} currentHour={currentHour} updateSchedule={getScheduleOfStaff} />
+                                    <ClassBox hour={item.hour} sem={6} subject={item.courseName} location={item.location} courseNo={item.course_No} Apply={Apply} currentHour={currentHour} updateSchedule={getScheduleOfStaff} staffName={item.staff} />
                                 )
                             }}
+                        //extraData={}
                         />}
 
 
@@ -276,7 +286,7 @@ export default function DashBoard({ navigation }) {
     );
 }
 
-function ClassBox({ hour, sem, subject, location, courseNo, Apply, currentHour, updateSchedule }) {
+function ClassBox({ hour, sem, subject, location, courseNo, Apply, currentHour, updateSchedule, staffName }) {
     const [open, setOpen] = useState(false);
     const [zoomAnim] = useState(new Animated.Value(0))
 
@@ -337,19 +347,36 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply, currentHour, 
     const [venue, setVenue] = useState(location)
     const [Loc, setLoc] = useState(location)
 
+    const sendInfo = async (Venue) => {
+        try {
+            const res = await axios({
+                url: "http://" + ipAddr + ":3000/user/notifyVenueChange",
+                params: { courseNo, staffName, subject, location, Venue },
+                method: "post"
+            })
+        }
+        catch (err) {
+            console.log(err.message)
+        }
+
+    }
+
     const changeLocation = async (newVenue) => {
         //console.log(location + "change request sending")
-        console.log(courseNo)
+        //console.log(courseNo)
         const res = await axios({
             url: "http://" + ipAddr + ":3000/user/changeLocation",
             method: "get",
-            params: { courseNo, location: newVenue }
+            params: { courseNo, staffName, subject, oldVenue: location, courseNo, newLocation: newVenue }
         })
-        if (res.data.sucess) {
-            updateSchedule()
+        if (res.data.success) {
+            //updateSchedule()
+            //sendInfo(newVenue)
+            setLoc(newVenue)
             //setLoc(newVenue)
         }
     }
+
 
     return <TouchableOpacity style={{ ...styles.periodsRow, backgroundColor: currentHour == hour ? "#D4E7C5" : "#F2EFE5", borderColor: (currentHour == hour) ? "black" : "silver" }} onPress={trans} activeOpacity={0.6}>
         <View style={styles.rowLeft}>
@@ -590,6 +617,7 @@ const styles = StyleSheet.create({
         //borderColor: "silver",
         borderRadius: 10,
         marginBottom: 5,
+        margin: 5,
         padding: 10,
         justifyContent: "center",
         alignItems: "center"

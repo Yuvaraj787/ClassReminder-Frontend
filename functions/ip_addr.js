@@ -11,4 +11,4 @@ const yuviPhone = "192.168.7.191";
 const dhanushPhone = "192.168.136.191"
 const yogeshPhone = "192.168.126.191"
 
-export default rcc_Wifi;
+export default yuviPhone;

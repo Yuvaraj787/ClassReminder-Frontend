@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import axios from 'axios';
 import ipAddr from "../functions/ip_addr"
 import { useFocusEffect } from '@react-navigation/native';

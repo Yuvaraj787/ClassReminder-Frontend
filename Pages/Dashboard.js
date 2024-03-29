@@ -223,7 +223,7 @@ export default function DashBoard({ navigation }) {
                                 <View
                                     style={{ display: "flex", justifyContent: "center", alignItems: "center", margin: 0 }}><Text style={{ fontWeight: 900, fontSize: 17 }}>Suggested Activities</Text></View>
                                 <View style={styles.actBox}>
-                                    <TouchableOpacity style={styles.btnBoxes} onPress={() => navigate.navigate("Attendence")}>
+                                    <TouchableOpacity style={styles.btnBoxes} onPress={() => navigate.navigate("AttendenceDisplay")}>
                                         <View style={styles.pressBox}>
                                             <FontAwesome name="hand-stop-o" size={34} color="black" />
                                             <Text style={styles.boxText}>Check Attendance</Text>
