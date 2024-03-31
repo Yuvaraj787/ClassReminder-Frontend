@@ -39,13 +39,14 @@ const LogContext = createContext(null);
 export default function App() {
   registerNNPushToken(19717, '6cGVSWyXY5RoTiF9pUgfiS');
   const [isLoggedIn, setLoggedIn] = useState(false);
-  const [isStaffLoggedIn, setStaffLoggedIn] = useState(true);
+  const [isStaffLoggedIn, setStaffLoggedIn] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [expoPushToken, setExpoPushToken] = useState('');
   const makeItTrue = () => {
     setStaffLoggedIn(true);
   }
+
   useEffect(() => {
     var tok, roll;
     async function fetch() {
@@ -67,11 +68,14 @@ export default function App() {
         method: "POST",
         params: { token: tok }
       }).then(res => {
+        console.log("token verifiction finish")
+        console.log(res.data)
         if (res.data.success) {
-          console.log(res.data, roll)
-          if (res.data.roll === roll) {
-            setLoggedIn(true);
-          }
+            if (res.data.isFaculty) {
+              setStaffLoggedIn(true);
+            } else {
+              setLoggedIn(true);
+            }
         }
         setLoading(false);
       }).catch(err => {

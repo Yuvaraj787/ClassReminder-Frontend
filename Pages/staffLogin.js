@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { useContext, useState } from 'react';
 import axios from 'axios';
-import { StyleSheet, Text, View, Switch, TextInput, Button, Image, KeyboardAvoidingView, Alert, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Switch, TextInput, Button, Image, KeyboardAvoidingView, Alert, Pressable ,ActivityIndicator} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ipAddr from "../functions/ip_addr";
 import { LogContext } from '../App';
@@ -12,10 +12,11 @@ import DropDownPicker from 'react-native-dropdown-picker';
 export default function App({  navigator, route  }) {
     const navigation = useNavigation();
     const [on, Seton] = useState(true)
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(true);
     const [value, setValue] = useState('');
     const [name, setname] = useState('')
     const [password, setPassword] = useState('')
+    const [loading, setLoading] = useState(false)
     const [error, setError] = useState({})
     const setLog = useContext(LogContext)[1];
     
@@ -39,6 +40,7 @@ export default function App({  navigator, route  }) {
     }
 
     const handleSubmit = () => {
+        setLoading(true)
         if (validateForm()) {
             console.log("Form is Valid");
             axios({
@@ -50,6 +52,7 @@ export default function App({  navigator, route  }) {
                     console.log(res.data);
                     if (!res.data.invalid) {
                         await AsyncStorage.setItem("name", value)
+                        await AsyncStorage.setItem("token", res.data.token)
                         console.log("yes");
                         setLog();
                     } else {
@@ -62,6 +65,7 @@ export default function App({  navigator, route  }) {
         else {
             Alert.alert("Invalid Form", "Missing or invalid creditianls")
         }
+        setLoading(false)
     }
 
     return (
@@ -88,10 +92,7 @@ export default function App({  navigator, route  }) {
                 {
                     error.password ? <Text style={styles.err}>{error.password}</Text> : null
                 }
-                <Button title='Login' onPress={() => {
-                    console.log("login button pressed by " + name)
-                    handleSubmit()
-                }} />
+                {loading ? <ActivityIndicator size="large" animating={loading}/> : <Button title='Login' onPress={handleSubmit} />}
                 <View style={styles.infoBox}>
                     <Pressable style={styles.infoView} onPress={() => navigation.navigate("Login")}><Text style={styles.infoText}>Student Login</Text></Pressable>
                     <Pressable style={styles.infoView}><Text style={styles.infoText}>Forget Password</Text></Pressable>

@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
-import { StyleSheet, Text, View, Switch, TextInput, Button, Image, KeyboardAvoidingView, Alert, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Switch, TextInput, Button, Image, KeyboardAvoidingView, Alert, Pressable, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LogContext } from '../App';
 import { useNavigation } from '@react-navigation/native';
@@ -17,6 +17,7 @@ const Login = ({ navigator, route }) => {
     const [log, setLogStatus] = useState(false);
     const [rollNo, setRollNo] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false)
     const [error, setError] = useState({});
     const setLog = useContext(LogContext)[0];
 
@@ -34,6 +35,7 @@ const Login = ({ navigator, route }) => {
 
 
     const handleSubmit = async () => {
+        setLoading(true)
         if (validateForm()) {
             try {
                 const res = await axios({
@@ -61,6 +63,7 @@ const Login = ({ navigator, route }) => {
         } else {
             Alert.alert("Invalid Form", "Please fill in all fields correctly");
         }
+        setLoading(false)
     }
 
     useEffect(() => {
@@ -78,13 +81,14 @@ const Login = ({ navigator, route }) => {
                 {error.rollNo && <Text style={styles.err}>{error.rollNo}</Text>}
                 <TextInput value={password} placeholder="Password " style={styles.input} onChangeText={setPassword} secureTextEntry />
                 {error.password && <Text style={styles.err}>{error.password}</Text>}
-                <Button title='Login' onPress={handleSubmit} />
+                <Pressable title='Login' onPress={handleSubmit}>
+                {loading ? <ActivityIndicator size="large" animating={loading}/>:<Button title='Login' onPress={handleSubmit} />}
+                </Pressable>
                 <View style={styles.infoBox}>
                     <Pressable style={styles.infoView} onPress={() => navigation.navigate("StaffLogin")}><Text style={styles.infoText}>Staff Login</Text></Pressable>
                     <Pressable style={styles.infoView}><Text style={styles.infoText}>Forget Password</Text></Pressable>
                 </View>
             </View>
-
             <StatusBar style="auto" />
         </View>
     );
