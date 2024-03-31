@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Pressable, Modal, Button } from "react-native"
+import { View, Text, StyleSheet, Pressable, Modal, Button, PermissionsAndroid } from "react-native"
 //import CheckBox from '@react-native-community/checkbox';
 //import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import CheckBox from 'react-native-check-box';
@@ -11,6 +11,8 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faA } from '@fortawesome/free-solid-svg-icons';
+//import RNFetchBlob from 'react-native-fetch-blob';
+//import RNFS from 'react-native-fs';
 
 export default function Att() {
     const [date, setdate] = useState(0)
@@ -65,6 +67,7 @@ export default function Att() {
         console.log("Current hour : ", currentHour);
         setCurrentHour(currentHour)
         //console.log(formattedDate);
+        // requestStoragePermission()
     }, [])
 
     useEffect(() => {
@@ -100,6 +103,77 @@ export default function Att() {
             console.log(err.message)
         }
     }
+    const [hasPermission, setHasPermission] = useState(false);
+
+    const requestStoragePermission = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                {
+                    title: 'Storage Permission',
+                    message: 'This app requires access to your storage to download files.',
+                    buttonPositive: 'OK',
+                }
+            );
+            console.log(granted)
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                setHasPermission(true);
+            } else {
+                setHasPermission(false);
+            }
+        } catch (err) {
+            console.warn('Storage permission request error:', err);
+        }
+    };
+
+    // const downloadAtt = async () => {
+    //     // if (!hasPermission) {
+    //     //     console.warn('Storage permission not granted');
+    //     //     requestStoragePermission()
+    //     //     return;
+    //     // }
+    //     console.log("download")
+    //     try {
+    //         const res = await axios({
+    //             url: "http://" + ipAddr + ":3000/att/downloadAtt",
+    //             method: "get"
+    //         })
+    //         // Create a blob object from the response data
+    //         const blob = new Blob([res.data], { type: res.headers['content-type'] });
+
+    //         // Create a temporary URL for the blob
+    //         const url = window.URL.createObjectURL(blob);
+
+    //         // Create a link element to trigger the download
+    //         const link = document.createElement('a');
+    //         link.href = url;
+    //         link.setAttribute('download', 'data.xlsx');
+    //         document.body.appendChild(link);
+
+    //         // Click the link to start the download
+    //         link.click();
+
+    //         // Cleanup
+    //         window.URL.revokeObjectURL(url);
+    //         document.body.removeChild(link);
+    //     } catch (err) {
+    //         console.log(err.message)
+    //     }
+
+    //     console.log("downloaded")
+    //     // Proceed with file download
+    //     // RNFetchBlob.config({
+    //     //     fileCache: true,
+    //     // })
+    //     //     .fetch('GET', `http://${ipAddr}:3000/att/downloadAtt`)
+    //     //     .then((res) => {
+    //     //         const filePath = res.path();
+    //     //         RNFetchBlob.android.actionViewIntent(filePath, 'application/vnd.ms-excel');
+    //     //     })
+    //     //     .catch((error) => {
+    //     //         console.error('Error downloading Excel:', error);
+    //     //     });
+    // }
 
     return (
         <View style={styles.container}>
@@ -225,7 +299,7 @@ export default function Att() {
             {/* bottom to past Attendance button */}
             <View style={styles.bottom}>
                 <Text>Download Past Attendance here</Text>
-                <Pressable style={styles.box}>
+                <Pressable style={styles.box} onPress={() => downloadAtt()}>
                     <Text style={{ fontSize: 20 }}>Download Past Attendance</Text>
                 </Pressable>
             </View>

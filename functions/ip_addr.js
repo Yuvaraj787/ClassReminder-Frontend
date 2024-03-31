@@ -11,5 +11,6 @@ const yuviPhone = "192.168.7.191";
 const dhanushPhone = "192.168.136.191"
 const yogeshPhone = "192.168.126.191"
 const libAnnaWifi = "10.11.53.92"
-
-export default yuviPhone;
+const temp = "192.168.5.191"
+const dhanushPhone2 = "192.168.41.191"
+export default dhanushPhone2;
