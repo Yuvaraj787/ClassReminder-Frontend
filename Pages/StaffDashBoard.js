@@ -1,6 +1,7 @@
 import { StyleSheet, View, TextInput, Text, ScrollView, FlatList, TouchableOpacity, Animated, Modal, Alert, PermissionsAndroid, Pressable, Button } from "react-native"
 import React, { useState, useEffect } from "react";
 //import Schedule from "../Components/Schedule.json"
+import CardSkeleton from "../Components/Skeleton";
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome } from '@expo/vector-icons';
@@ -25,6 +26,7 @@ export default function DashBoard({ navigation }) {
     const [userDetails, setUserDetails] = useState({ name_n: "", dept_n: "" });
     const [userLoading, setUserLoading] = useState(true);
     const [currentDay, setCurrentDay] = useState(3);
+    const [loading, setLoading] = useState(true)
     const [currentHour, setCurrentHour] = useState(1);
 
     const [Schedule, setSchedule] = useState({
@@ -40,7 +42,7 @@ export default function DashBoard({ navigation }) {
     const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
 
     useEffect(() => {
-        //setCurrentDay(currentTime.getDay())
+        setCurrentDay(4 || currentTime.getDay())
         const interval = setInterval(() => {
             setCurrentTime(new Date());
         }, 1000);
@@ -153,7 +155,7 @@ export default function DashBoard({ navigation }) {
     };
 
     const Apply = async (courseNo, finalDay, finalHour, originalHour, subject, location) => {
-
+        console.log("applied")
         try {
             const res = await axios({
                 url: "http://" + ipAddr + ":3000/user/postponeClass",
@@ -173,7 +175,6 @@ export default function DashBoard({ navigation }) {
     const getScheduleOfStaff = async () => {
         //console.log(userDetails.name_n)
         var name = await AsyncStorage.getItem("name");
-
         try {
 
             const res = await axios({
@@ -192,7 +193,8 @@ export default function DashBoard({ navigation }) {
             })
 
             setSchedule({ ...sorted_schedule });
-
+            console.log("schedule fetching")
+            setLoading(false)
         } catch (err) {
             console.log("Error  in sending faculty name : ", err.message)
         }
@@ -210,14 +212,14 @@ export default function DashBoard({ navigation }) {
     return (
         <View style={styles.main}>
             {/* top container */}
-            <View style={styles.top}>
+            {userLoading ? <CardSkeleton /> : <View style={styles.top}>
                 {/*First view for welcome msg */}
                 <View>
 
                     <Text style={{
                         fontSize: 22, fontFamily: "monospace",
                         fontWeight: "bold"
-                    }}>Welcome, </Text>
+                    }}>Welcome Faculty, </Text>
                     <Text style={styles.nametext}><Text style={{
                         fontSize: 30, fontFamily: "monospace",
                     }}>{userDetails.name_n} </Text><Text>{userDetails.dept_n}</Text></Text>
@@ -238,11 +240,13 @@ export default function DashBoard({ navigation }) {
                         </Pressable>
                     </View>
                 </View>
-            </View>
+            </View>}
+
+            {loading && <CardSkeleton />}
 
             {/* <ion-icon name="apps"></ion-icon> */}
             {/* bottom container */}
-            <View style={styles.bottom}>
+            {loading ? <CardSkeleton /> : <View style={styles.bottom}>
                 <View style={{ flexDirection: "row", justifyContent: "space-around", marginBottom: 5, alignItems: "center" }}>
                     <Text style={{ fontSize: 20, fontFamily: "monospace" }}>Upcoming classes</Text>
                     <Pressable onPress={() => { navigate.navigate("StaffAttendance") }}><Ionicons name="calendar" size={22}></Ionicons></Pressable>
@@ -284,7 +288,7 @@ export default function DashBoard({ navigation }) {
 
                     </View>
                 </View>
-            </View>
+            </View>}
 
         </View>
     );
@@ -347,6 +351,7 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply, currentHour, 
         days[day][hour] = true;
         setSelected([day, hour])
     }
+
     const [LocOpen, setLocOpen] = useState(false)
     const [venue, setVenue] = useState(location)
     const [Loc, setLoc] = useState(location)

@@ -17,21 +17,21 @@ const Profile = () => {
     const setLog = useContext(LogContext)[2];
     useEffect(() => {
         try {
-        async function fetch() {
-            name = await AsyncStorage.getItem("name");
-            dept = "Information Technology";
-            console.log(name, dept);
-            setUserDetails((prev) => {
-                return {
-                    name_n: name,
-                    dept_n: dept
-                }
-            })
+            async function fetch() {
+                name = await AsyncStorage.getItem("name");
+                dept = "Information Technology";
+                console.log(name, dept);
+                setUserDetails((prev) => {
+                    return {
+                        name_n: name,
+                        dept_n: dept
+                    }
+                })
+            }
+            fetch()
+        } catch (err) {
+            console.log("ERROR: In Profile.js", err.message)
         }
-        fetch()
-    } catch (err) {
-        console.log("ERROR: In Profile.js", err.message)
-    }
     }, [])
 
     const colorCodes = ["", "grey", "purple", "orange", "brown"]
@@ -43,7 +43,7 @@ const Profile = () => {
             await AsyncStorage.clear();
             console.log("called")
             setLog(false);
-        } catch(err) {
+        } catch (err) {
             console.log("ERROR: error in logging out", err.message)
         }
     }
@@ -60,41 +60,29 @@ const Profile = () => {
                         <Text style={styles.dept}>B.Tech {userDetails.dept_n == "IT" ? "Information Technology" : userDetails.dept_n}</Text>
                     </View>
 
-                    <Feather name="edit" size={24} color="black" style={{ position: "absolute", right: 15, top: 15 }} />
                 </View>
             </View>
             <View style={styles.midContainer}>
-                <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("CourseDisplay")}>
-                    <View style={styles.pressBox} >
-                        <MaterialCommunityIcons name="bookshelf" size={34} color="black" />
-                        <Text style={styles.boxText}>My Courses</Text>
-                    </View>
-                </TouchableOpacity>
+
                 <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("Schedule")} >
                     <View style={styles.pressBox}>
                         <MaterialIcons name="schedule" size={34} color="black" />
                         <Text style={styles.boxText}>Schedule</Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btnBoxes}  onPress={() => navigator.navigate("Attendence")}>
+                <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("Attendence")}>
                     <View style={styles.pressBox}>
                         <FontAwesome name="hand-stop-o" size={34} color="black" />
                         <Text style={styles.boxText}>Attendance</Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btnBoxes}>
-                    <View style={styles.pressBox}>
-                        <Ionicons name='timer-sharp' size={34} color="black" />
-                        <Text style={styles.boxText}>Today's Routine</Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.btnBoxes}>
+                <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("ChangePw")}>
                     <View style={styles.pressBox} >
                         <FontAwesome name="lock" size={34} color="black" />
                         <Text style={styles.boxText}>Change Password</Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btnBoxes}  onPress={logout}>
+                <TouchableOpacity style={styles.btnBoxes} onPress={logout}>
                     <View style={styles.pressBox}>
                         <MaterialIcons name="logout" size={34} color="red" />
                         <Text style={styles.boxText}>Logout</Text>

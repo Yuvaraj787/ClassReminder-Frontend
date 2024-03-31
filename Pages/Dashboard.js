@@ -15,6 +15,16 @@ import timeToHour from "../functions/currentHour";
 import Axios from "axios"
 // import SkeletonContent from 'react-native-skeleton-content';
 
+const CardSkeleton = () => { 
+    return ( 
+        <View style={styles.container}> 
+            <View style={styles.placeholder} /> 
+            <View style={styles.placeholder} /> 
+            <View style={styles.placeholder} /> 
+        </View> 
+    ); 
+}; 
+  
 
 
 export default function DashBoard({ navigation }) {
@@ -25,6 +35,7 @@ export default function DashBoard({ navigation }) {
     const [userLoading, setUserLoading] = useState(true);
     const [currentDay, setCurrentDay] = useState(0);
     const [currentHour, setCurrentHour] = useState(1);
+    const [loading, setLoading] = useState(true)
     const [sch, setSch] = useState({
         monday: [],
         tuesday: [],
@@ -77,7 +88,6 @@ export default function DashBoard({ navigation }) {
                         token: token_n
                     }
                 })
-                console.log("weekly schedule : ", data.data.schedule.thursday)
 
                 var sorted_schedule = data.data;
                 var currentHour = timeToHour(currentTime.getHours(), currentTime.getMinutes());
@@ -89,7 +99,7 @@ export default function DashBoard({ navigation }) {
                 })
 
                 setSch(sorted_schedule);
-                // setLoading(false);
+                setLoading(false)
             } catch (err) {
                 console.log("Error in getting weekly schedule : ", err.message)
             }
@@ -197,7 +207,7 @@ export default function DashBoard({ navigation }) {
             {/* top container */}
             <View style={styles.top}>
                 {/*First view for welcome msg */}
-                <View>
+                {userLoading ? <CardSkeleton /> : <View>
                     <Text style={{
                         fontSize: 22, fontFamily: "monospace",
                         fontWeight: "bold"
@@ -205,9 +215,9 @@ export default function DashBoard({ navigation }) {
                     <Text style={styles.nametext}><Text style={{
                         fontSize: 30, fontFamily: "monospace",
                     }}>{userDetails.name_n} </Text><Text>{userDetails.dept_n == "IT" ? "B.Tech " : "B.E "} {userDetails.dept_n}</Text></Text>
-                </View>
+                </View>}
                 {/* second view for 3 boxes */}
-                <View style={styles.boxContainer} >
+                {loading ? <CardSkeleton /> : <View style={styles.boxContainer} >
                     <View>
                         <Pressable style={styles.box}
                             onPress={() => { navigate.navigate("Attendence") }}>
@@ -219,16 +229,17 @@ export default function DashBoard({ navigation }) {
                         <Text style={styles.time}>{formattedTime}</Text>
                         <Text><Ionicons name="location" size={15} color="black" />{" " + displayLocation}</Text>
                     </View>
-                </View>
+                </View>}
             </View>
 
             {/* <ion-icon name="apps"></ion-icon> */}
             {/* bottom container */}
             <View style={styles.bottom}>
-                <View style={{ flexDirection: "row", justifyContent: "space-around", marginBottom: 15, alignItems: "center" }}>
+                {loading ? <CardSkeleton /> : <View style={{ flexDirection: "row", justifyContent: "space-around", marginBottom: 15, alignItems: "center" }}>
                     <Text style={{ fontSize: 20, fontFamily: "monospace" }}>Upcoming classes</Text>
                     <Pressable onPress={() => { navigate.navigate("Schedule") }}><Ionicons name="calendar" size={22}></Ionicons></Pressable>
-                </View>
+                </View>}
+                {loading ? <CardSkeleton /> : 
                 <View style={styles.periods}>
                     <View>{sch[days[currentDay]].length == 0 ?
                         <View style={styles.overBox}>
@@ -276,7 +287,7 @@ export default function DashBoard({ navigation }) {
                             }}
                         />}
                     </View>
-                </View>
+                </View>}
             </View>
         </View>
     );
@@ -418,5 +429,41 @@ const styles = StyleSheet.create({
     },
     boxText: {
         textAlign: "center"
+    },
+    container: { 
+        backgroundColor: '#F6F6F6', 
+        borderRadius: 13, 
+        padding: 16, 
+        marginBottom: 16, 
+        marginTop: 50, 
+    }, 
+    placeholder: { 
+        backgroundColor: '#ccc', 
+        height: 16, 
+        borderRadius: 4, 
+        marginBottom: 8, 
+    }, 
+    card: { 
+        backgroundColor: '#FFFFFF', 
+        borderRadius: 8, 
+        padding: 16, 
+        marginHorizontal: 16, 
+        marginBottom: 16, 
+        marginTop: 50, 
+        shadowColor: '#000', 
+        shadowOpacity: 0.1, 
+        shadowOffset: { width: 0, height: 2 }, 
+        shadowRadius: 4, 
+        elevation: 2, 
+    }, 
+    heading: { 
+        fontSize: 25, 
+        fontWeight: 'bold', 
+        marginBottom: 8, 
+        color: "green", 
+    }, 
+    paragraph: { 
+        fontSize: 15, 
+        color: '#555555', 
     }
 })

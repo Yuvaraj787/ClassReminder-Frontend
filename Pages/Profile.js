@@ -99,7 +99,7 @@ const Profile = () => {
                         <Text style={styles.boxText}>Bunk Manager</Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btnBoxes}>
+                <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("ChangePw")}>
                     <View style={styles.pressBox} >
                         <FontAwesome name="lock" size={34} color="black" />
                         <Text style={styles.boxText}>Change Password</Text>

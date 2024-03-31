@@ -11,8 +11,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faA } from '@fortawesome/free-solid-svg-icons';
-//import RNFetchBlob from 'react-native-fetch-blob';
-//import RNFS from 'react-native-fs';
+import CardSkeleton from "../Components/Skeleton";
 
 export default function Att() {
     const [date, setdate] = useState(0)
@@ -26,13 +25,15 @@ export default function Att() {
     const [studentList, setstudentList] = useState([])
     const [studentStatus, setStudentStatus] = useState({})
     const [CurrentPeriod, setCurrentPeriod] = useState(1)
+    const [loading, setLoading] = useState(true)
     //const [selectedRow, setSelectedRow] = useState(null);
 
     const getScheduleOfStaff = async () => {
         var name = await AsyncStorage.getItem("name");
+
         setStaffName(name)
         console.log(name)
-        setCurrentDay(currentTime.getDay())
+        setCurrentDay(4 || currentTime.getDay())
         console.log(currentTime.getDay())
         try {
 
@@ -51,7 +52,7 @@ export default function Att() {
         } catch (err) {
             console.log("Error  in retrieving schedule :", err.message)
         }
-
+        setLoading(false)
     }
 
 
@@ -180,7 +181,7 @@ export default function Att() {
             <Text style={{ fontSize: 20 }}>Date : {date}</Text>
             {/*Top for atendence of that day*/}
 
-            <View style={styles.top}>
+            {loading ? <CardSkeleton /> : <View style={styles.top}>
                 {hours.length > 0 ?
                     hours.map((row, index) => {
                         return (
@@ -289,13 +290,13 @@ export default function Att() {
                     <View>
                         <Text style={{ fontSize: 23, textAlign: "justify", marginLeft: 10 }}>Dear {StaffName} ,</Text>
                         <Text style={{ fontSize: 20, textAlign: "justify", margin: 20 }}>
-                            We regret to inform you that there are no classes scheduled for you today.
+                            We are happy to inform you that there are no classes scheduled for you today.
                             Thank you ! -
                             RTCRS</Text>
                     </View>
                 }
 
-            </View >
+            </View >}
             {/* bottom to past Attendance button */}
             <View style={styles.bottom}>
                 <Text>Download Past Attendance here</Text>

@@ -8,6 +8,7 @@ import { Entypo } from '@expo/vector-icons';
 import React, { useState, useEffect, createContext, useContext } from 'react'
 // import SkeletonContent from 'react-native-skeleton-content'
 import Login from "./Pages/login";
+import ChangePw from "./Pages/changePw"
 import AddCourse from "./Pages/AddCourse";
 import DashBoard from "./Pages/Dashboard";
 import StaffDashBoard from "./Pages/StaffDashBoard"
@@ -46,6 +47,7 @@ export default function App() {
   const makeItTrue = () => {
     setStaffLoggedIn(true);
   }
+
   useEffect(() => {
     var tok, roll;
     async function fetch() {
@@ -67,9 +69,12 @@ export default function App() {
         method: "POST",
         params: { token: tok }
       }).then(res => {
+        console.log("token verifiction finish")
+        console.log(res.data)
         if (res.data.success) {
-          console.log(res.data, roll)
-          if (res.data.roll === roll) {
+          if (res.data.isFaculty) {
+            setStaffLoggedIn(true);
+          } else {
             setLoggedIn(true);
           }
         }
@@ -135,12 +140,14 @@ function AfterLoginStaff() {
       >
         <Stack.Screen name="Main" component={MainScreenStaffs} options={{ headerShown: false }} />
         <Stack.Screen name="Notification" component={Notification} />
-        <Stack.Screen name="AddCourse" component={AddCourse} options={{ headerTitle: "Add a Course" }} />
         <Stack.Screen name="CourseDisplay" component={CoursesDisplay} options={{ headerTitle: "My Courses" }} />
         <Stack.Screen name="Attendence" component={Attendence} />
         <Stack.Screen name="Dashboard" component={DashBoard} />
         <Stack.Screen name="Schedule" component={Schedule} />
         <Stack.Screen name="StaffAttendance" component={StaffAttendence} />
+        <Stack.Screen name="ChangePw" component={ChangePw} options={{ headerTitle: "Change Password" }} />
+
+
 
       </Stack.Navigator>
     </>
@@ -174,6 +181,7 @@ function AfterLogin() {
         <Stack.Screen name="AttendenceDisplay" component={AttendanceDisplay} options={{ headerTitle: "My Attendance" }} />
         <Stack.Screen name="Dashboard" component={DashBoard} />
         <Stack.Screen name="Schedule" component={Schedule} />
+        <Stack.Screen name="ChangePw" component={ChangePw} options={{ headerTitle: "Change Password" }} />
       </Stack.Navigator>
     </>
   )
