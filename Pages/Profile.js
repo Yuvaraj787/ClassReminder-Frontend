@@ -17,25 +17,25 @@ const Profile = () => {
     const setLog = useContext(LogContext)[0];
     useEffect(() => {
         try {
-        async function fetch() {
-            name = await AsyncStorage.getItem("name");
-            dept = await AsyncStorage.getItem("dept");
-            year = await AsyncStorage.getItem("year");
-            roll = await AsyncStorage.getItem("roll");
-            console.log(name, dept);
-            setUserDetails((prev) => {
-                return {
-                    name_n: name,
-                    dept_n: dept,
-                    year_n: year,
-                    roll_n: roll
-                }
-            })
+            async function fetch() {
+                name = await AsyncStorage.getItem("name");
+                dept = await AsyncStorage.getItem("dept");
+                year = await AsyncStorage.getItem("year");
+                roll = await AsyncStorage.getItem("roll");
+                console.log(name, dept);
+                setUserDetails((prev) => {
+                    return {
+                        name_n: name,
+                        dept_n: dept,
+                        year_n: year,
+                        roll_n: roll
+                    }
+                })
+            }
+            fetch()
+        } catch (err) {
+            console.log("ERROR: In Profile.js", err.message)
         }
-        fetch()
-    } catch (err) {
-        console.log("ERROR: In Profile.js", err.message)
-    }
     }, [])
 
     const colorCodes = ["", "grey", "purple", "orange", "brown"]
@@ -43,9 +43,11 @@ const Profile = () => {
     const logout = async () => {
         console.log("Logout process")
         try {
-            await AsyncStorage.clear();
+            await AsyncStorage.removeItem('token')
+            await AsyncStorage.removeItem('roll')
+            //await AsyncStorage.clear();
             setLog(false);
-        } catch(err) {
+        } catch (err) {
             console.log("ERROR: error in logging out", err.message)
         }
     }
@@ -85,25 +87,25 @@ const Profile = () => {
                         <Text style={styles.boxText}>Schedule</Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btnBoxes}  onPress={() => navigator.navigate("Attendence")}>
+                <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("AttendenceDisplay")}>
                     <View style={styles.pressBox}>
                         <FontAwesome name="hand-stop-o" size={34} color="black" />
                         <Text style={styles.boxText}>Attendance</Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btnBoxes}>
+                <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("Attendence")}>
                     <View style={styles.pressBox}>
-                        <Ionicons name='timer-sharp' size={34} color="black" />
-                        <Text style={styles.boxText}>Today's Routine</Text>
+                        <FontAwesome name="hand-stop-o" size={34} color="black" />
+                        <Text style={styles.boxText}>Bunk Manager</Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btnBoxes}>
+                <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("ChangePw")}>
                     <View style={styles.pressBox} >
                         <FontAwesome name="lock" size={34} color="black" />
                         <Text style={styles.boxText}>Change Password</Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btnBoxes}  onPress={logout}>
+                <TouchableOpacity style={styles.btnBoxes} onPress={logout}>
                     <View style={styles.pressBox}>
                         <MaterialIcons name="logout" size={34} color="red" />
                         <Text style={styles.boxText}>Logout</Text>

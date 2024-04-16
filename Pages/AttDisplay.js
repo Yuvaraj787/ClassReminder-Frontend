@@ -53,76 +53,9 @@ const AttendanceDisplay = () => {
         setlabCourses(l)
         console.log(res.data)
     }
+
     const [subName, setSubName] = useState("")
-    const [att, setAtt] = useState([{ date: "23/24/23", hour: 3, present: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false },
-    { date: "23/24/23", hour: 3, isPresent: true },
-    { date: "23/24/23", hour: 3, isPresent: false }])
+    const [att, setAtt] = useState([])
 
     const viewAtt = async (courseNo) => {
         const name = await AsyncStorage.getItem("name");
@@ -206,7 +139,7 @@ const AttendanceDisplay = () => {
 
             <View style={styles.section}>
                 <View style={styles.sectionHead} >
-                    <Text style={styles.headText}>Theories Courses</Text>
+                    <Text style={styles.headText}>Theory Courses</Text>
                 </View>
                 <View style={styles.sectionBody}>
                     {
@@ -232,15 +165,17 @@ const AttendanceDisplay = () => {
                 <View style={styles.sectionBody}>
                     {
                         labCourses.map((course, ind) => {
-                            return <Pressable style={[styles.courseBox, { elevation: 20 }]} id={ind + ""} onPress={() => {
-                                viewAtt(course.courseNo)
-                                setSubName(course.name)
-                                setOpen(true)
+                            return <View style={styles.courseBox}>
+                                <Pressable style={[styles.courseBox, { elevation: 20 }]} id={ind + ""} onPress={() => {
+                                    viewAtt(course.courseNo)
+                                    setSubName(course.name)
+                                    setOpen(true)
 
-                            }}>
-                                <Text style={styles.courseText}>{course.name}</Text>
-                                <Text style={styles.facultyText}>{course.faculty}</Text>
-                            </Pressable>
+                                }}>
+                                    <Text style={styles.courseText}>{course.name}</Text>
+                                    <Text style={styles.facultyText}>{course.faculty}</Text>
+                                </Pressable>
+                            </View>
                         })
                     }
                 </View>

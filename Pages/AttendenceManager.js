@@ -1,12 +1,17 @@
 import { View, Text, Image, StyleSheet, ScrollView, Pressable } from 'react-native'
 import React, { useEffect } from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
 import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Feather } from '@expo/vector-icons';
 import Iuri from "../assets/sample_profile.jpg"
 import Attendence from "../Components/att.json"
+import axios from 'axios';
+import ipAddr from "../functions/ip_addr";
 
 const BunkManager = () => {
+
     const [pressedIndex, setPressedIndex] = useState(-1);
     const [Att, setAtt] = useState(Attendence)
     const [averagePercentage, setAveragePercentage] = useState(100)
@@ -15,10 +20,49 @@ const BunkManager = () => {
         calculateAveragePercentage()
     }, [Att])
 
+
+    const GetCourses = async () => {
+        var roll = await AsyncStorage.getItem("roll");
+        console.log(roll)
+        const res = await axios({
+            url: `http://${ipAddr}:3000/user/getMyCourses`,
+            method: "get",
+            params: { roll }
+        })
+
+        console.log(res.data)
+        var result = []
+        const existingData = await AsyncStorage.getItem("classData");
+        const parsedData = JSON.parse(existingData);
+
+        res.data.forEach(obj1 => {
+            const matchedObj2 = parsedData.find(obj2 => obj2.courseNo === obj1.courseNo);
+
+            if (matchedObj2) {
+                result.push({
+                    name: obj1.name,
+                    courseNo: obj1.courseNo,
+                    type: obj1.type,
+                    classMissed: matchedObj2.classMissed
+                });
+            }
+
+        });
+        setAtt(result)
+    }
+
+
+    useEffect(() => {
+        console.log("hi")
+        GetCourses()
+    }, [])
+
+
+
     const calculateAveragePercentage = () => {
         let totalPercentage = 0;
         Att.forEach((row) => {
-            const total = parseInt(row.totalHours);
+            const total = row.type == "Theory" ? 45 : 60
             const missed = parseInt(row.classMissed);
             const percentage = ((total - missed) / total) * 100;
             totalPercentage += percentage;
@@ -34,7 +78,7 @@ const BunkManager = () => {
     const handleClose = (index) => {
         setPressedIndex(index === pressedIndex ? -1 : index);
     }
-    const handleMissed = (index, skips, action) => {
+    const handleMissed = async (index, skips, action) => {
         const updatedAtt = [...Att];
         const missed = parseInt(updatedAtt[index].classMissed);
         if (action === 'add' && (skips - missed) > 0) {
@@ -43,6 +87,9 @@ const BunkManager = () => {
             updatedAtt[index].classMissed = (missed - 1).toString();
         }
         setAtt(updatedAtt)
+        console.log(updatedAtt)
+        const dataForAsync = JSON.stringify(updatedAtt)
+        await AsyncStorage.setItem('classData', dataForAsync)
     }
 
     return (
@@ -60,10 +107,10 @@ const BunkManager = () => {
             <View style={styles.midContainer}>
                 {
                     Att.map((row, index) => {
-                        const total = parseInt(row.totalHours)
-                        const missed = parseInt(row.classMissed)
+                        const total = row.type == 'Lab' ? 60 : 45
+                        const missed = 0 || parseInt(row.classMissed)
                         const Percentage = ((total - missed) / total) * 100
-                        const skip = row.type == 'L' ? 15 : 11
+                        const skip = row.type == 'Lab' ? 15 : 11
                         return (
                             <Pressable
                                 onPress={() => { handleBoxPress(index) }}
@@ -72,9 +119,9 @@ const BunkManager = () => {
                                 <View style={[styles.Box, { height: pressedIndex === index ? 130 : 80 }]}>
                                     {/* left container */}
                                     <View>
-                                        {row.type == "T" ? <Ionicons name="book" size={24} color="black" /> : ""}
-                                        {row.type == "L" ? <Ionicons name="laptop" size={24}></Ionicons> : ""}
-                                        {row.type == "E" ? <Ionicons name="bulb" size={24} color="black" /> : ""}
+                                        {row.type == "Theory" && row.name != "Open Elective" ? <Ionicons name="book" size={24} color="black" /> : ""}
+                                        {row.type == "Lab" ? <Ionicons name="laptop" size={24}></Ionicons> : ""}
+                                        {row.name == "Open Elective" ? <Ionicons name="bulb" size={24} color="black" /> : ""}
                                     </View>
 
                                     <View style={styles.mid}>
@@ -84,7 +131,7 @@ const BunkManager = () => {
                                                 //bottom: pressedIndex === index ? 20 : 0,
                                                 transform: [{ translateY: pressedIndex === index ? -15 : 0 }],
                                                 justifyContent: "center"
-                                            }]}>{row.subject}</Text>
+                                            }]}>{row.name}</Text>
                                         </Pressable>
                                         {pressedIndex === index ? <View style={styles.details}>
                                             <Text>Classes Missed :  {missed}</Text>

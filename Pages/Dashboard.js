@@ -46,11 +46,11 @@ export default function DashBoard({ navigation }) {
         sunday: []
     })
     const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
+    const [missed, setMissed] = useState(0)
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentTime(new Date());
         }, 1000);
-        // console.log(currentTime.toLocaleTimeString())
         return () => clearInterval(interval);
     }, [])
 
@@ -105,6 +105,7 @@ export default function DashBoard({ navigation }) {
             }
         }
         fetchSchedule();
+
         navigation.setOptions({
             headerRight: () => (
                 <TouchableOpacity
@@ -118,6 +119,19 @@ export default function DashBoard({ navigation }) {
                 </TouchableOpacity>
             )
         });
+        async function getMiss() {
+            const existingData = await AsyncStorage.getItem("classData");
+            const parsedData = JSON.parse(existingData);
+            let a = 0
+            parsedData.forEach((row) => {
+                console.log(row)
+                a += parseInt(row.classMissed)
+            });
+
+            setMissed(a)
+        }
+        getMiss()
+
     }, [])
 
     const navigate = useNavigation()
@@ -207,7 +221,7 @@ export default function DashBoard({ navigation }) {
                     <View>
                         <Pressable style={styles.box}
                             onPress={() => { navigate.navigate("Attendence") }}>
-                            <Text style={{ fontSize: 23, fontFamily: "monospace" }}>11</Text>
+                            <Text style={{ fontSize: 23, fontFamily: "monospace" }}>{missed}</Text>
                             <Text style={{ width: 100, textAlign: "center", padding: 1 }}>Classes Missed</Text>
                         </Pressable>
                     </View>

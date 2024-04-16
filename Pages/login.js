@@ -32,6 +32,44 @@ const Login = ({ navigator, route }) => {
     }
 
 
+    const manageMissed = async (roll) => {
+
+        try {
+            console.log(roll)
+            const res = await axios({
+                url: `http://${ipAddr}:3000/user/getMyCourses`,
+                method: "get",
+                params: { roll: parseInt(roll) }
+            })
+
+            //console.log(res.data)
+            var newArray = res.data.map(course => ({
+                courseNo: course.courseNo,
+                classMissed: 0,
+            }));
+            //console.log(newArray)
+            // console.log(existingData)
+            const existingData = await AsyncStorage.getItem('classData');
+            //console.log(existingData)
+            const parsedData = JSON.parse(existingData);
+
+            const misses = JSON.stringify(newArray)
+            try {
+                if (parsedData === null) {
+                    await AsyncStorage.setItem('classData', misses);
+                    console.log('Array stored successfully');
+                }
+                else {
+                    console.log("Data already exists !")
+                }
+            } catch (error) {
+                console.error('Error storing array:', error);
+            }
+        }
+        catch (err) {
+            console.log("err:" + err.message)
+        }
+    }
 
 
     const handleSubmit = async () => {
@@ -54,6 +92,7 @@ const Login = ({ navigator, route }) => {
                     await AsyncStorage.setItem("token", res.data.token)
                     registerIndieID(roll + "", 19717, '6cGVSWyXY5RoTiF9pUgfiS')
                     setLog(true)
+                    manageMissed(roll)
                 } else {
                     Alert.alert("Wrong Credentials", "Incorrect password");
                 }

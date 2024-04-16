@@ -187,16 +187,14 @@ export default function DashBoard({ navigation }) {
     const getScheduleOfStaff = async () => {
         //console.log(userDetails.name_n)
         var name = await AsyncStorage.getItem("name");
-
         try {
-            
+
             const res = await axios({
                 url: "http://" + ipAddr + ":3000/att/getSchedule",
                 params: { staffName: name },
                 method: "get"
             })
-
-            console.log(res.data)
+            //console.log(res.data)
             var sorted_schedule = res.data;
             var currentHour = 0 //|| timeToHour(currentTime.getHours(), currentTime.getMinutes());
             console.log("Current hour : ", currentHour);
@@ -224,9 +222,9 @@ export default function DashBoard({ navigation }) {
         getScheduleOfStaff()
     }, [])
     return (
-         <View style={styles.main}>
+        <View style={styles.main}>
             {/* top container */}
-            {userLoading ? <CardSkeleton /> :<View style={styles.top}>
+            {userLoading ? <CardSkeleton /> : <View style={styles.top}>
                 {/*First view for welcome msg */}
                 <View>
 
@@ -365,6 +363,7 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply, currentHour, 
         days[day][hour] = true;
         setSelected([day, hour])
     }
+
     const [LocOpen, setLocOpen] = useState(false)
     const [venue, setVenue] = useState(location)
     const [Loc, setLoc] = useState(location)
@@ -411,7 +410,11 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply, currentHour, 
             </View>
             <View style={styles.rowBottom}>
                 <View style={{ flex: 2, justifyContent: "flex-start" }}><Text>{sem + "th sem"}</Text></View>
+<<<<<<< HEAD
                 <Text style={{ flex: 3 }}><Ionicons name="location" size={15} color="black" /> {"IT Department"}</Text>
+=======
+                <Text style={{ flex: 3 }}><Ionicons name="location" size={15} color="black" /> {Loc}</Text>
+>>>>>>> origin/Dhanush
             </View>
 
             <Modal
