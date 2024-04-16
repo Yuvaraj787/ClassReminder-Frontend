@@ -45,7 +45,7 @@ const Profile = () => {
         try {
             await AsyncStorage.removeItem('token')
             await AsyncStorage.removeItem('roll')
-            await AsyncStorage.clear();
+            //await AsyncStorage.clear();
             setLog(false);
         } catch (err) {
             console.log("ERROR: error in logging out", err.message)
