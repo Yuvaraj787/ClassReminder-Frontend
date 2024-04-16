@@ -12,6 +12,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faA } from '@fortawesome/free-solid-svg-icons';
 import CardSkeleton from "../Components/Skeleton";
+import xlsx from "json-as-xlsx"
 
 export default function Att() {
     const [date, setdate] = useState(0)
@@ -127,54 +128,45 @@ export default function Att() {
         }
     };
 
-    // const downloadAtt = async () => {
-    //     // if (!hasPermission) {
-    //     //     console.warn('Storage permission not granted');
-    //     //     requestStoragePermission()
-    //     //     return;
-    //     // }
-    //     console.log("download")
-    //     try {
-    //         const res = await axios({
-    //             url: "http://" + ipAddr + ":3000/att/downloadAtt",
-    //             method: "get"
-    //         })
-    //         // Create a blob object from the response data
-    //         const blob = new Blob([res.data], { type: res.headers['content-type'] });
-
-    //         // Create a temporary URL for the blob
-    //         const url = window.URL.createObjectURL(blob);
-
-    //         // Create a link element to trigger the download
-    //         const link = document.createElement('a');
-    //         link.href = url;
-    //         link.setAttribute('download', 'data.xlsx');
-    //         document.body.appendChild(link);
-
-    //         // Click the link to start the download
-    //         link.click();
-
-    //         // Cleanup
-    //         window.URL.revokeObjectURL(url);
-    //         document.body.removeChild(link);
-    //     } catch (err) {
-    //         console.log(err.message)
-    //     }
-
-    //     console.log("downloaded")
-    //     // Proceed with file download
-    //     // RNFetchBlob.config({
-    //     //     fileCache: true,
-    //     // })
-    //     //     .fetch('GET', `http://${ipAddr}:3000/att/downloadAtt`)
-    //     //     .then((res) => {
-    //     //         const filePath = res.path();
-    //     //         RNFetchBlob.android.actionViewIntent(filePath, 'application/vnd.ms-excel');
-    //     //     })
-    //     //     .catch((error) => {
-    //     //         console.error('Error downloading Excel:', error);
-    //     //     });
-    // }
+    const downloadAtt = async () => {
+        
+        let data = [
+            {
+              sheet: "Adults",
+              columns: [
+                { label: "User", value: "user" }, // Top level data
+                { label: "Age", value: (row) => row.age + " years" }, // Custom format
+                { label: "Phone", value: (row) => (row.more ? row.more.phone || "" : "") }, // Run functions
+              ],
+              content: [
+                { user: "Andrea", age: 20, more: { phone: "11111111" } },
+                { user: "Luis", age: 21, more: { phone: "12345678" } },
+              ],
+            },
+            {
+              sheet: "Children",
+              columns: [
+                { label: "User", value: "user" }, // Top level data
+                { label: "Age", value: "age", format: '# "years"' }, // Column format
+                { label: "Phone", value: "more.phone", format: "(###) ###-####" }, // Deep props and column format
+              ],
+              content: [
+                { user: "Manuel", age: 16, more: { phone: 9999999900 } },
+                { user: "Ana", age: 17, more: { phone: 8765432135 } },
+              ],
+            },
+          ]
+          
+          let settings = {
+            fileName: "MySpreadsheet", // Name of the resulting spreadsheet
+            extraLength: 3, // A bigger number means that columns will be wider
+            writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
+            writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
+            RTL: true, // Display the columns from right-to-left (the default value is false)
+          }
+          
+          xlsx(data, settings)
+    }
 
     return (
         <View style={styles.container}>

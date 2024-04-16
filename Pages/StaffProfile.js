@@ -76,11 +76,7 @@ const Profile = () => {
                         <Text style={styles.boxText}>Attendance</Text>
                     </View>
                 </TouchableOpacity>
-<<<<<<< HEAD
-                <TouchableOpacity style={styles.btnBoxes}>
-=======
                 <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("ChangePw")}>
->>>>>>> origin/Dhanush
                     <View style={styles.pressBox} >
                         <FontAwesome name="lock" size={34} color="black" />
                         <Text style={styles.boxText}>Change Password</Text>
