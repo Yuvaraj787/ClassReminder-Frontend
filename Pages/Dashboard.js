@@ -90,7 +90,7 @@ export default function DashBoard({ navigation }) {
                 })
 
                 var sorted_schedule = data.data;
-                var currentHour = timeToHour(currentTime.getHours(), currentTime.getMinutes());
+                var currentHour = 1 ||  timeToHour(currentTime.getHours(), currentTime.getMinutes());
                 console.log("Current hour : ", currentHour);
                 setCurrentHour(currentHour)
                 Object.keys(sorted_schedule).forEach(day => {
@@ -226,7 +226,7 @@ export default function DashBoard({ navigation }) {
                         </Pressable>
                     </View>
                     <View style={styles.box2}>
-                        <Text style={styles.time}>{formattedTime}</Text>
+                        <Text style={styles.time}>{"08:45 AM"}</Text>
                         <Text><Ionicons name="location" size={15} color="black" />{" " + displayLocation}</Text>
                     </View>
                 </View>}
