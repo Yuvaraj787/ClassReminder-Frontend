@@ -58,6 +58,7 @@ const Login = ({ navigator, route }) => {
                     Alert.alert("Wrong Credentials", "Incorrect password");
                 }
             } catch (error) {
+                Alert.alert("ERROR", error.message)
                 console.log("ERROR in login page: ", error.message);
             }
         } else {

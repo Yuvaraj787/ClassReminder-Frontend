@@ -25,9 +25,9 @@ export default function DashBoard({ navigation }) {
     var name, dept, year, roll;
     const [userDetails, setUserDetails] = useState({ name_n: "", dept_n: "" });
     const [userLoading, setUserLoading] = useState(true);
-    const [currentDay, setCurrentDay] = useState(3);
+    const [currentDay, setCurrentDay] = useState(3)
     const [loading, setLoading] = useState(true)
-    const [currentHour, setCurrentHour] = useState(1);
+    const [currentHour, setCurrentHour] = useState(1)
 
     const [Schedule, setSchedule] = useState({
         monday: [],
@@ -48,9 +48,7 @@ export default function DashBoard({ navigation }) {
         }, 1000);
         // console.log(currentTime.toLocaleTimeString())
         return () => clearInterval(interval);
-    }, []);
-
-
+    }, [])
 
     useEffect(() => {
         async function fetch() {
@@ -171,6 +169,20 @@ export default function DashBoard({ navigation }) {
         }
     }
 
+    const cancelClass = async (courseNo, hour, subject) => {
+        try {
+            const res = await axios({
+                url: "http://" + ipAddr + ":3000/user/cancelClass",
+                params: { courseNo, hour, subject, staffName: userDetails.name_n },
+                method: "get"
+            })
+            console.log(res)
+            alert("Class cancelled successfully")
+        } catch (err) {
+            console.log("Error in  send notify interrupt in backend : ", err.message)
+        }
+    }
+
     //to fetch the schedule of the staff
     const getScheduleOfStaff = async () => {
         //console.log(userDetails.name_n)
@@ -224,7 +236,7 @@ export default function DashBoard({ navigation }) {
                     }}>Welcome Faculty, </Text>
                     <Text style={styles.nametext}><Text style={{
                         fontSize: 30, fontFamily: "monospace",
-                    }}>{userDetails.name_n} </Text><Text>{userDetails.dept_n}</Text></Text>
+                    }}>{"Ms." + userDetails.name_n} </Text><Text>{userDetails.dept_n}</Text></Text>
 
                 </View>
                 {/* second view for 3 boxes */}
@@ -281,7 +293,7 @@ export default function DashBoard({ navigation }) {
                             renderItem={({ item }) => {
                                 //console.log(item.Subject)
                                 return (
-                                    <ClassBox hour={item.hour} sem={6} subject={item.courseName} location={item.location} courseNo={item.course_No} Apply={Apply} currentHour={currentHour} updateSchedule={getScheduleOfStaff} staffName={item.staff} />
+                                    <ClassBox hour={item.hour} sem={6} subject={item.courseName} location={item.location} courseNo={item.course_No} Apply={Apply} cancelClass={cancelClass} currentHour={currentHour} updateSchedule={getScheduleOfStaff} staffName={item.staff} />
                                 )
                             }}
                         //extraData={}
@@ -296,7 +308,7 @@ export default function DashBoard({ navigation }) {
     );
 }
 
-function ClassBox({ hour, sem, subject, location, courseNo, Apply, currentHour, updateSchedule, staffName }) {
+function ClassBox({ hour, sem, subject, location, courseNo, Apply, currentHour, cancelClass, updateSchedule, staffName }) {
     const [open, setOpen] = useState(false);
     const [zoomAnim] = useState(new Animated.Value(0))
 
@@ -399,7 +411,7 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply, currentHour, 
             </View>
             <View style={styles.rowBottom}>
                 <View style={{ flex: 2, justifyContent: "flex-start" }}><Text>{sem + "th sem"}</Text></View>
-                <Text style={{ flex: 3 }}><Ionicons name="location" size={15} color="black" /> {location}</Text>
+                <Text style={{ flex: 3 }}><Ionicons name="location" size={15} color="black" /> {"IT Department"}</Text>
             </View>
 
             <Modal
@@ -494,7 +506,7 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply, currentHour, 
                     <View style={styles.actionBox}><Pressable onPress={() => setOpen(true)}>
                         <Text style={styles.actionText}>Postponse Class</Text></Pressable></View>
                     <View style={styles.actionBox}><Pressable onPress={() => setLocOpen(true)}><Text style={styles.actionText}>Change Venue</Text></Pressable></View>
-                    <View style={styles.actionBox}><Pressable><Text style={styles.actionText}>Cancel class</Text></Pressable></View>
+                    <View style={styles.actionBox}><Pressable onPress={() => cancelClass(courseNo, hour, subject)}><Text style={styles.actionText}>Cancel class</Text></Pressable></View>
                 </View>
             </Animated.View>
         </View>

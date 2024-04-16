@@ -1,19 +1,5 @@
 [
-    {"staff":"Swami","info":"Class Cancelled","detail":"Class cancelled due to this reason","time":"10:20 AM","date":"16","month":"Feb"},
-    {"staff":"Swami","info":"Class Postponed","detail":"Class cancelled due to this reason","time":"10:20 AM","date":"16","month":"Feb"},
-    {"staff":"Swami","info":"class ila","detail":"Class cancelled due to this reason","time":"10:20 AM","date":"16","month":"Feb"},
-    {"staff":"Swami","info":"class ila","detail":"Class cancelled due to this reason","time":"10:20 AM","date":"16","month":"Feb"},
-    {"staff":"Swami","info":"class ila","detail":"Class cancelled due to this reason","time":"10:20 AM","date":"16","month":"Feb"},
-    {"staff":"Swami","info":"class ila","detail":"Class cancelled due to this reason","time":"10:20 AM","date":"16","month":"Feb"},
-    {"staff":"Swami","info":"class ila","detail":"Class cancelled due to this reason","time":"10:20 AM","date":"16","month":"Feb"},
-    {"staff":"Swami","info":"class ila","detail":"Class cancelled due to this reason","time":"10:20 AM","date":"16","month":"Feb"},
-    {"staff":"Swami","info":"class ila","detail":"Class cancelled due to this reason","time":"10:20 AM","date":"16","month":"Feb"},
-    {"staff":"Swami","info":"class ila","detail":"Class cancelled due to this reason","time":"10:20 AM","date":"16","month":"Feb"},
-    {"staff":"Swami","info":"class ila","detail":"Class cancelled due to this reason","time":"10:20 AM","date":"16","month":"Feb"},
-    {"staff":"Swami","info":"class ila","detail":"Class cancelled due to this reason","time":"10:20 AM","date":"16","month":"Feb"},
-    {"staff":"Swami","info":"class ila","detail":"Class cancelled due to this reason","time":"10:20 AM","date":"16","month":"Feb"},
-    {"staff":"Swami","info":"class ila","detail":"Class cancelled due to this reason","time":"10:20 AM","date":"16","month":"Feb"},
-    {"staff":"Swami","info":"class ila","detail":"Class cancelled due to this reason","time":"10:20 AM","date":"16","month":"Feb"}
-
-
+    {"staff":"Swaminathan","info":"Class Cancelled","detail":"Tuesday 7nd hour class cancelled","date":"16","month":"Feb"},
+    {"staff":"Swaminathan","info":"Class Postponed","detail":"Class cancelled due to this reason","date":"16","month":"Feb"},
+    {"staff":"Jasmine","info":"Class Venue changed","detail":"Friday 1st hour class venue changed to 2nd floor lab","date":"16","month":"Feb"}
 ]

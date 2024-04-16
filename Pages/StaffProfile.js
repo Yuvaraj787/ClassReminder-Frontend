@@ -83,12 +83,6 @@ const Profile = () => {
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.btnBoxes}>
-                    <View style={styles.pressBox}>
-                        <Ionicons name='timer-sharp' size={34} color="black" />
-                        <Text style={styles.boxText}>Today's Routine</Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.btnBoxes}>
                     <View style={styles.pressBox} >
                         <FontAwesome name="lock" size={34} color="black" />
                         <Text style={styles.boxText}>Change Password</Text>

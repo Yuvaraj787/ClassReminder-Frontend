@@ -41,11 +41,9 @@ export default function Notification() {
                                     <View style={styles.rowTop}>
                                         <Text style={{ fontSize: 20 }}>{item.info}</Text>
                                         <Text>{item.detail}</Text>
-
                                     </View>
                                     <View style={styles.rowBottom}>
                                         <View style={{ flex: 2, justifyContent: "flex-start" }}><Text><Ionicons name="person" size={15} color="black" /> {item.staff}</Text></View>
-                                        <Text style={{ flex: 1 }}>    <Ionicons name="time" size={15} color="black" /> {item.time}</Text>
                                     </View>
                                 </View>
 
