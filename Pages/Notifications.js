@@ -3,12 +3,31 @@ import { useState, useEffect } from "react";
 import { Ionicons } from '@expo/vector-icons';
 import Info from "../Components/info.json"
 //import SweetAlert from 'react-native-sweet-alert';
-
+import ipAddr from "../functions/ip_addr";
+import axios from "axios";
 export default function Notification() {
+    const [infos, setInfos] = useState([])
     const handlePress = (info, detail) => {
         console.log(info)
         Alert.alert(info, detail, [{ text: "OK", onPress: () => console.log('OK Pressed') }], { cancelable: true });
     }
+    const getInfo = async () => {
+        try {
+            console.log("getting infos from db")
+            const res = await axios({
+                url: "http://" + ipAddr + ":3000/info/getAllInfos",
+                method: "get"
+            })
+            console.log(res.result)
+            setInfos(res.result)
+        } catch (err) {
+            console.log(err.message)
+        }
+    }
+    useEffect(() => {
+        getInfo()
+        setInfos(Info)
+    }, [])
 
     // const handlePress = (info, detail) => {
     //     if (SweetAlert) {
@@ -27,7 +46,7 @@ export default function Notification() {
     return (
         <View style={styles.container}>
             <FlatList
-                data={Info}
+                data={infos}
                 renderItem={({ item }) => {
 
                     return (

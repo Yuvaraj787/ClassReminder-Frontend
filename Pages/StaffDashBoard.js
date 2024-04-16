@@ -234,7 +234,7 @@ export default function DashBoard({ navigation }) {
                     }}>Welcome Faculty, </Text>
                     <Text style={styles.nametext}><Text style={{
                         fontSize: 30, fontFamily: "monospace",
-                    }}>{"Ms." + userDetails.name_n} </Text><Text>{userDetails.dept_n}</Text></Text>
+                    }}>{userDetails.name_n} </Text><Text>{userDetails.dept_n}</Text></Text>
 
                 </View>
                 {/* second view for 3 boxes */}
