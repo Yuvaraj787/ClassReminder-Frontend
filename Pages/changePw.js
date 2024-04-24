@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { StyleSheet, Text, View, Switch, TextInput, Button, Image, KeyboardAvoidingView, Alert, Pressable, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,9 +7,10 @@ import { LogContext } from '../App';
 import { useNavigation } from '@react-navigation/native';
 import ipAddr from "../functions/ip_addr";
 
-const ChangePw = ({ navigator, route }) => {
-    const navigation = useNavigation();
+const ChangePw = ({ route }) => {
+    const navigator = useNavigation();
     const [error, setError] = useState({});
+    const setLog = useContext(LogContext)[0];
 
     const [currentPassword, setCurrentPassword] = useState("")
     const [newPassword, setNewPassword] = useState("")
@@ -19,52 +20,111 @@ const ChangePw = ({ navigator, route }) => {
         if (!currentPassword.trim()) errors.currentPassword = "! Please enter old Password";
         if (!newPassword.trim()) errors.newPassword = "! Please enter new Password";
         else if (newPassword.length < 8) errors.newPassword = "! Password must be minimum 8 letters";
-        const staff = AsyncStorage.getItem("staff")
-        if (staff) {
+        const staff = await AsyncStorage.getItem("staff")
+        const rollNum = await AsyncStorage.getItem("roll");
+        const StaffName = await AsyncStorage.getItem("name")
+
+        if (staff === "yes") {
+            console.log("staff" + staff)
+            try {
+                const res = await axios({
+                    url: `http://${ipAddr}:3000/auth/staff/login`,
+                    method: "post",
+                    params: { name: StaffName, password: currentPassword }
+                });
+                console.log(res.data)
+                if (res.data.invalid) {
+                    console.log("wrong pw")
+                    errors.currentPassword = "! Wrong Password";
+                    setError(errors);
+                    console.log("hi")
+                    return false;
+                }
+            } catch (err) {
+                console.log(err.message)
+            }
 
         }
+
         else {
-            const roll = await AsyncStorage.getItem("roll");
-            const res = await axios({
-                url: `http://${ipAddr}:3000/auth/login`,
-                method: "post",
-                params: { roll: roll, password: currentPassword }
-            });
-            if (res.data.wrongPassword) {
-                errors.currentPassword = "! Wrong Password";
+            console.log("student")
+
+            try {
+                console.log(rollNum)
+                const res = await axios({
+                    url: `http://${ipAddr}:3000/auth/login`,
+                    method: "post",
+                    params: { roll: rollNum, password: currentPassword }
+                });
+                if (res.data.wrongPassword) {
+                    errors.currentPassword = "! Wrong Password";
+                }
+
+            } catch (err) {
+                console.log(err.message)
             }
+
         }
         setError(errors);
+        console.log(errors)
         return Object.keys(errors).length === 0;
     }
 
+    const logout = async (staff) => {
+        console.log("Logout process")
+        try {
+            await AsyncStorage.removeItem('token')
+            await AsyncStorage.removeItem('roll')
+            await AsyncStorage.removeItem('name')
+            await AsyncStorage.removeItem('staff')
+
+            setLog(false);
+            if (staff) {
+                await AsyncStorage.clear();
+                //navigator.navigate("StaffLogin")
+            }
+
+        } catch (err) {
+            console.log("ERROR: error in logging out", err.message)
+        }
+    }
     const handleSubmit = async () => {
+        //  if (validateForm()) console.log("Form is Valid")
         if (validateForm()) {
-            const staff = AsyncStorage.getItem("staff")
+            const staff = await AsyncStorage.getItem("staff")
 
             if (staff) {
                 const name = await AsyncStorage.getItem("name");
                 const res = await axios({
                     url: `http://${ipAddr}:3000/auth/changepw`,
                     method: "post",
-                    params: { roll: roll, passWord: newPassword, staff: true, name: name }
+                    params: { passWord: newPassword, staff: true, name: name }
                 });
+                console.log(res.data)
+                if (res.data.sucess) {
+                    logout(true)
+                }
+
             }
             else {
 
-                const roll = await AsyncStorage.getItem("roll");
+                const rollNum = await AsyncStorage.getItem("roll");
                 const name = await AsyncStorage.getItem("name");
 
                 const res = await axios({
                     url: `http://${ipAddr}:3000/auth/changepw`,
                     method: "post",
-                    params: { roll: roll, passWord: newPassword, staff: false, name: name }
+                    params: { roll: rollNum, passWord: newPassword, staff: false, name: name }
                 });
+                console.log(res.data)
+                if (res.data.sucess) {
+                    logout(false)
+                }
 
             }
 
-
         }
+
     }
 
     return (

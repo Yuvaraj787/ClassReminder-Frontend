@@ -10,8 +10,9 @@ const rcc_Wifi = "10.1.13.174"
 const yuviPhone = "192.168.7.191";
 const yuviphone2 = "192.168.168.191"
 const dhanushPhone = "192.168.136.191"
+const dhanushPhone3 = "192.168.210.191"
 const yogeshPhone = "192.168.126.191"
 const libAnnaWifi = "10.11.53.92"
 const temp = "192.168.5.191"
 const dhanushPhone2 = "192.168.41.191"
-export default yuviphone2;
+export default dhanushPhone3;

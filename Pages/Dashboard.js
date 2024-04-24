@@ -1,5 +1,5 @@
 import { StyleSheet, View, Text, ScrollView, FlatList, TouchableOpacity, Alert, PermissionsAndroid, Pressable } from "react-native"
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Schedule from "../Components/Schedule.json"
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
@@ -14,17 +14,18 @@ import { giveCollegeLocation } from "../functions/insideLocations";
 import timeToHour from "../functions/currentHour";
 import Axios from "axios"
 // import SkeletonContent from 'react-native-skeleton-content';
+import { useFocusEffect } from '@react-navigation/native';
 
-const CardSkeleton = () => { 
-    return ( 
-        <View style={styles.container}> 
-            <View style={styles.placeholder} /> 
-            <View style={styles.placeholder} /> 
-            <View style={styles.placeholder} /> 
-        </View> 
-    ); 
-}; 
-  
+const CardSkeleton = () => {
+    return (
+        <View style={styles.container}>
+            <View style={styles.placeholder} />
+            <View style={styles.placeholder} />
+            <View style={styles.placeholder} />
+        </View>
+    );
+};
+
 
 
 export default function DashBoard({ navigation }) {
@@ -53,6 +54,24 @@ export default function DashBoard({ navigation }) {
         }, 1000);
         return () => clearInterval(interval);
     }, [])
+
+    async function getMiss() {
+        const existingData = await AsyncStorage.getItem("classData");
+        const parsedData = JSON.parse(existingData);
+        let a = 0
+        parsedData.forEach((row) => {
+            console.log(row)
+            a += parseInt(row.classMissed)
+        });
+
+        setMissed(a)
+    }
+
+    useFocusEffect(
+        React.useCallback(() => {
+            getMiss()
+        }, [])
+    );
 
     useEffect(() => {
         setCurrentDay(currentTime.getDay())
@@ -90,7 +109,7 @@ export default function DashBoard({ navigation }) {
                 })
 
                 var sorted_schedule = data.data;
-                var currentHour = 1 ||  timeToHour(currentTime.getHours(), currentTime.getMinutes());
+                var currentHour = 1 || timeToHour(currentTime.getHours(), currentTime.getMinutes());
                 console.log("Current hour : ", currentHour);
                 setCurrentHour(currentHour)
                 Object.keys(sorted_schedule).forEach(day => {
@@ -119,17 +138,6 @@ export default function DashBoard({ navigation }) {
                 </TouchableOpacity>
             )
         });
-        async function getMiss() {
-            const existingData = await AsyncStorage.getItem("classData");
-            const parsedData = JSON.parse(existingData);
-            let a = 0
-            parsedData.forEach((row) => {
-                console.log(row)
-                a += parseInt(row.classMissed)
-            });
-
-            setMissed(a)
-        }
         getMiss()
 
     }, [])
@@ -226,7 +234,7 @@ export default function DashBoard({ navigation }) {
                         </Pressable>
                     </View>
                     <View style={styles.box2}>
-                        <Text style={styles.time}>{"08:45 AM"}</Text>
+                        <Text style={styles.time}>{formattedTime}</Text>
                         <Text><Ionicons name="location" size={15} color="black" />{" " + displayLocation}</Text>
                     </View>
                 </View>}
@@ -239,55 +247,55 @@ export default function DashBoard({ navigation }) {
                     <Text style={{ fontSize: 20, fontFamily: "monospace" }}>Upcoming classes</Text>
                     <Pressable onPress={() => { navigate.navigate("Schedule") }}><Ionicons name="calendar" size={22}></Ionicons></Pressable>
                 </View>}
-                {loading ? <CardSkeleton /> : 
-                <View style={styles.periods}>
-                    <View>{sch[days[currentDay]].length == 0 ?
-                        <View style={styles.overBox}>
-                            <View>{(currentDay == 0 || currentDay == 6) ? <Text style={styles.classOverText}>Yeah Dude, Today is not a working day. Chill...</Text> : <Text style={styles.classOverText}>Hurrah !  Classes are over for today</Text>}</View>
-                            <View>
-                                <View
-                                    style={{ display: "flex", justifyContent: "center", alignItems: "center", margin: 0 }}><Text style={{ fontWeight: 900, fontSize: 17 }}>Suggested Activities</Text></View>
-                                <View style={styles.actBox}>
-                                    <TouchableOpacity style={styles.btnBoxes} onPress={() => navigate.navigate("AttendenceDisplay")}>
-                                        <View style={styles.pressBox}>
-                                            <FontAwesome name="hand-stop-o" size={34} color="black" />
-                                            <Text style={styles.boxText}>Check Attendance</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.btnBoxes}>
-                                        <View style={styles.pressBox}>
-                                            <Ionicons name='timer-sharp' size={34} color="black" />
-                                            <Text style={styles.boxText}>Today's Routine</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        </View> :
-                        <FlatList
-                            data={sch[days[currentDay]]}
-                            renderItem={({ item }) => {
-                                //console.log(item.Subject)
-                                return (
-                                    <View style={{ ...styles.periodsRow, backgroundColor: currentHour == item.hour ? "#D4E7C5" : "#F2EFE5", borderColor: (currentHour == item.hour) ? "black" : "silver" }}>
-                                        <View style={styles.rowLeft}>
-                                            <Text style={{ fontSize: 20 }}>{item.hour}</Text>
-                                        </View>
-                                        <View style={styles.rowRight}>
-                                            <View style={styles.rowTop}>
-                                                {currentHour == item.hour && <Text style={{ fontWeight: "normal" }}>Currently Ongoing</Text>}
-                                                <Text style={{ fontSize: 20 }}>{item.courseName}</Text>
+                {loading ? <CardSkeleton /> :
+                    <View style={styles.periods}>
+                        <View>{sch[days[currentDay]].length == 0 ?
+                            <View style={styles.overBox}>
+                                <View>{(currentDay == 0 || currentDay == 6) ? <Text style={styles.classOverText}>Yeah Dude, Today is not a working day. Chill...</Text> : <Text style={styles.classOverText}>Hurrah !  Classes are over for today</Text>}</View>
+                                <View>
+                                    <View
+                                        style={{ display: "flex", justifyContent: "center", alignItems: "center", margin: 0 }}><Text style={{ fontWeight: 900, fontSize: 17 }}>Suggested Activities</Text></View>
+                                    <View style={styles.actBox}>
+                                        <TouchableOpacity style={styles.btnBoxes} onPress={() => navigate.navigate("AttendenceDisplay")}>
+                                            <View style={styles.pressBox}>
+                                                <FontAwesome name="hand-stop-o" size={34} color="black" />
+                                                <Text style={styles.boxText}>Check Attendance</Text>
                                             </View>
-                                            <View style={styles.rowBottom}>
-                                                <View style={{ justifyContent: "flex-start" }}><Text><Ionicons name="person" size={15} color="black" /> {item.staff}</Text></View>
-                                                <Text>  <Ionicons name="location" size={15} color="black" /> {item.location ? item.location : "Location not given"}</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={styles.btnBoxes}>
+                                            <View style={styles.pressBox}>
+                                                <Ionicons name='timer-sharp' size={34} color="black" />
+                                                <Text style={styles.boxText}>Today's Routine</Text>
                                             </View>
-                                        </View>
+                                        </TouchableOpacity>
                                     </View>
-                                )
-                            }}
-                        />}
-                    </View>
-                </View>}
+                                </View>
+                            </View> :
+                            <FlatList
+                                data={sch[days[currentDay]]}
+                                renderItem={({ item }) => {
+                                    //console.log(item.Subject)
+                                    return (
+                                        <View style={{ ...styles.periodsRow, backgroundColor: currentHour == item.hour ? "#D4E7C5" : "#F2EFE5", borderColor: (currentHour == item.hour) ? "black" : "silver" }}>
+                                            <View style={styles.rowLeft}>
+                                                <Text style={{ fontSize: 20 }}>{item.hour}</Text>
+                                            </View>
+                                            <View style={styles.rowRight}>
+                                                <View style={styles.rowTop}>
+                                                    {currentHour == item.hour && <Text style={{ fontWeight: "normal" }}>Currently Ongoing</Text>}
+                                                    <Text style={{ fontSize: 20 }}>{item.courseName}</Text>
+                                                </View>
+                                                <View style={styles.rowBottom}>
+                                                    <View style={{ justifyContent: "flex-start" }}><Text><Ionicons name="person" size={15} color="black" /> {item.staff}</Text></View>
+                                                    <Text>  <Ionicons name="location" size={15} color="black" /> {item.location ? item.location : "Location not given"}</Text>
+                                                </View>
+                                            </View>
+                                        </View>
+                                    )
+                                }}
+                            />}
+                        </View>
+                    </View>}
             </View>
         </View>
     );
@@ -430,40 +438,40 @@ const styles = StyleSheet.create({
     boxText: {
         textAlign: "center"
     },
-    container: { 
-        backgroundColor: '#F6F6F6', 
-        borderRadius: 13, 
-        padding: 16, 
-        marginBottom: 16, 
-        marginTop: 50, 
-    }, 
-    placeholder: { 
-        backgroundColor: '#ccc', 
-        height: 16, 
-        borderRadius: 4, 
-        marginBottom: 8, 
-    }, 
-    card: { 
-        backgroundColor: '#FFFFFF', 
-        borderRadius: 8, 
-        padding: 16, 
-        marginHorizontal: 16, 
-        marginBottom: 16, 
-        marginTop: 50, 
-        shadowColor: '#000', 
-        shadowOpacity: 0.1, 
-        shadowOffset: { width: 0, height: 2 }, 
-        shadowRadius: 4, 
-        elevation: 2, 
-    }, 
-    heading: { 
-        fontSize: 25, 
-        fontWeight: 'bold', 
-        marginBottom: 8, 
-        color: "green", 
-    }, 
-    paragraph: { 
-        fontSize: 15, 
-        color: '#555555', 
+    container: {
+        backgroundColor: '#F6F6F6',
+        borderRadius: 13,
+        padding: 16,
+        marginBottom: 16,
+        marginTop: 50,
+    },
+    placeholder: {
+        backgroundColor: '#ccc',
+        height: 16,
+        borderRadius: 4,
+        marginBottom: 8,
+    },
+    card: {
+        backgroundColor: '#FFFFFF',
+        borderRadius: 8,
+        padding: 16,
+        marginHorizontal: 16,
+        marginBottom: 16,
+        marginTop: 50,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    heading: {
+        fontSize: 25,
+        fontWeight: 'bold',
+        marginBottom: 8,
+        color: "green",
+    },
+    paragraph: {
+        fontSize: 15,
+        color: '#555555',
     }
 })

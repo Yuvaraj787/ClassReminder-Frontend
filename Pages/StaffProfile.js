@@ -64,13 +64,13 @@ const Profile = () => {
             </View>
             <View style={styles.midContainer}>
 
-                <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("Schedule")} >
+                <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("StaffDashboard")} >
                     <View style={styles.pressBox}>
-                        <MaterialIcons name="schedule" size={34} color="black" />
-                        <Text style={styles.boxText}>Schedule</Text>
+                        <Ionicons name="ios-analytics" size={34} />
+                        <Text style={styles.boxText}>Dashboard</Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("Attendence")}>
+                <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("StaffAttendance")}>
                     <View style={styles.pressBox}>
                         <FontAwesome name="hand-stop-o" size={34} color="black" />
                         <Text style={styles.boxText}>Attendance</Text>
@@ -147,6 +147,7 @@ const styles = {
         display: "flex",
         flexDirection: "row",
         flexWrap: "wrap",
+        justifyContent: "center"
     },
 }
 

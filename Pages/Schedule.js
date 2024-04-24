@@ -1,12 +1,10 @@
-import React from 'react';
+import * as React from 'react';
 import { View, useWindowDimensions, StyleSheet, FlatList, Text } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { Ionicons } from '@expo/vector-icons';
 import ipaddr from "../functions/ip_addr"
 import Axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-// import CardSkeleton from '../Components/Skeleton';
 
 
 function PerDay({ Schedule }) {
@@ -44,14 +42,9 @@ const renderTabBar = props => (
         scrollEnabled={true}
         indicatorStyle={{ backgroundColor: 'black' }}
         renderLabel={({ route }) => (
-            <View style={{display:"flex", textAlign:"center", justifyContent: "center",alignContent:"center"}}>
-            <Text style={{ textTransform:"capitalize", color: "black", margin: 8, fontWeight: "bold", fontSize: 17 }}>
+            <Text style={{ color: "black", margin: 8, fontWeight: "bold", fontSize: 17 }}>
                 {route.title}
             </Text>
-            <Text style={{ color: "black", margin: 8, fontWeight: "bold", fontSize: 17 }}>
-                ({route.date})
-            </Text>
-            </View>
         )}
         gap={1}
         style={{ backgroundColor: '#B5C0D0', overflowX: "scroll" }}
@@ -62,9 +55,9 @@ const renderTabBar = props => (
 
 export default function TabViewExample() {
     const layout = useWindowDimensions();
-    const [loading, setLoading] = React.useState(true);
+
     const [index, setIndex] = React.useState(0);
-    const [routes, setRoutes] = React.useState([
+    const [routes] = React.useState([
         { key: 'first', title: 'Monday' },
         { key: 'second', title: 'Tuesday' },
         { key: 'third', title: 'Wednesday' },
@@ -79,16 +72,13 @@ export default function TabViewExample() {
         thursday: [],
         friday: []
     })
-    var renderScene = SceneMap(
-        {
-                first: () => <PerDay Schedule={sch.monday} />,
-                second: () => <PerDay Schedule={sch.tuesday} />,
-                third: () => <PerDay Schedule={sch.wednesday} />,
-                fourth: () => <PerDay Schedule={sch.thursday} />,
-                fifth: () => <PerDay Schedule={sch.friday} />
-        }
-    );
-    // var renderScene = SceneMap({});
+    const renderScene = SceneMap({
+        first: () => <PerDay Schedule={sch.monday} />,
+        second: () => <PerDay Schedule={sch.tuesday} />,
+        third: () => <PerDay Schedule={sch.wednesday} />,
+        fourth: () => <PerDay Schedule={sch.thursday} />,
+        fifth: () => <PerDay Schedule={sch.friday} />
+    });
     React.useEffect(() => {
         async function fetchSchedule() {
             try {
@@ -102,46 +92,12 @@ export default function TabViewExample() {
                 })
                 // console.log("weekly schedule : ", data.data.schedule.thursday)
                 var sorted_schedule = data.data;
-
                 Object.keys(sorted_schedule).forEach(day => {
                     sorted_schedule[day].sort((a, b) => a.hour - b.hour)
                 })
-
-
-                const days = ["sunday","monday", "tuesday", "wednesday", "thursday", "friday","saturday"];
-                var numbers = ["first", "second","third","fourth","fifth"]
-                var count = 0;
-                var dayNo = new Date().getDay();
-                var curDay = new Date();
-                Date.prototype.addDays = function (days) {
-                    this.setDate(this.getDate() + parseInt(days));
-                    return this;
-                };
-
-                console.log(sorted_schedule)
                 setSch(sorted_schedule);
-                
-                var orderObjectTemp = [];
 
-                for (let i = 0; i < 7; i++) {
-                    var nDay = (dayNo + i) % 7;
-                    if (nDay == 0 || nDay == 6) {
-                        curDay.addDays(1)
-                        continue;
-                    }
-                    // orderObjectTemp[numbers[count++]] = days[dayNo]
-                    orderObjectTemp.push({
-                        key:numbers[count++],
-                        title: days[nDay],
-                        date: curDay.toLocaleDateString()
-                    })
-                    curDay.addDays(1)
-                }
-                console.log(orderObjectTemp)
-                setRoutes(orderObjectTemp)
-
-
-                setLoading(false);
+                // setLoading(false);
             } catch (err) {
                 console.log("Error in getting weekly schedule 1 : ", err.message)
             }

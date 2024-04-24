@@ -79,6 +79,7 @@ export default function DashBoard({ navigation }) {
                 </TouchableOpacity>
             )
         });
+
     }, [])
 
     const navigate = useNavigation()
@@ -120,6 +121,7 @@ export default function DashBoard({ navigation }) {
             console.log("Error in checking location access : ", err.message)
         }
     };
+
     const GetCurrentLocation = async () => {
         try {
             let { status } = await Location.requestBackgroundPermissionsAsync()
@@ -160,12 +162,14 @@ export default function DashBoard({ navigation }) {
                 params: { courseNo, finalDay, finalHour, originalHour, subject, staffName: userDetails.name_n },
                 method: "get"
             })
-            console.log(res)
+            //console.log(res)
             if (res.data.success) {
-                RNRestart.restart()
+                if (RNRestart) RNRestart.restart()
+                getScheduleOfStaff()
             }
+
         } catch (err) {
-            console.log("Error in  send notify interrupt t backend : ", err.message)
+            console.log("Error in  send notify interrupt backend : ", err.message)
         }
     }
 
@@ -181,6 +185,7 @@ export default function DashBoard({ navigation }) {
         } catch (err) {
             console.log("Error in  send notify interrupt in backend : ", err.message)
         }
+        getScheduleOfStaff()
     }
 
     //to fetch the schedule of the staff
@@ -196,9 +201,9 @@ export default function DashBoard({ navigation }) {
             })
             //console.log(res.data)
             var sorted_schedule = res.data;
-            var currentHour = 0 //|| timeToHour(currentTime.getHours(), currentTime.getMinutes());
+            var currentHour = timeToHour(currentTime.getHours(), currentTime.getMinutes());
             console.log("Current hour : ", currentHour);
-            //setCurrentHour(currentHour)
+            setCurrentHour(currentHour)
             Object.keys(sorted_schedule).forEach(day => {
                 sorted_schedule[day].sort((a, b) => a.hour - b.hour)
                 sorted_schedule[day] = sorted_schedule[day].filter((a) => a.hour >= currentHour)
@@ -213,11 +218,12 @@ export default function DashBoard({ navigation }) {
     }
 
 
-    // useFocusEffect(
-    //     React.useCallback(() => {
-    //         getScheduleOfStaff()
-    //     }, [])
-    // );
+    useFocusEffect(
+        React.useCallback(() => {
+            getScheduleOfStaff()
+        }, [])
+    );
+
     useEffect(() => {
         getScheduleOfStaff()
     }, [])
@@ -261,30 +267,13 @@ export default function DashBoard({ navigation }) {
             {loading ? <CardSkeleton /> : <View style={styles.bottom}>
                 <View style={{ flexDirection: "row", justifyContent: "space-around", marginBottom: 5, alignItems: "center" }}>
                     <Text style={{ fontSize: 20, fontFamily: "monospace" }}>Upcoming classes</Text>
-                    <Pressable onPress={() => { navigate.navigate("StaffAttendance") }}><Ionicons name="calendar" size={22}></Ionicons></Pressable>
+                    <Pressable onPress={() => { navigate.navigate("StaffAttendance") }}><FontAwesome name="hand-stop-o" size={22} color="black" /></Pressable>
                 </View>
                 <View style={styles.periods}>
                     <View>{Schedule[days[currentDay]].length == 0 ?
                         <View style={styles.overBox}>
-                            <View>{(currentDay == 0 || currentDay == 6) ? <Text style={styles.classOverText}>Yeah Dude, Today is not a working day. Chill...</Text> : <Text style={styles.classOverText}>Hurrah !  Classes are over for today</Text>}</View>
-                            <View>
-                                <View
-                                    style={{ display: "flex", justifyContent: "center", alignItems: "center", margin: 0 }}><Text style={{ fontWeight: 900, fontSize: 17 }}>Suggested Activities</Text></View>
-                                <View style={styles.actBox}>
-                                    <TouchableOpacity style={styles.btnBoxes} onPress={() => navigate.navigate("Attendence")}>
-                                        <View style={styles.pressBox}>
-                                            <FontAwesome name="hand-stop-o" size={34} color="black" />
-                                            <Text style={styles.boxText}>Check Attendance</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.btnBoxes}>
-                                        <View style={styles.pressBox}>
-                                            <Ionicons name='timer-sharp' size={34} color="black" />
-                                            <Text style={styles.boxText}>Today's Routine</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
+                            <View>{(currentDay == 0 || currentDay == 6) ? <Text style={styles.classOverText}>Today is not a working day.</Text> : <Text style={styles.classOverText}>Hurrah !  Classes are over for today</Text>}</View>
+
                         </View> :
                         <FlatList
                             data={Schedule[days[currentDay]]}
@@ -579,6 +568,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
         color: "blue"
     },
+
     rowBottomest: {
         padding: 10,
         display: "flex",
@@ -589,6 +579,22 @@ const styles = StyleSheet.create({
     actionBox: {
         flexGrow: 1,
         flexBasis: "33%",
+    },
+    overBox: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#F2EFE5",
+        padding: 20,
+        borderRadius: 10,
+        elevation: 5,
+        alignSelf: "flex-start",
+        rowGap: 10,
+        alignSelf: "center"
+    },
+    classOverText: {
+        fontSize: 17,
+        fontWeight: "bold"
     },
     main: {
         flex: 1,
@@ -654,6 +660,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-around",
         width: "100%",
 
+
     },
     periodsRow: {
         backgroundColor: "white",
@@ -689,6 +696,46 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         padding: 10,
+    },
+    boxText: {
+        textAlign: "center"
+    },
+    container: {
+        backgroundColor: '#F6F6F6',
+        borderRadius: 13,
+        padding: 16,
+        marginBottom: 16,
+        marginTop: 50,
+    },
+    placeholder: {
+        backgroundColor: '#ccc',
+        height: 16,
+        borderRadius: 4,
+        marginBottom: 8,
+    },
+    card: {
+        backgroundColor: '#FFFFFF',
+        borderRadius: 8,
+        padding: 16,
+        marginHorizontal: 16,
+        marginBottom: 16,
+        marginTop: 50,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    heading: {
+        fontSize: 25,
+        fontWeight: 'bold',
+        marginBottom: 8,
+        color: "green",
+    },
+    paragraph: {
+        fontSize: 15,
+        color: '#555555',
     }
 
 })
+

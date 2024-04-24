@@ -18,8 +18,9 @@ export default function Notification() {
                 url: "http://" + ipAddr + ":3000/info/getAllInfos",
                 method: "get"
             })
-            console.log(res.result)
-            setInfos(res.result)
+
+            console.log(res.data)
+            setInfos(res.data)
         } catch (err) {
             console.log(err.message)
         }
@@ -50,7 +51,7 @@ export default function Notification() {
                 renderItem={({ item }) => {
 
                     return (
-                        <Pressable onPress={() => { handlePress(item.info, item.detail) }}>
+                        <Pressable onPress={() => { handlePress(item.info, item.details) }}>
                             <View style={styles.periodsRow}>
                                 <View style={styles.rowLeft}>
                                     <Text style={{ fontSize: 20 }}>{item.date}</Text>
@@ -59,7 +60,7 @@ export default function Notification() {
                                 <View style={styles.rowRight}>
                                     <View style={styles.rowTop}>
                                         <Text style={{ fontSize: 20 }}>{item.info}</Text>
-                                        <Text>{item.detail}</Text>
+                                        {/* <Text>{item.details}</Text> */}
                                     </View>
                                     <View style={styles.rowBottom}>
                                         <View style={{ flex: 2, justifyContent: "flex-start" }}><Text><Ionicons name="person" size={15} color="black" /> {item.staff}</Text></View>

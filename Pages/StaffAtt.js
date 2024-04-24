@@ -15,7 +15,7 @@ import CardSkeleton from "../Components/Skeleton";
 
 export default function Att() {
     const [date, setdate] = useState(0)
-    const [currentDay, setCurrentDay] = useState(4);
+    const [currentDay, setCurrentDay] = useState(0);
     const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
     const [currentTime, setCurrentTime] = useState(new Date());
     const [hours, setHours] = useState([])
@@ -33,7 +33,7 @@ export default function Att() {
 
         setStaffName(name)
         console.log(name)
-        setCurrentDay(4 || currentTime.getDay())
+        setCurrentDay(currentTime.getDay())
         console.log(currentTime.getDay())
         try {
 
@@ -73,7 +73,6 @@ export default function Att() {
 
     useEffect(() => {
         if (studentList.length > 0) {
-
             const initialStudentStatus = {};
             studentList.forEach(student => {
                 initialStudentStatus[student.roll] = false;
@@ -290,9 +289,9 @@ export default function Att() {
                     <View>
                         <Text style={{ fontSize: 23, textAlign: "justify", marginLeft: 10 }}>Dear {StaffName} ,</Text>
                         <Text style={{ fontSize: 20, textAlign: "justify", margin: 20 }}>
-                            We are happy to inform you that there are no classes scheduled for you today.
+                            We regret to inform you that there are no classes scheduled for you today.
                             Thank you ! -
-                            RTCRS</Text>
+                            Schedule IT</Text>
                     </View>
                 }
 
