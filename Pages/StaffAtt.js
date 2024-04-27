@@ -1,3 +1,5 @@
+// import XLSX from 'xlsx';
+
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable, Modal, Button, PermissionsAndroid } from "react-native"
 //import CheckBox from '@react-native-community/checkbox';
@@ -12,7 +14,14 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faA } from '@fortawesome/free-solid-svg-icons';
 import CardSkeleton from "../Components/Skeleton";
-import xlsx from "json-as-xlsx"
+import { shareAsync } from 'expo';
+import { Platform } from 'react-native';
+import * as FileSystem from 'expo-file-system';
+
+
+// import xlsx from "json-as-xlsx"
+// var RNFS = require('react-native-fs');
+
 
 export default function Att() {
     const [date, setdate] = useState(0)
@@ -127,45 +136,105 @@ export default function Att() {
             console.warn('Storage permission request error:', err);
         }
     };
+    async function saveFile(uri, filename, mimetype) {
+        console.log(uri, filename, mimetype)
+        if (Platform.OS === "android") {
+            const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+
+            if (permissions.granted) {
+                const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+
+                await FileSystem.StorageAccessFramework.createFileAsync(permissions.directoryUri, filename, mimetype)
+                    .then(async (uri) => {
+                        await FileSystem.writeAsStringAsync(uri, base64, { encoding: FileSystem.EncodingType.Base64 });
+                    })
+                    .catch(e => console.log(e));
+            } else {
+                shareAsync(uri);
+            }
+        } else {
+            shareAsync(uri);
+        }
+    }
 
     const downloadAtt = async () => {
-        
-        let data = [
-            {
-              sheet: "Adults",
-              columns: [
-                { label: "User", value: "user" }, // Top level data
-                { label: "Age", value: (row) => row.age + " years" }, // Custom format
-                { label: "Phone", value: (row) => (row.more ? row.more.phone || "" : "") }, // Run functions
-              ],
-              content: [
-                { user: "Andrea", age: 20, more: { phone: "11111111" } },
-                { user: "Luis", age: 21, more: { phone: "12345678" } },
-              ],
-            },
-            {
-              sheet: "Children",
-              columns: [
-                { label: "User", value: "user" }, // Top level data
-                { label: "Age", value: "age", format: '# "years"' }, // Column format
-                { label: "Phone", value: "more.phone", format: "(###) ###-####" }, // Deep props and column format
-              ],
-              content: [
-                { user: "Manuel", age: 16, more: { phone: 9999999900 } },
-                { user: "Ana", age: 17, more: { phone: 8765432135 } },
-              ],
-            },
-          ]
-          
-          let settings = {
-            fileName: "MySpreadsheet", // Name of the resulting spreadsheet
-            extraLength: 3, // A bigger number means that columns will be wider
-            writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
-            writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
-            RTL: true, // Display the columns from right-to-left (the default value is false)
-          }
-          
-          xlsx(data, settings)
+        try {
+            console.log("download triggered", FileSystem)
+            var name = await AsyncStorage.getItem("name");
+
+            const fName = await axios({
+                url:"http://"+ipAddr+":3000/att/getAttData",
+                method:"get",
+                params: {staffName:name}
+            })
+            let oriName = fName.data
+            console.log("oriname " + oriName)
+            const filename = "Attendance for " + name + ".csv";
+            const result = await FileSystem.downloadAsync(
+                "http://"+ipAddr+":3000/att/file/" + oriName,
+                FileSystem.documentDirectory + filename
+            );
+
+            
+
+            // Log the download result
+            console.log(result);
+
+            // Save the downloaded file
+            saveFile(result.uri, filename, "txt/text");
+        } catch (err) {
+            console.log("Error in downloading : " + err)
+        }
+        // try{
+        //     // Check for Permission (check if permission is already given or not)
+        //     let isPermitedExternalStorage = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+
+        //     if(!isPermitedExternalStorage){
+
+        //       // Ask for permission
+        //       const granted = await PermissionsAndroid.request(
+        //         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        //         {
+        //           title: "Storage permission needed",
+        //           buttonNeutral: "Ask Me Later",
+        //           buttonNegative: "Cancel",
+        //           buttonPositive: "OK"
+        //         }
+        //       );
+
+
+        //       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        //         // Permission Granted (calling our exportDataToExcel function)
+        //         console.log("Permission granted");
+        //       } else {
+        //         // Permission denied
+        //         console.log("Permission denied");
+        //         return;
+        //       }
+        //     }else{
+        //        // Already have Permission (calling our exportDataToExcel function)
+        //        exportDataToExcel();
+        //     }
+        //   }catch(e){
+        //     console.log('Error while checking permission');
+        //     console.log(e);
+        //     return
+        //   }
+        //     try {
+        //         let sample_data_to_export = [{id: '1', name: 'First User'},{ id: '2', name: 'Second User'}];
+
+        //         let wb = XLSX.utils.book_new();
+        //         let ws = XLSX.utils.json_to_sheet(sample_data_to_export)    
+        //         XLSX.utils.book_append_sheet(wb,ws,"Users")
+        //         const wbout = XLSX.write(wb, {type:'binary', bookType:"xlsx"});
+
+        //         // Write generated excel to Storage
+        //         RNFS.writeFile(RNFS.ExternalStorageDirectoryPath + '/my_exported_file.xlsx', wbout, 'ascii').then((r)=>{
+        //          console.log('Success');
+        //         }).catch(err => console.log(err.message))
+        //     } catch (err) {
+        //         console.log("while writing that excel file ", err)
+        //     }
     }
 
     return (
