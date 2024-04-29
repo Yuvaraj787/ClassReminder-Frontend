@@ -109,7 +109,7 @@ export default function DashBoard({ navigation }) {
                 })
 
                 var sorted_schedule = data.data;
-                var currentHour = 1 || timeToHour(currentTime.getHours(), currentTime.getMinutes());
+                var currentHour = timeToHour(currentTime.getHours(), currentTime.getMinutes());
                 console.log("Current hour : ", currentHour);
                 setCurrentHour(currentHour)
                 Object.keys(sorted_schedule).forEach(day => {
@@ -249,7 +249,9 @@ export default function DashBoard({ navigation }) {
                 </View>}
                 {loading ? <CardSkeleton /> :
                     <View style={styles.periods}>
-                        <View>{sch[days[currentDay]].length == 0 ?
+                        <ScrollView
+
+                        >{sch[days[currentDay]].length == 0 ?
                             <View style={styles.overBox}>
                                 <View>{(currentDay == 0 || currentDay == 6) ? <Text style={styles.classOverText}>Yeah Dude, Today is not a working day. Chill...</Text> : <Text style={styles.classOverText}>Hurrah !  Classes are over for today</Text>}</View>
                                 <View>
@@ -271,30 +273,67 @@ export default function DashBoard({ navigation }) {
                                     </View>
                                 </View>
                             </View> :
-                            <FlatList
-                                data={sch[days[currentDay]]}
-                                renderItem={({ item }) => {
-                                    //console.log(item.Subject)
-                                    return (
-                                        <View style={{ ...styles.periodsRow, backgroundColor: currentHour == item.hour ? "#D4E7C5" : "#F2EFE5", borderColor: (currentHour == item.hour) ? "black" : "silver" }}>
+                            <View>
+                                {
+                                    sch[days[currentDay]].map((item, index) => (
+                                        <View
+                                            key={index} // Assuming each item has a unique identifier, replace 'index' with the appropriate key
+                                            style={{
+                                                ...styles.periodsRow,
+                                                backgroundColor: currentHour === item.hour ? "#D4E7C5" : "#F2EFE5",
+                                                borderColor: currentHour === item.hour ? "black" : "silver",
+
+
+                                            }}
+                                        >
                                             <View style={styles.rowLeft}>
                                                 <Text style={{ fontSize: 20 }}>{item.hour}</Text>
                                             </View>
                                             <View style={styles.rowRight}>
                                                 <View style={styles.rowTop}>
-                                                    {currentHour == item.hour && <Text style={{ fontWeight: "normal" }}>Currently Ongoing</Text>}
+                                                    {currentHour === item.hour && <Text style={{ fontWeight: "normal" }}>Currently Ongoing</Text>}
                                                     <Text style={{ fontSize: 20 }}>{item.courseName}</Text>
                                                 </View>
-                                                <View style={styles.rowBottom}>
-                                                    <View style={{ justifyContent: "flex-start" }}><Text><Ionicons name="person" size={15} color="black" /> {item.staff}</Text></View>
-                                                    <Text>  <Ionicons name="location" size={15} color="black" /> {item.location ? item.location : "Location not given"}</Text>
+                                                <View style={[styles.rowBottom, { paddingBottom: currentHour == item.hour ? 0 : "auto" }]}>
+                                                    <View style={{ justifyContent: "flex-start" }}>
+                                                        <Text><Ionicons name="person" size={15} color="black" /> {item.staff}</Text>
+                                                    </View>
+                                                    <Text>
+                                                        <Ionicons name="location" size={15} color="black" /> {item.location ? item.location : "Location not given"}
+                                                    </Text>
                                                 </View>
                                             </View>
                                         </View>
-                                    )
-                                }}
-                            />}
-                        </View>
+                                    ))
+                                }
+
+                            </View>
+
+                                // <FlatList
+                                //     data={sch[days[currentDay]]}
+                                //     renderItem={({ item }) => {
+                                //         //console.log(item.Subject)
+                                //         return (
+                                //             <View style={{ ...styles.periodsRow, backgroundColor: currentHour == item.hour ? "#D4E7C5" : "#F2EFE5", borderColor: (currentHour == item.hour) ? "black" : "silver" }}>
+                                //                 <View style={styles.rowLeft}>
+                                //                     <Text style={{ fontSize: 20 }}>{item.hour}</Text>
+                                //                 </View>
+                                //                 <View style={styles.rowRight}>
+                                //                     <View style={styles.rowTop}>
+                                //                         {currentHour == item.hour && <Text style={{ fontWeight: "normal" }}>Currently Ongoing</Text>}
+                                //                         <Text style={{ fontSize: 20 }}>{item.courseName}</Text>
+                                //                     </View>
+                                //                     <View style={styles.rowBottom}>
+                                //                         <View style={{ justifyContent: "flex-start" }}><Text><Ionicons name="person" size={15} color="black" /> {item.staff}</Text></View>
+                                //                         <Text>  <Ionicons name="location" size={15} color="black" /> {item.location ? item.location : "Location not given"}</Text>
+                                //                     </View>
+                                //                 </View>
+                                //             </View>
+                                //         )
+                                //     }}
+                                // />
+                            }
+                        </ScrollView>
                     </View>}
             </View>
         </View>
@@ -422,18 +461,22 @@ const styles = StyleSheet.create({
         paddingRight: 6
     },
     rowRight: {
-        flex: 9
+        flex: 9,
+        height: 75
+
     },
     rowTop: {
-        flex: 1,
+        flex: 3,
         //marginLeft: 30
         paddingLeft: 10
     },
     rowBottom: {
-        flex: 1,
+        flex: 2,
         flexDirection: "row",
         justifyContent: "space-between",
         padding: 10,
+        marginBottom: 0
+
     },
     boxText: {
         textAlign: "center"

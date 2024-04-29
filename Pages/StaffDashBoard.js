@@ -42,7 +42,7 @@ export default function DashBoard({ navigation }) {
     const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
 
     useEffect(() => {
-        setCurrentDay(4 || currentTime.getDay())
+        setCurrentDay(currentTime.getDay())
         const interval = setInterval(() => {
             setCurrentTime(new Date());
         }, 1000);
@@ -185,7 +185,7 @@ export default function DashBoard({ navigation }) {
         } catch (err) {
             console.log("Error in  send notify interrupt in backend : ", err.message)
         }
-        getScheduleOfStaff()
+        await getScheduleOfStaff()
     }
 
     //to fetch the schedule of the staff
@@ -218,15 +218,10 @@ export default function DashBoard({ navigation }) {
     }
 
 
-    useFocusEffect(
-        React.useCallback(() => {
-            getScheduleOfStaff()
-        }, [])
-    );
-
     useEffect(() => {
         getScheduleOfStaff()
     }, [])
+
     return (
         <View style={styles.main}>
             {/* top container */}
@@ -275,16 +270,41 @@ export default function DashBoard({ navigation }) {
                             <View>{(currentDay == 0 || currentDay == 6) ? <Text style={styles.classOverText}>Today is not a working day.</Text> : <Text style={styles.classOverText}>Hurrah !  Classes are over for today</Text>}</View>
 
                         </View> :
-                        <FlatList
-                            data={Schedule[days[currentDay]]}
-                            renderItem={({ item }) => {
-                                //console.log(item.Subject)
-                                return (
-                                    <ClassBox hour={item.hour} sem={6} subject={item.courseName} location={item.location} courseNo={item.course_No} Apply={Apply} cancelClass={cancelClass} currentHour={currentHour} updateSchedule={getScheduleOfStaff} staffName={item.staff} />
-                                )
-                            }}
-                        //extraData={}
-                        />}
+                        <View>
+                            {
+                                Schedule[days[currentDay]].map((item, index) => (
+                                    <View>
+                                        <ClassBox
+                                            key={index}
+                                            hour={item.hour}
+                                            sem={6}
+                                            subject={item.courseName}
+                                            location={item.location}
+                                            courseNo={item.course_No}
+                                            Apply={Apply}
+                                            cancelClass={cancelClass}
+                                            currentHour={currentHour}
+                                            updateSchedule={getScheduleOfStaff}
+                                            staffName={item.staff}
+                                        />
+                                    </View>
+
+                                ))
+                            }
+                        </View>
+
+                        // <FlatList
+                        //     data={Schedule[days[currentDay]]}
+                        //     renderItem={({ item }) => {
+                        //         //console.log(item.Subject)
+                        //         return (
+                        //             <ClassBox hour={item.hour} sem={6} subject={item.courseName} location={item.location} courseNo={item.course_No} Apply={Apply} cancelClass={cancelClass} currentHour={currentHour} updateSchedule={getScheduleOfStaff} staffName={item.staff} />
+                        //         )
+                        //     }}
+                        // //extraData={}
+                        // />
+                    }
+
 
 
                     </View>
@@ -684,15 +704,16 @@ const styles = StyleSheet.create({
         paddingRight: 6
     },
     rowRight: {
-        flex: 9
+        flex: 9,
+        height: 70
     },
     rowTop: {
-        flex: 1,
+        flex: 3,
         //marginLeft: 30
         paddingLeft: 10
     },
     rowBottom: {
-        flex: 1,
+        flex: 2,
         flexDirection: "row",
         justifyContent: "space-between",
         padding: 10,
