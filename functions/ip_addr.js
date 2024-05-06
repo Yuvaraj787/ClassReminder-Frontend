@@ -1,7 +1,7 @@
 const annaWifi = "10.16.49.174";
 const annahypenWifi = "10.11.151.35"
 const annahypenWifi2 = "10.16.49.33"
-const anna_wifi = "10.11.52.76"
+const anna_wifi = "10.11.145.46"
 const localHost = "10.0.2.2";
 const etherNet = "10.11.152.127";
 //const yuviPhone = "192.168.7.149";
@@ -15,4 +15,4 @@ const yogeshPhone = "192.168.126.191"
 const libAnnaWifi = "10.11.53.92"
 const temp = "192.168.5.191"
 const dhanushPhone2 = "192.168.41.191"
-export default dhanushPhone3;
+export default anna_wifi;

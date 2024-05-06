@@ -74,7 +74,7 @@ export default function Att() {
         const formattedDate = `${day}/${month}/${year}`;
         setdate(formattedDate)
         getScheduleOfStaff()
-        var currentHour = timeToHour(currentTime.getHours(), currentTime.getMinutes());
+        var currentHour = 1 || timeToHour(currentTime.getHours(), currentTime.getMinutes());
         console.log("Current hour : ", currentHour);
         setCurrentHour(currentHour)
         //console.log(formattedDate);
