@@ -42,7 +42,7 @@ const CoursesDisplay = () => {
         var roll = await AsyncStorage.getItem("roll");
         console.log(roll)
         const res = await axios({
-            url: `http://${ipAddr}:3000/user/getMyCourses`,
+            url: `https://${ipAddr}/user/getMyCourses`,
             method: "get",
             params: { roll }
         });

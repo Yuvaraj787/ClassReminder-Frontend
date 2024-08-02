@@ -39,9 +39,9 @@ export default function App() {
     const handleSubmit = () => {
         if (validateForm()) {
             console.log("Form is valid. Submitting... new8");
-            console.log("http://" + ipaddr + ":3000/auth/register")
+            console.log("https://" + ipAddr + "/auth/register")
             axios({
-                url: "http://" + ipaddr + ":3000/auth/register",
+                url: "https://" + ipAddr + "/auth/register",
                 method: "post",
                 params: userDetails
             })

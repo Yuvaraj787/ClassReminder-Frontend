@@ -19,7 +19,6 @@ import axios from 'axios';
 import timeToHour from "../functions/currentHour";
 import { useFocusEffect } from '@react-navigation/native';
 
-
 export default function DashBoard({ navigation }) {
     const [currentTime, setCurrentTime] = useState(new Date());
     var name, dept, year, roll;
@@ -156,7 +155,7 @@ export default function DashBoard({ navigation }) {
         console.log("applied")
         try {
             const res = await axios({
-                url: "http://" + ipAddr + ":3000/user/postponeClass",
+                url: "https://" + ipAddr + "/user/postponeClass",
                 params: { courseNo, finalDay, finalHour, originalHour, subject, staffName: userDetails.name_n },
                 method: "get"
             })
@@ -172,7 +171,7 @@ export default function DashBoard({ navigation }) {
     const cancelClass = async (courseNo, hour, subject) => {
         try {
             const res = await axios({
-                url: "http://" + ipAddr + ":3000/user/cancelClass",
+                url: "https://" + ipAddr + "/user/cancelClass",
                 params: { courseNo, hour, subject, staffName: userDetails.name_n },
                 method: "get"
             })
@@ -190,7 +189,7 @@ export default function DashBoard({ navigation }) {
         try {
 
             const res = await axios({
-                url: "http://" + ipAddr + ":3000/att/getSchedule",
+                url: "https://" + ipAddr + "/att/getSchedule",
                 params: { staffName: name },
                 method: "get"
             })
@@ -203,6 +202,8 @@ export default function DashBoard({ navigation }) {
                 sorted_schedule[day].sort((a, b) => a.hour - b.hour)
                 sorted_schedule[day] = sorted_schedule[day].filter((a) => a.hour >= currentHour)
             })
+            console.log("fetched schedule")
+            console.log(sorted_schedule)
 
             setSchedule({ ...sorted_schedule });
             console.log("schedule fetching")
@@ -341,9 +342,10 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply, currentHour, 
     const [selected, setSelected] = useState([])
 
     useEffect(() => {
+        console.log(hour, courseNo)
         async function getHours() {
             const res = await axios({
-                url: "http://" + ipAddr + ":3000/user/freehours",
+                url: "https://" + ipAddr + "/user/freehours",
                 method: "get"
             })
             console.log(res.data)
@@ -371,7 +373,7 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply, currentHour, 
     const sendInfo = async (Venue) => {
         try {
             const res = await axios({
-                url: "http://" + ipAddr + ":3000/user/notifyVenueChange",
+                url: "https://" + ipAddr + "/user/notifyVenueChange",
                 params: { courseNo, staffName, subject, location, Venue },
                 method: "post"
             })
@@ -383,13 +385,14 @@ function ClassBox({ hour, sem, subject, location, courseNo, Apply, currentHour, 
     }
 
     const changeLocation = async (newVenue) => {
-        //console.log(location + "change request sending")
-        //console.log(courseNo)
+        console.log(location + "change request sending")
+        console.log(courseNo)
         const res = await axios({
-            url: "http://" + ipAddr + ":3000/user/changeLocation",
+            url: "https://" + ipAddr + "/user/changeLocation",
             method: "get",
             params: { courseNo, staffName, subject, oldVenue: location, courseNo, newLocation: newVenue }
         })
+
         if (res.data.success) {
             //updateSchedule()
             //sendInfo(newVenue)

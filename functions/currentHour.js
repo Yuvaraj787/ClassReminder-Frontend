@@ -12,6 +12,7 @@ const slots = [
 ]
 
 const timeToHour = (hh, mm) => {
+    console.log(hh, mm)
     var last = 0;
     if ((hh < 8) || (hh == 88 && mm <= 30)) return 0;
     for (var i = 0; i < 8; i++) {

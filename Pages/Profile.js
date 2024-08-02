@@ -1,5 +1,6 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect, useContext } from 'react'
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { MaterialIcons, Feather, FontAwesome, Entypo, } from '@expo/vector-icons';
 import Iuri from "../assets/sample_profile.jpg";
@@ -38,14 +39,14 @@ const Profile = () => {
         }
     }, [])
 
-    const colorCodes = ["", "grey", "purple", "orange", "brown"]
+    const colorCodes = ["", "red", "grey", "purple", "orange"]
 
     const logout = async () => {
         console.log("Logout process")
         try {
             await AsyncStorage.removeItem('token')
             await AsyncStorage.removeItem('roll')
-            //await AsyncStorage.clear();
+            // await AsyncStorage.clear();
             setLog(false);
         } catch (err) {
             console.log("ERROR: error in logging out", err.message)
@@ -87,12 +88,12 @@ const Profile = () => {
                         <Text style={styles.boxText}>Schedule</Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("AttendenceDisplay")}>
+                {/* <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("AttendenceDisplay")}>
                     <View style={styles.pressBox}>
                         <FontAwesome name="hand-stop-o" size={34} color="black" />
                         <Text style={styles.boxText}>Attendance</Text>
                     </View>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("Attendence")}>
                     <View style={styles.pressBox}>
                         <FontAwesome name="hand-stop-o" size={34} color="black" />
@@ -101,8 +102,8 @@ const Profile = () => {
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("ChangePw")}>
                     <View style={styles.pressBox} >
-                        <FontAwesome name="lock" size={34} color="black" />
-                        <Text style={styles.boxText}>Change Password</Text>
+                        <FontAwesome6 name="people-group" size={34} color="black" />
+                        <Text style={styles.boxText}>About us</Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.btnBoxes} onPress={logout}>

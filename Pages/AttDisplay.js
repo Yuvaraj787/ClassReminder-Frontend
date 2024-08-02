@@ -32,7 +32,7 @@ const AttendanceDisplay = () => {
         var roll = await AsyncStorage.getItem("roll");
         console.log(roll)
         const res = await axios({
-            url: `http://${ipAddr}:3000/user/getMyCourses`,
+            url: `https://${ipAddr}/user/getMyCourses`,
             method: "get",
             params: { roll }
         })
@@ -62,7 +62,7 @@ const AttendanceDisplay = () => {
         const roll = await AsyncStorage.getItem("roll");
 
         const res = await axios({
-            url: `http://${ipAddr}:3000/att/getAtt`,
+            url: `https://${ipAddr}/att/getAtt`,
             method: "get",
             params: { roll, courseNo }
         })

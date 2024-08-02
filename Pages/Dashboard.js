@@ -80,9 +80,11 @@ export default function DashBoard({ navigation }) {
         async function fetchSchedule() {
             console.log("Started")
             try {
+                
                 var token_n = await AsyncStorage.getItem("token")
+
                 var data = await Axios({
-                    url: "http://" + ipAddr + ":3000/user/weeklySchedule",
+                    url: "https://" + ipAddr + "/user/weeklySchedule",
                     method: "get",
                     params: {
                         token: token_n
@@ -90,9 +92,10 @@ export default function DashBoard({ navigation }) {
                 })
 
                 var sorted_schedule = data.data;
-                var currentHour = 1 ||  timeToHour(currentTime.getHours(), currentTime.getMinutes());
+                var currentHour = 1 + timeToHour(currentTime.getHours(), currentTime.getMinutes());
                 console.log("Current hour : ", currentHour);
                 setCurrentHour(currentHour)
+
                 Object.keys(sorted_schedule).forEach(day => {
                     sorted_schedule[day].sort((a, b) => a.hour - b.hour)
                     sorted_schedule[day] = sorted_schedule[day].filter((a) => a.hour >= currentHour)
@@ -100,6 +103,7 @@ export default function DashBoard({ navigation }) {
 
                 setSch(sorted_schedule);
                 setLoading(false)
+
             } catch (err) {
                 console.log("Error in getting weekly schedule : ", err.message)
             }

@@ -37,7 +37,7 @@ const Login = ({ navigator, route }) => {
         try {
             console.log(roll)
             const res = await axios({
-                url: `http://${ipAddr}:3000/user/getMyCourses`,
+                url: `https://${ipAddr}/user/getMyCourses`,
                 method: "get",
                 params: { roll: parseInt(roll) }
             })
@@ -77,7 +77,7 @@ const Login = ({ navigator, route }) => {
         if (validateForm()) {
             try {
                 const res = await axios({
-                    url: `http://${ipAddr}:3000/auth/login`,
+                    url: `https://${ipAddr}/auth/login`,
                     method: "post",
                     params: { roll: rollNo, password }
                 });
@@ -90,7 +90,7 @@ const Login = ({ navigator, route }) => {
                     await AsyncStorage.setItem("year", year + "")
                     await AsyncStorage.setItem("dept", dept)
                     await AsyncStorage.setItem("token", res.data.token)
-                    registerIndieID(roll + "", 19717, '6cGVSWyXY5RoTiF9pUgfiS')
+                    registerIndieID(roll + "", 21202, 'uBio8ApDXJCEbISWb0BS5X')
                     setLog(true)
                     manageMissed(roll)
                 } else {

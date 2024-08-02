@@ -38,12 +38,13 @@ const Stack = createStackNavigator();
 const LogContext = createContext(null);
 
 export default function App() {
-  registerNNPushToken(19717, '6cGVSWyXY5RoTiF9pUgfiS');
+  registerNNPushToken(21202, 'uBio8ApDXJCEbISWb0BS5X');
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [isStaffLoggedIn, setStaffLoggedIn] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [expoPushToken, setExpoPushToken] = useState('');
+
   const makeItTrue = () => {
     setStaffLoggedIn(true);
   }
@@ -65,7 +66,7 @@ export default function App() {
       }
       console.log("INFO: Auth Token is present")
       axios({
-        url: "http://" + ipAddr + ":3000/auth/verify",
+        url: "https://" + ipAddr + "/auth/verify",
         method: "POST",
         params: { token: tok }
       }).then(res => {
@@ -196,17 +197,18 @@ function MainScreenStaffs() {
         // children={()=><DashBoard />}
         options={{
           tabBarLabel: "Staff Dashboard",
-          tabBarIcon: () => (<Ionicons name="ios-analytics" size={20} />),
+          tabBarIcon: () => (<Ionicons name="analytics" size={20} />),
           headerShown: true,
           headerTitle: "Staff Dashboard"
         }}
       />
+
       <BottomTab.Screen
         name="Profile"
         component={StaffProfile}
         options={{
           tabBarLabel: "Profile",
-          tabBarIcon: () => (<Ionicons name="ios-person" size={20} />),
+          tabBarIcon: () => (<Ionicons name="person" size={20} />),
           headerShown: true,
           headerTitle: "Profile"
         }}
@@ -224,7 +226,7 @@ function MainScreen() {
         // children={()=><DashBoard />}
         options={{
           tabBarLabel: "Dashboard",
-          tabBarIcon: () => (<Ionicons name="ios-analytics" size={20} />),
+          tabBarIcon: () => (<Ionicons name="analytics" size={20} />),
           headerShown: true,
           headerTitle: "Dashboard"
         }}
@@ -234,7 +236,7 @@ function MainScreen() {
         component={Profile}
         options={{
           tabBarLabel: "Profile",
-          tabBarIcon: () => (<Ionicons name="ios-person" size={20} />),
+          tabBarIcon: () => (<Ionicons name="person" size={20} />),
           headerShown: true,
           headerTitle: "Profile"
         }}

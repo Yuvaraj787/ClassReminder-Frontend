@@ -48,7 +48,7 @@ export default function Att() {
         try {
 
             const res = await axios({
-                url: "http://" + ipAddr + ":3000/att/getSchedule",
+                url: "https://" + ipAddr + "/att/getSchedule",
                 params: { staffName: name },
                 method: "get"
             })
@@ -104,7 +104,7 @@ export default function Att() {
         try {
             console.log(Atthour)
             const res = await axios({
-                url: "http://" + ipAddr + ":3000/att/submitAtt",
+                url: "https://" + ipAddr + "/att/submitAtt",
                 params: { Date: date, course_No, isPresentArray: studentStatus, Atthour, StaffName },
                 method: "post"
             })
@@ -247,11 +247,12 @@ export default function Att() {
                     hours.map((row, index) => {
                         return (
                             <Pressable style={styles.box} onPress={async () => {
+                                 console.log(row)
                                 // console.log("Attendence opened")
                                 try {
                                     const res = await axios({
-                                        url: "http://" + ipAddr + ":3000/att/getStudentsList",
-                                        params: { staff: row.staff, courseNo: row.course_No },
+                                        url: "https://" + ipAddr + "/att/getStudentsList",
+                                        params: { staff: row.staff, courseNo: row.courseNo },
                                         method: "get"
                                     })
                                     setCurrentPeriod(row.hour)
@@ -290,8 +291,7 @@ export default function Att() {
                                                 <Text style={styles.formHead}>List of Students Enrolled</Text>
                                             </View>
                                             <View style={styles.formBody}>
-
-                                                {studentList.length > 0 ?
+                                            {studentList.length > 0 ?
                                                     studentList.map((student, index) => (
                                                         <View style={styles.body}>
                                                             <View style={styles.leftBody}>

@@ -44,7 +44,7 @@ export default function App({ navigator, route }) {
         if (validateForm()) {
             console.log("Form is Valid");
             axios({
-                url: "http://" + ipAddr + ":3000/auth/staff/login",
+                url: "https://" + ipAddr + "/auth/staff/login",
                 method: "POST",
                 params: { name: value, password }
             })

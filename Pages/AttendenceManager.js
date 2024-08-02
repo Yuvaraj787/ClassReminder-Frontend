@@ -25,16 +25,17 @@ const BunkManager = () => {
         var roll = await AsyncStorage.getItem("roll");
         console.log(roll)
         const res = await axios({
-            url: `http://${ipAddr}:3000/user/getMyCourses`,
+            url: `https://${ipAddr}/user/getMyCourses`,
             method: "get",
             params: { roll }
         })
 
-        console.log(res.data)
+        //console.log(res.data)
         var result = []
         const existingData = await AsyncStorage.getItem("classData");
-        const parsedData = JSON.parse(existingData);
 
+        const parsedData = JSON.parse(existingData);
+        console.log(parsedData)
         res.data.forEach(obj1 => {
             const matchedObj2 = parsedData.find(obj2 => obj2.courseNo === obj1.courseNo);
 
@@ -48,13 +49,16 @@ const BunkManager = () => {
             }
 
         });
+        // console.log(result)
         setAtt(result)
+
     }
 
 
     useEffect(() => {
         console.log("hi")
         GetCourses()
+        console.log(Att)
     }, [])
 
 

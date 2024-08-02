@@ -20,6 +20,7 @@ export default function App() {
         { label: 'Jasmine', value: 'Jasmine' },
         { label: 'Senthil Kumar', value: 'Senthil Kumar' },
     ]);
+
     const [allStaff, setAllStaff] = useState([])
     const [subject, setSubjects] = useState([])
 
@@ -30,9 +31,9 @@ export default function App() {
 
     const getSub = async () => {
         const res = await axios({
-            url: `http://${ipAddr}:3000/user/getAllCourses`,
+            url: `https://${ipAddr}/user/getAllCourses`,
             method: "get",
-            params: { sem: 6 }
+            params: { sem: 7 }
         })
         //console.log(res.data)
 
@@ -40,7 +41,8 @@ export default function App() {
         var st = []
 
         res.data.forEach(subject => {
-            subs.push({ value: subject._id.courseCode, label: subject._id.name })
+            const SubExists = subs.some(obj => obj.value === subject._id.courseCode);
+            if (!SubExists) subs.push({ value: subject._id.courseCode, label: subject._id.name })
             st.push({ value: subject._id.courseCode, staffs: subject.staffs })
             console.log(subject)
         })
@@ -66,7 +68,7 @@ export default function App() {
             const token = await AsyncStorage.getItem("token")
             try {
                 const res = await axios({
-                    url: `http://${ipAddr}:3000/user/enrollCourse`,
+                    url: `https://${ipAddr}/user/enrollCourse`,
                     method: "post",
                     params: { token, courseCode: value, faculty: svalue }
                 })

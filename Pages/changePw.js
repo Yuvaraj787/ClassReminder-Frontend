@@ -1,136 +1,158 @@
-import { StatusBar } from 'expo-status-bar';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { StyleSheet, Text, View, Switch, TextInput, Button, Image, KeyboardAvoidingView, Alert, Pressable, ActivityIndicator } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LogContext } from '../App';
-import { useNavigation } from '@react-navigation/native';
-import ipAddr from "../functions/ip_addr";
+import React from 'react';
+import { View, Text, Image, StyleSheet, ScrollView, Linking, TouchableOpacity } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
+import Dhanush from '../assets/developers/Dhanush.jpg';
+import Yuvaraj from '../assets/developers/yuvaraj.jpeg';
+ 
+const developers = [
+    {
+        name: 'Yuvaraj V',
+        image: Yuvaraj,
+        email: 'mailto:yuvarajv787@gmail.com',
+        linkedin: 'https://www.linkedin.com/in/yuvaraj-vetrivel-407275223/',
+        github: 'https://github.com/Yuvaraj787'
+    },
+    {
+        name: 'Dhanushkumar Sankar',
+        image: Dhanush,
+        email: 'mailto:dhanushit419@gmail.com',
+        linkedin: 'https://www.linkedin.com/in/dhanushkumar-sankar-448a18270/',
+        github: 'https://github.com/Dhanushit419',
+    },
+];
 
-const ChangePw = ({ navigator, route }) => {
-    const navigation = useNavigation();
-    const [error, setError] = useState({});
-
-    const [currentPassword, setCurrentPassword] = useState("")
-    const [newPassword, setNewPassword] = useState("")
-
-    const validateForm = async () => {
-        let errors = {};
-        if (!currentPassword.trim()) errors.currentPassword = "! Please enter old Password";
-        if (!newPassword.trim()) errors.newPassword = "! Please enter new Password";
-        else if (newPassword.length < 8) errors.newPassword = "! Password must be minimum 8 letters";
-        const staff = AsyncStorage.getItem("staff")
-        if (staff) {
-
-        }
-        else {
-            const roll = await AsyncStorage.getItem("roll");
-            const res = await axios({
-                url: `http://${ipAddr}:3000/auth/login`,
-                method: "post",
-                params: { roll: roll, password: currentPassword }
-            });
-            if (res.data.wrongPassword) {
-                errors.currentPassword = "! Wrong Password";
-            }
-        }
-        setError(errors);
-        return Object.keys(errors).length === 0;
-    }
-
-    const handleSubmit = async () => {
-        if (validateForm()) {
-            const staff = AsyncStorage.getItem("staff")
-
-            if (staff) {
-                const name = await AsyncStorage.getItem("name");
-                const res = await axios({
-                    url: `http://${ipAddr}:3000/auth/changepw`,
-                    method: "post",
-                    params: { roll: roll, passWord: newPassword, staff: true, name: name }
-                });
-            }
-            else {
-
-                const roll = await AsyncStorage.getItem("roll");
-                const name = await AsyncStorage.getItem("name");
-
-                const res = await axios({
-                    url: `http://${ipAddr}:3000/auth/changepw`,
-                    method: "post",
-                    params: { roll: roll, passWord: newPassword, staff: false, name: name }
-                });
-
-            }
-
-
-        }
-    }
-
+const AboutDevelopers = () => {
     return (
-        <View style={[styles.container, { backgroundColor: "#164863" }]}>
-            <Text style={{ fontSize: 25, fontWeight: "bold", color: "white", fontFamily: "monospace", paddingBottom: 30 }}>Change Password</Text>
-
-            <View style={styles.form}>
-                <TextInput value={currentPassword} placeholder="Current Password" style={styles.input} onChangeText={setCurrentPassword} secureTextEntry />
-                {error.currentPassword && <Text style={styles.err}>{error.currentPassword}</Text>}
-                <TextInput value={newPassword} placeholder="New Password " style={styles.input} onChangeText={setNewPassword} secureTextEntry />
-                {error.newPassword && <Text style={styles.err}>{error.newPassword}</Text>}
-                <Pressable title='Change Password' onPress={handleSubmit}>
-                    <Button title='Change Password' onPress={handleSubmit} />
-                </Pressable>
+        <ScrollView contentContainerStyle={styles.container}>
+            <Text style={styles.appName}>Welcome to Schedule<Text style={{ fontSize: 40 }}>IT</Text></Text>
+            <Text style={styles.appDescription}>
+                Developed by two enthusiastic IT students <Text style={{ fontWeight: 'bold', fontFamily: 'monospace' }}>Yuvaraj Vetrivel</Text> & <Text style={{ fontWeight: 'bold', fontFamily: 'monospace' }}>Dhanushkumar Sankar</Text> from Anna University,
+                ScheduleIT is your go-to app for seamless time management.
+                Our app provides a real-time view of your current and upcoming periods,
+                a comprehensive weekly schedule, and an easy way to manage your absences.
+                With ScheduleIT, staying organized and on top of your academic life has
+                never been easier. Join us in making your schedule smarter!
+            </Text>
+            <Text style={styles.label}>Developers</Text>
+            <View style={styles.cardsContainer}>
+                {developers.map((developer, index) => (
+                    <View key={index} style={styles.card}>
+                        <Image source={developer.image} style={styles.image} />
+                        <Text style={styles.name}>{developer.name}</Text>
+                        <View style={styles.contactContainer}>
+                            <TouchableOpacity onPress={() => Linking.openURL(developer.email)}>
+                                <FontAwesome name="envelope" size={20} color="black" style={styles.icon} />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => Linking.openURL(developer.linkedin)}>
+                                <FontAwesome name="linkedin" size={24} color="black" style={styles.icon} />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => Linking.openURL(developer.github)}>
+                                <FontAwesome name="github" size={24} color="black" style={styles.icon} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                ))}
             </View>
-            <StatusBar style="auto" />
-        </View>
+            <TouchableOpacity onPress={() => Linking.openURL('https://forms.gle/pfwfaU22LSy5SdGeA')} style={styles.feedbackLink}>
+                <Text style={styles.feedbackText}>Provide Feedback</Text>
+            </TouchableOpacity>
+            <View style={styles.footerContainer}>
+                <Text style={styles.footerText}>
+                    Copyrighted © 2024 Yuvaraj V & Dhanushkumar Sankar. All rights reserved.
+                </Text>
+            </View>
+        </ScrollView>
     );
-}
+};
 
 const styles = StyleSheet.create({
-    infoBox: {
-        flexDirection: "row",
-        alignItems: "center",
-        columnGap: 12,
-        marginTop: 10
-    },
-    infoView: {
-        flex: 1,
-        alignItems: "center",
-        // backgroundColor: "#F7DED0",
-        backgroundColor: "#9195F6",
-        borderRadius: 6,
-        padding: 7
-    },
-    infoText: {
-        fontSize: 14,
-        fontWeight: "900"
-    },
     container: {
-        flex: 1,
-        backgroundColor: '#fff',
+        padding: 20,
         alignItems: 'center',
+    },
+    appName: {
+        fontSize: 32,
+        fontFamily: 'monospace',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 10,
+    },
+    appDescription: {
+        fontSize: 20,
+        //fontFamily: 'Roboto Mono',
+        textAlign: 'justify',
+        marginBottom: 20,
+        paddingHorizontal: 10,
+        lineHeight: 25
+    },
+    label: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginVertical: 20,
+    },
+    cardsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+    },
+    card: {
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 10,
+        width: '45%',
+        marginVertical: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+        elevation: 5,
+        alignItems: 'center',
+    },
+    image: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        marginBottom: 10,
+    },
+    name: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        width: '100%',
+        textAlign: 'center'
+    },
+    contactContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        width: '100%',
+    },
+    icon: {
+        marginHorizontal: 10,
+    },
+    feedbackLink: {
+        marginTop: 20,
+        marginBottom: 20,
+        padding: 10,
+        backgroundColor: '#E1E1E1',
+        borderRadius: 10,
+    },
+    feedbackText: {
+        fontSize: 18,
+        color: '#000',
+    },
+    footerContainer: {
+        padding: 10,
+        backgroundColor: '#f1f1f1',
+        alignItems: 'center',
+        borderTopWidth: 1,
+        borderTopColor: '#ddd',
         justifyContent: 'center',
     },
-    form: {
-        backgroundColor: "white",
-        padding: 20,
-        borderRadius: 20,
-        width: "80%",
-        elevation: 10
+    footerText: {
+        fontSize: 14,
+        color: '#333',
     },
-    input: {
-        borderWidth: 1,
-        borderColor: "#ddd",
-        padding: 10,
-        marginBottom: 12,
-        borderRadius: 5
-    },
-    text: {
-        marginBottom: 15,
-        fontSize: 16
-    },
-    err: {
-        color: "red",
-    }
 });
 
-export default ChangePw
+export default AboutDevelopers;
