@@ -9,11 +9,13 @@ import { useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faA, faP } from '@fortawesome/free-solid-svg-icons';
+import LoadingSpinner from '../Components/loading';
 
 const AttendanceDisplay = () => {
     const navigate = useNavigation();
     const [theoryCourses, settheoryCourses] = useState([])
     const [labCourses, setlabCourses] = useState([])
+    const [loading,setLoading]=useState(true);
 
     const [open, setOpen] = useState(false)
     useEffect(() => {
@@ -51,7 +53,8 @@ const AttendanceDisplay = () => {
         });
         settheoryCourses(t)
         setlabCourses(l)
-        console.log(res.data)
+        //console.log(res.data)
+        setLoading(false)
     }
 
     const [subName, setSubName] = useState("")
@@ -71,6 +74,7 @@ const AttendanceDisplay = () => {
 
     }
     return (
+        loading?<LoadingSpinner/>:
         <ScrollView style={styles.container}>
 
             <Modal
@@ -145,15 +149,16 @@ const AttendanceDisplay = () => {
                     {
                         theoryCourses.map((course, ind) => {
                             return <View style={styles.courseBox}>
-                                <Pressable style={[styles.courseBox, { elevation: 20 }]} id={ind + ""} onPress={() => {
+                                {/* <Pressable style={[styles.courseBox, { elevation: 20 }]} id={ind + ""} onPress={() => {
                                     viewAtt(course.courseNo)
                                     setSubName(course.name)
                                     setOpen(true)
 
-                                }}>
+                                }}> */}
                                     <Text style={styles.courseText}>{course.name}</Text>
                                     <Text style={styles.facultyText}>{course.staff}</Text>
-                                </Pressable></View>
+                                {/* </Pressable> */}
+                                </View>
                         })
                     }
                 </View>
@@ -166,15 +171,15 @@ const AttendanceDisplay = () => {
                     {
                         labCourses.map((course, ind) => {
                             return <View style={styles.courseBox}>
-                                <Pressable style={[styles.courseBox, { elevation: 20 }]} id={ind + ""} onPress={() => {
+                                {/* <Pressable style={} id={ind + ""} onPress={() => {
                                     viewAtt(course.courseNo)
                                     setSubName(course.name)
                                     setOpen(true)
 
-                                }}>
+                                }}> */}
                                     <Text style={styles.courseText}>{course.name}</Text>
-                                    <Text style={styles.facultyText}>{course.faculty}</Text>
-                                </Pressable>
+                                    <Text style={styles.facultyText}>{course.staff}</Text>
+                                {/* </Pressable> */}
                             </View>
                         })
                     }

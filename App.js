@@ -177,12 +177,12 @@ function AfterLogin() {
         <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Notification" component={Notification} options={{ headerTitle: "Notification" }} />
         <Stack.Screen name="AddCourse" component={AddCourse} options={{ headerTitle: "Add a Course" }} />
-        <Stack.Screen name="CourseDisplay" component={CoursesDisplay} options={{ headerTitle: "My Courses" }} />
+        <Stack.Screen name="CourseDisplay" component={CoursesDisplay} options={{ headerTitle: "Add Course" }} />
         <Stack.Screen name="Attendence" component={Attendence} options={{ headerTitle: "Bunk Manager" }} />
-        <Stack.Screen name="AttendenceDisplay" component={AttendanceDisplay} options={{ headerTitle: "My Attendance" }} />
+        <Stack.Screen name="AttendenceDisplay" component={AttendanceDisplay} options={{ headerTitle: "My Courses" }} />
         <Stack.Screen name="Dashboard" component={DashBoard} />
         <Stack.Screen name="Schedule" component={Schedule} />
-        <Stack.Screen name="ChangePw" component={ChangePw} options={{ headerTitle: "Change Password" }} />
+        <Stack.Screen name="ChangePw" component={ChangePw} options={{ headerTitle: "About us" }} />
       </Stack.Navigator>
     </>
   )
@@ -267,7 +267,7 @@ function BeforeLogin() {
           tabBarLabel: "Signup",
           tabBarIcon: () => (<Ionicons name="person-add-sharp" size={20} />),
           headerShown: true,
-          headerTitle: "Register"
+          headerTitle: "Student Register"
         }}
       />
       <BottomTab.Screen

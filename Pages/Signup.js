@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-import ipaddr from "../functions/ip_addr"
+import ipAddr from "../functions/ip_addr"
 
 export default function App() {
     const navigate = useNavigation();

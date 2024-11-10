@@ -6,11 +6,15 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import ipAddr from "../functions/ip_addr"
 import { useFocusEffect } from '@react-navigation/native';
+import LoadingSpinner from '../Components/loading';
 
 const CoursesDisplay = () => {
     const navigate = useNavigation();
     const [theoryCourses, settheoryCourses] = useState([])
     const [labCourses, setlabCourses] = useState([])
+
+    const [loading,setLoading]=useState(true);
+    
 
     // const theoryCourses = [
     //     {name:"Internet of Things", faculty: "Selvi Ravindran"},
@@ -35,6 +39,7 @@ const CoursesDisplay = () => {
         React.useCallback(() => {
             GetCourses()
             console.log("course fetching")
+            
         }, [])
     );
 
@@ -61,9 +66,12 @@ const CoursesDisplay = () => {
         settheoryCourses(t)
         setlabCourses(l)
         console.log(res.data)
+        setLoading(false)
+
     }
 
     return (
+        loading? <LoadingSpinner/>:
         <ScrollView style={styles.container}>
             <View style={styles.section}>
                 <View style={styles.sectionHead} >
@@ -109,7 +117,9 @@ const CoursesDisplay = () => {
             </View>
 
         </ScrollView>
+    
     )
+    
 }
 
 const styles = StyleSheet.create({

@@ -46,7 +46,7 @@ const Profile = () => {
         try {
             await AsyncStorage.removeItem('token')
             await AsyncStorage.removeItem('roll')
-            // await AsyncStorage.clear();
+            await AsyncStorage.clear();
             setLog(false);
         } catch (err) {
             console.log("ERROR: error in logging out", err.message)
@@ -79,6 +79,13 @@ const Profile = () => {
                 <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("CourseDisplay")}>
                     <View style={styles.pressBox} >
                         <MaterialCommunityIcons name="bookshelf" size={34} color="black" />
+                        <Text style={styles.boxText}>Add Course</Text>
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("AttendenceDisplay")}>
+                    <View style={styles.pressBox}>
+                    <MaterialCommunityIcons name="bookshelf" size={34} color="black" />
                         <Text style={styles.boxText}>My Courses</Text>
                     </View>
                 </TouchableOpacity>
@@ -88,22 +95,10 @@ const Profile = () => {
                         <Text style={styles.boxText}>Schedule</Text>
                     </View>
                 </TouchableOpacity>
-                {/* <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("AttendenceDisplay")}>
-                    <View style={styles.pressBox}>
-                        <FontAwesome name="hand-stop-o" size={34} color="black" />
-                        <Text style={styles.boxText}>Attendance</Text>
-                    </View>
-                </TouchableOpacity> */}
                 <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("Attendence")}>
                     <View style={styles.pressBox}>
                         <FontAwesome name="hand-stop-o" size={34} color="black" />
                         <Text style={styles.boxText}>Bunk Manager</Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.btnBoxes} onPress={() => navigator.navigate("ChangePw")}>
-                    <View style={styles.pressBox} >
-                        <FontAwesome6 name="people-group" size={34} color="black" />
-                        <Text style={styles.boxText}>About us</Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.btnBoxes} onPress={logout}>
@@ -130,7 +125,8 @@ const styles = {
         alignItems: "center"
     },
     name: {
-        fontSize: 30
+        fontSize: 30,
+        textAlign:'center'
     },
     dept: {
         fontSize: 15

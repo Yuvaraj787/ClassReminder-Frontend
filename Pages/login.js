@@ -126,7 +126,7 @@ const Login = ({ navigator, route }) => {
                 </Pressable>
                 <View style={styles.infoBox}>
                     <Pressable style={styles.infoView} onPress={() => navigation.navigate("StaffLogin")}><Text style={styles.infoText}>Staff Login</Text></Pressable>
-                    <Pressable style={styles.infoView}><Text style={styles.infoText}>Forget Password</Text></Pressable>
+                    {/* <Pressable style={styles.infoView}><Text style={styles.infoText}>Forget Password</Text></Pressable> */}
                 </View>
             </View>
             <StatusBar style="auto" />

@@ -9,8 +9,10 @@ import Iuri from "../assets/sample_profile.jpg"
 import Attendence from "../Components/att.json"
 import axios from 'axios';
 import ipAddr from "../functions/ip_addr";
+import LoadingSpinner from '../Components/loading';
 
 const BunkManager = () => {
+    const [loading,setLoading]=useState(true);
 
     const [pressedIndex, setPressedIndex] = useState(-1);
     const [Att, setAtt] = useState(Attendence)
@@ -51,6 +53,7 @@ const BunkManager = () => {
         });
         // console.log(result)
         setAtt(result)
+        setLoading(false)
 
     }
 
@@ -97,6 +100,7 @@ const BunkManager = () => {
     }
 
     return (
+        loading?<LoadingSpinner/>:
         <ScrollView>
             <View>
                 <View style={styles.topContainer}>
@@ -218,7 +222,8 @@ const styles = StyleSheet.create(
             borderRadius: 20,
             elevation: 5,
             flexDirection: "row",
-            justifyContent: "space-between"
+            justifyContent: "space-between",
+            width:'90%'
         },
         subjectText: {
             fontFamily: "monospace",

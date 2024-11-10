@@ -26,6 +26,9 @@ export default function Notification() {
 
     return (
         <View style={styles.container}>
+            <View>
+                <Text>Any notificcations given by your staff will be Displayed here !</Text>
+            </View>
             <FlatList
                 data={Info}
                 renderItem={({ item }) => {

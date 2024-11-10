@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "ClassReminder",
-    "slug": "ClassReminder",
+    "name": "ScheduleIT",
+    "slug": "ScheduleIT",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -19,17 +19,17 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.yuvaraj787.ClassReminder"
+      "package": "com.yuvaraj787.ScheduleIT"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/icon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "34c13a11-7fb6-4d1c-8400-48c01150a920"
+        "projectId": "6bc0cae2-09b6-427c-b3fb-42de357b3027"
       }
     }
   }

@@ -1,5 +1,5 @@
 import { StyleSheet, View, Text, ScrollView, FlatList, TouchableOpacity, Alert, PermissionsAndroid, Pressable } from "react-native"
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Schedule from "../Components/Schedule.json"
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
@@ -14,6 +14,7 @@ import { giveCollegeLocation } from "../functions/insideLocations";
 import timeToHour from "../functions/currentHour";
 import Axios from "axios"
 // import SkeletonContent from 'react-native-skeleton-content';
+import { useFocusEffect } from '@react-navigation/native';
 
 const CardSkeleton = () => { 
     return ( 
@@ -53,8 +54,25 @@ export default function DashBoard({ navigation }) {
         }, 1000);
         return () => clearInterval(interval);
     }, [])
+    async function getMiss() {
+        const existingData = await AsyncStorage.getItem("classData");
+        const parsedData = JSON.parse(existingData);
+        let a = 0
+        parsedData.forEach((row) => {
+            console.log(row)
+            a += parseInt(row.classMissed)
+        });
 
+        setMissed(a)
+    }
+
+    useFocusEffect(
+        React.useCallback(() => {
+            getMiss()
+        }, [])
+    );
     useEffect(() => {
+
         setCurrentDay(currentTime.getDay())
         async function fetch() {
             try {
@@ -92,7 +110,7 @@ export default function DashBoard({ navigation }) {
                 })
 
                 var sorted_schedule = data.data;
-                var currentHour = 1 + timeToHour(currentTime.getHours(), currentTime.getMinutes());
+                var currentHour = timeToHour(currentTime.getHours(), currentTime.getMinutes());
                 console.log("Current hour : ", currentHour);
                 setCurrentHour(currentHour)
 
@@ -230,7 +248,7 @@ export default function DashBoard({ navigation }) {
                         </Pressable>
                     </View>
                     <View style={styles.box2}>
-                        <Text style={styles.time}>{"08:45 AM"}</Text>
+                        <Text style={styles.time}>{formattedTime}</Text>
                         <Text><Ionicons name="location" size={15} color="black" />{" " + displayLocation}</Text>
                     </View>
                 </View>}

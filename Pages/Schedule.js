@@ -5,9 +5,11 @@ import { Ionicons } from '@expo/vector-icons';
 import ipAddr from "../functions/ip_addr"
 import Axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import LoadingSpinner from '../Components/loading';
+import { useState } from 'react';
 
 function PerDay({ Schedule }) {
+    
     return (
         <View>
             <FlatList
@@ -55,6 +57,7 @@ const renderTabBar = props => (
 
 export default function TabViewExample() {
     const layout = useWindowDimensions();
+    const [loading,setLoading]=useState(true);
 
     const [index, setIndex] = React.useState(0);
     const [routes] = React.useState([
@@ -108,7 +111,7 @@ export default function TabViewExample() {
 
                 setSch(sorted_schedule);
 
-                // setLoading(false);
+                 setLoading(false);
             } catch (err) {
                 console.log("Error in getting weekly schedule 1 : ", err.message)
             }
@@ -116,6 +119,7 @@ export default function TabViewExample() {
         fetchSchedule();
     }, [])
     return (
+        loading?<LoadingSpinner/>:
         <TabView
             navigationState={{ index, routes }}
             renderTabBar={renderTabBar}
@@ -230,5 +234,4 @@ const styles = StyleSheet.create({
         padding: 10,
         flexGrow: 1,
     }
-
 })

@@ -3,20 +3,20 @@ const hostelZone = {
     longRange : [80.236928, 80.239602]
 }
 
-// const KpZone = {
-//     latRange: [13.014649, 13.015258],
-//     longRange : [80.236928, 80.239602]
-// }
+const KpZone = {
+    latRange: [13.014649, 13.015258],
+    longRange : [80.236928, 80.239602]
+}
 
 const ITDepartmentZone = {
     latRange: [ 13.012872, 13.013085],
     longRange : [ 80.235838,  80.236227]
 }
 
-// const RedBuildingZone = {
-//     latRange: [13.014649, 13.015258],
-//     longRange : [80.236928, 80.239602]
-// }
+const RedBuildingZone = {
+    latRange: [13.014649, 13.015258],
+    longRange : [80.236928, 80.239602]
+}
 
 const AnnaLibrary = {
     latRange: [13.010721, 13.010326],

@@ -1,4 +1,3 @@
-
 const slots = [
     { hour: 8, min: 30 },
     { hour: 9, min: 30 },
@@ -9,35 +8,28 @@ const slots = [
     { hour: 15, min: 55 },
     { hour: 16, min: 0 },
     { hour: 16, min: 50 }
-]
+];
 
 const timeToHour = (hh, mm) => {
-    console.log(hh, mm)
-    var last = 0;
-    if ((hh < 8) || (hh == 88 && mm <= 30)) return 0;
-    for (var i = 0; i < 8; i++) {
-        var curSl = slots[i];
-        var nextSl = slots[i + 1];
-        if (curSl.hour < hh && hh < nextSl.hour) {
-            return i
-        }
-        if (curSl.hour == nextSl.hour && curSl.hour == hh) {
-            if (curSl.min <= mm && mm <= nextSl.min) {
-                return i;
-            }
-        }
-        if (curSl.hour == hh) {
-            if (curSl.min <= mm) {
-                return i;
-            }
-        }
-        if (nextSl.hour == hh) {
-            if (mm <= nextSl.min) {
-                return i;
-            }
+    if ((hh < 8) || (hh === 8 && mm < 30)) return 0; // Before the first slot
+    for (let i = 0; i < slots.length - 1; i++) {
+        const curSl = slots[i];
+        const nextSl = slots[i + 1];
+
+        // Current hour and minute is between curSl and nextSl
+        if ((curSl.hour < hh || (curSl.hour === hh && curSl.min <= mm)) && 
+            (hh < nextSl.hour || (hh === nextSl.hour && mm < nextSl.min))) {
+            return i + 1;
         }
     }
-    return 9; // Day Over for today
-}
+
+    // Check if the time is after the last slot
+    const lastSlot = slots[slots.length - 1];
+    if (hh > lastSlot.hour || (hh === lastSlot.hour && mm >= lastSlot.min)) {
+        return slots.length;
+    }
+
+    return slots.length + 1; // Default return value if the time does not fit any slot
+};
 
 export default timeToHour;
